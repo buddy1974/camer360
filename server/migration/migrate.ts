@@ -45,7 +45,7 @@ function cleanHtml(html: string): string {
     const src = $(el).attr('src') || ''
     if (src.startsWith('/images/') || src.startsWith('images/')) {
       const abs = src.startsWith('/') ? src : '/' + src
-      $(el).attr('src', `https://www.cameroon-concord.com${abs}`)
+      $(el).attr('src', `https://www.camer360.com${abs}`)
     }
   })
   $('p').each((_, el) => {
@@ -82,7 +82,7 @@ async function migrateAuthors(_src: mysql.Connection, _dst: mysql.Connection) {
   log('── Authors... skipped (news_users not in backup)')
   await _dst.execute(`
     INSERT IGNORE INTO authors (slug, name, email, is_ai)
-    VALUES ('news-team', 'News Team', 'admin@cameroon-concord.com', 0)
+    VALUES ('news-team', 'News Team', 'admin@camer360.com', 0)
   `)
   log('   ✓ Default author "News Team" created')
 }
@@ -118,7 +118,7 @@ async function migrateArticles(src: mysql.Connection, dst: mysql.Connection) {
         try {
           const imgData = JSON.parse(r.images as string || '{}')
           img = imgData.image_intro || imgData.image_fulltext || null
-          if (img && !img.startsWith('http')) img = `https://www.cameroon-concord.com/${img.replace(/^\//,'')}`
+          if (img && !img.startsWith('http')) img = `https://www.camer360.com/${img.replace(/^\//,'')}`
         } catch { img = null }
 
         const pubAt = (r.publish_up && r.publish_up !== '0000-00-00 00:00:00')

@@ -347,7 +347,7 @@ if (!body.trim())  { setMsg('Body is required'); return }
             <input
               value={imgUrl}
               onChange={e => setImgUrl(e.target.value)}
-              placeholder="https://media.cameroon-concord.com/..."
+              placeholder="https://media.camer360.com/..."
               style={{ ...inputStyle, fontSize: '0.78rem', marginBottom: '8px' }}
             />
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>

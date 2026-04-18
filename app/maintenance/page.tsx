@@ -72,7 +72,7 @@ export default function MaintenancePage() {
             Under Construction
           </h1>
           <p style={{ color: '#555', fontSize: '0.8rem', marginTop: '0.5rem', lineHeight: 1.6 }}>
-            We are rebuilding Cameroon Concord with a completely new platform. Back very soon.
+            We are rebuilding Camer360 with a completely new platform. Back very soon.
           </p>
         </div>
 
@@ -156,7 +156,7 @@ export default function MaintenancePage() {
       </div>
 
       <p style={{ color: '#222', fontSize: '0.65rem', marginTop: '2rem', textAlign: 'center' }}>
-        © 2026 Cameroon Concord. All Rights Reserved.
+        © 2026 Camer360. All Rights Reserved.
       </p>
     </div>
   )

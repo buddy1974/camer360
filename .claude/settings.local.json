@@ -26,7 +26,16 @@
       "Bash(node -e \"console.log\\(require\\('./node_modules/next/package.json'\\).version\\)\")",
       "Read(//c/c/Users/loneb/Documents/ai-software-dev/projects/camer360.com/node_modules/next/dist/shared/lib/router/utils/**)",
       "Bash(xargs grep *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(openssl rand *)",
+      "Bash(npx drizzle-kit *)",
+      "Bash(echo \"PID=$!\")",
+      "Bash(curl *)",
+      "Bash(nslookup srv2119.hstgr.io)",
+      "Bash(node *)",
+      "Bash(npx tsx *)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(xargs sed *)"
     ]
   }
 }

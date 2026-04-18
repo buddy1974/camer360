@@ -153,7 +153,7 @@ export function QuickPublish({ categories }: Props) {
             <textarea
               value={rawText}
               onChange={e => setRawText(e.target.value)}
-              placeholder="Paste raw news text here. Claude will translate, rewrite in Cameroon Concord style, assign category, generate title, excerpt, body and SEO fields."
+              placeholder="Paste raw news text here. Claude will translate, rewrite in Camer360 style, assign category, generate title, excerpt, body and SEO fields."
               rows={14}
               style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.7, minHeight: '300px' }}
             />

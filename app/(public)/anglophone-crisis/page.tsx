@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'The Anglophone Crisis | Cameroon Concord',
+  title: 'The Anglophone Crisis | Camer360',
   description: 'Comprehensive coverage of the Anglophone crisis in Cameroon — background, timeline, and latest news.',
 }
 
@@ -15,7 +15,7 @@ export default function AnglophoneCrisisPage() {
       </h1>
       <p style={{ color: '#888', fontSize: '1rem', lineHeight: 1.7, marginBottom: '48px', maxWidth: '680px' }}>
         Since 2016, Cameroon has been torn by a conflict between the Francophone government and
-        English-speaking regions of the Northwest and Southwest. Cameroon Concord has covered
+        English-speaking regions of the Northwest and Southwest. Camer360 has covered
         this crisis from the beginning with on-the-ground reporting.
       </p>
 
@@ -52,7 +52,7 @@ export default function AnglophoneCrisisPage() {
 
         <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#F5A623', margin: '2.5rem 0 1rem' }}>Our Coverage</h2>
         <p style={{ marginBottom: '2rem' }}>
-          Cameroon Concord has reported on the Anglophone crisis since its inception, providing
+          Camer360 has reported on the Anglophone crisis since its inception, providing
           coverage of military operations, humanitarian conditions, political negotiations,
           and diaspora perspectives that mainstream media often overlooks.
         </p>

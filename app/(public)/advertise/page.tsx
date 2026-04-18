@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Advertise With Us | Cameroon Concord',
-  description: 'Reach Cameroonian readers across Africa and the diaspora. Advertise on Cameroon Concord.',
+  title: 'Advertise With Us | Camer360',
+  description: 'Reach Cameroonian readers across Africa and the diaspora. Advertise on Camer360.',
 }
 
 export default function AdvertisePage() {
@@ -13,7 +13,7 @@ export default function AdvertisePage() {
         Reach Cameroon&apos;s Most Engaged Readers
       </h1>
       <p style={{ color: '#888', fontSize: '1rem', marginBottom: '48px', lineHeight: 1.7 }}>
-        Cameroon Concord reaches thousands of Cameroonians daily across Africa and the diaspora.
+        Camer360 reaches thousands of Cameroonians daily across Africa and the diaspora.
         Our audience is educated, politically engaged, and digitally active.
       </p>
 
@@ -50,9 +50,9 @@ export default function AdvertisePage() {
       <div style={{ background: 'linear-gradient(135deg, rgba(200,16,46,0.12), rgba(200,16,46,0.04))', border: '1px solid rgba(200,16,46,0.2)', borderRadius: '16px', padding: '32px', textAlign: 'center' }}>
         <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#EEE', marginBottom: '8px' }}>Get in Touch</h2>
         <p style={{ color: '#888', fontSize: '0.9rem', marginBottom: '20px' }}>Contact our advertising team for rates and availability</p>
-        <a href="mailto:ads@cameroon-concord.com"
+        <a href="mailto:ads@camer360.com"
           style={{ display: 'inline-block', background: '#C8102E', color: '#fff', padding: '12px 28px', borderRadius: '10px', fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none' }}>
-          ads@cameroon-concord.com
+          ads@camer360.com
         </a>
       </div>
     </div>

@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   const { articles, template } = await req.json();
 
   const titles = articles.map((a: any) => a.title).join('\n- ');
-  const prompt = `You are the editor of Cameroon Concord news. Given these article titles:
+  const prompt = `You are the editor of Camer360 news. Given these article titles:
 - ${titles}
 
 Generate for a ${template} newsletter:

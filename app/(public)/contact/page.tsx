@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Contact | Cameroon Concord',
-  description: 'Get in touch with the Cameroon Concord newsroom.',
+  title: 'Contact | Camer360',
+  description: 'Get in touch with the Camer360 newsroom.',
 }
 
 export default function ContactPage() {
@@ -15,10 +15,10 @@ export default function ContactPage() {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '48px' }}>
         {[
-          { icon: '✉️', title: 'General Inquiries',  email: 'info@cameroon-concord.com' },
-          { icon: '📰', title: 'News Tips',           email: 'tips@cameroon-concord.com' },
-          { icon: '📢', title: 'Advertising',         email: 'ads@cameroon-concord.com' },
-          { icon: '⚖️', title: 'Legal & Corrections', email: 'legal@cameroon-concord.com' },
+          { icon: '✉️', title: 'General Inquiries',  email: 'info@camer360.com' },
+          { icon: '📰', title: 'News Tips',           email: 'tips@camer360.com' },
+          { icon: '📢', title: 'Advertising',         email: 'ads@camer360.com' },
+          { icon: '⚖️', title: 'Legal & Corrections', email: 'legal@camer360.com' },
         ].map(item => (
           <div key={item.title} style={{ background: '#111', border: '1px solid #1E1E1E', borderRadius: '12px', padding: '24px' }}>
             <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>{item.icon}</div>
@@ -31,11 +31,11 @@ export default function ContactPage() {
       <div style={{ background: '#111', border: '1px solid #1E1E1E', borderRadius: '12px', padding: '32px', color: '#BBBBBB', lineHeight: 1.7 }}>
         <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#EEE', marginBottom: '16px' }}>Social Media</h2>
         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-          <a href="https://www.facebook.com/cameroonconcord" target="_blank" rel="noopener noreferrer"
+          <a href="https://www.facebook.com/camer360" target="_blank" rel="noopener noreferrer"
             style={{ background: '#1877F2', color: '#fff', padding: '8px 16px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none' }}>
             Facebook
           </a>
-          <a href="https://twitter.com/CameroonC" target="_blank" rel="noopener noreferrer"
+          <a href="https://twitter.com/Camer360" target="_blank" rel="noopener noreferrer"
             style={{ background: '#000', border: '1px solid #333', color: '#fff', padding: '8px 16px', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none' }}>
             Twitter / X
           </a>

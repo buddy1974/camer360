@@ -36,7 +36,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const sidebar = (
     <div className="flex flex-col h-full">
       <div className="px-5 py-6 border-b border-[#1A1A1A]">
-        <Image src="/logo.png" alt="Cameroon Concord" width={140} height={35} />
+        <Image src="/logo.png" alt="Camer360" width={140} height={35} />
         <span style={{ fontSize: '11px', color: '#888', display: 'block', marginTop: '4px' }}>ADMIN</span>
       </div>
 
@@ -91,7 +91,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           <button onClick={() => setOpen(true)} className="text-[#555] hover:text-white transition-colors">
             <Menu size={20} />
           </button>
-          <Image src="/logo.png" alt="Cameroon Concord" width={120} height={30} />
+          <Image src="/logo.png" alt="Camer360" width={120} height={30} />
           {open && (
             <button onClick={() => setOpen(false)} className="ml-auto text-[#555] hover:text-white transition-colors">
               <X size={20} />

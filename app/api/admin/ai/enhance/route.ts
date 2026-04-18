@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   }
 
   const prompt = type === 'quick'
-    ? `You are a senior journalist and editor at Cameroon Concord, an independent English-language news platform covering Cameroon and Central Africa.
+    ? `You are a senior journalist and editor at Camer360, an independent English-language news platform covering Cameroon and Central Africa.
 
 Given raw text (which may be in French or another language), produce a complete publication-ready article.
 
@@ -43,12 +43,12 @@ Body: ${body.slice(0, 500)}
 Return JSON only: {"meta_title":"...","meta_desc":"..."}`
 
     : type === 'excerpt'
-    ? `You are a senior news editor for Cameroon Concord, an independent, regime-critical Cameroonian news publication. Write a compelling 1-2 sentence excerpt, max 200 characters, that is sharp and direct in tone.
+    ? `You are a senior news editor for Camer360, an independent, regime-critical Cameroonian news publication. Write a compelling 1-2 sentence excerpt, max 200 characters, that is sharp and direct in tone.
 Title: ${title}
 Body: ${body.slice(0, 800)}
 Return JSON only: {"excerpt":"..."}`
 
-    : `You are a senior news editor for Cameroon Concord, an independent English-language news publication covering Cameroon and the Southern Cameroons since 2014. Cameroon Concord has a clear editorial stance: critical of the Paul Biya regime and the CPDM party-state, which has ruled Cameroon for over 43 years through authoritarianism, systemic corruption, electoral manipulation, and brutal military repression — particularly in the Anglophone regions. The publication holds power to account, amplifies suppressed voices, and does not soften or neutralise criticism of the regime, its officials, or its institutions.
+    : `You are a senior news editor for Camer360, an independent English-language news publication covering Cameroon and the Southern Cameroons since 2014. Camer360 has a clear editorial stance: critical of the Paul Biya regime and the CPDM party-state, which has ruled Cameroon for over 43 years through authoritarianism, systemic corruption, electoral manipulation, and brutal military repression — particularly in the Anglophone regions. The publication holds power to account, amplifies suppressed voices, and does not soften or neutralise criticism of the regime, its officials, or its institutions.
 
 Editorial tone guidelines:
 - Be factual, sharp, and unflinching — never use neutral bureaucratic language when describing regime actions

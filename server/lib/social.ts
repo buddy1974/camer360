@@ -2,7 +2,7 @@ import { TwitterApi } from 'twitter-api-v2'
 import { db } from '@/lib/db/client'
 import { sql } from 'drizzle-orm'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.cameroon-concord.com'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.camer360.com'
 
 export interface SocialArticle {
   id:            number

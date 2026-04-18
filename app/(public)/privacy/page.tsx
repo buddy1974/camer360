@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Cameroon Concord',
+  title: 'Privacy Policy | Camer360',
 }
 
 export default function PrivacyPage() {
@@ -39,11 +39,11 @@ export default function PrivacyPage() {
           },
           {
             title: 'Your Rights',
-            content: 'You have the right to access, correct, or delete your personal data. To exercise these rights, contact us at legal@cameroon-concord.com.',
+            content: 'You have the right to access, correct, or delete your personal data. To exercise these rights, contact us at legal@camer360.com.',
           },
           {
             title: 'Contact',
-            content: 'Questions about this privacy policy? Email legal@cameroon-concord.com',
+            content: 'Questions about this privacy policy? Email legal@camer360.com',
           },
         ].map(section => (
           <div key={section.title} style={{ marginBottom: '2rem' }}>

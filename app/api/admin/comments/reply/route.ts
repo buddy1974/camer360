@@ -15,8 +15,8 @@ export async function POST(req: NextRequest) {
   await db.insert(comments).values({
     articleId,
     parentId: parentId || null,
-    authorName: 'Cameroon Concord',
-    authorEmail: 'editor@cameroon-concord.com',
+    authorName: 'Camer360',
+    authorEmail: 'editor@camer360.com',
     body: text,
     status: 'approved',
     authorIsAdmin: 1,

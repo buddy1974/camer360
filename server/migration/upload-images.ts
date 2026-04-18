@@ -110,10 +110,10 @@ async function updateDbUrls() {
   })
 
   const queries = [
-    `UPDATE articles SET featured_image = REPLACE(featured_image,'https://www.cameroon-concord.com/images/','${CDN_URL}/images/') WHERE featured_image LIKE '%www.cameroon-concord.com/images/%'`,
-    `UPDATE articles SET featured_image = REPLACE(featured_image,'http://www.cameroon-concord.com/images/','${CDN_URL}/images/') WHERE featured_image LIKE '%http://www.cameroon-concord.com/images/%'`,
-    `UPDATE articles SET featured_image = REPLACE(featured_image,'https://cameroon-concord.com/images/','${CDN_URL}/images/') WHERE featured_image LIKE '%cameroon-concord.com/images/%'`,
-    `UPDATE articles SET body = REPLACE(body,'src="https://www.cameroon-concord.com/images/','src="${CDN_URL}/images/') WHERE body LIKE '%src="https://www.cameroon-concord.com/images/%'`,
+    `UPDATE articles SET featured_image = REPLACE(featured_image,'https://www.camer360.com/images/','${CDN_URL}/images/') WHERE featured_image LIKE '%www.camer360.com/images/%'`,
+    `UPDATE articles SET featured_image = REPLACE(featured_image,'http://www.camer360.com/images/','${CDN_URL}/images/') WHERE featured_image LIKE '%http://www.camer360.com/images/%'`,
+    `UPDATE articles SET featured_image = REPLACE(featured_image,'https://camer360.com/images/','${CDN_URL}/images/') WHERE featured_image LIKE '%camer360.com/images/%'`,
+    `UPDATE articles SET body = REPLACE(body,'src="https://www.camer360.com/images/','src="${CDN_URL}/images/') WHERE body LIKE '%src="https://www.camer360.com/images/%'`,
     `UPDATE articles SET body = REPLACE(body,'src="/images/','src="${CDN_URL}/images/') WHERE body LIKE '%src="/images/%'`,
   ]
 

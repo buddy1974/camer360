@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'About Cameroon Concord | Independent News from Cameroon',
-  description: 'Cameroon Concord is an independent English-language news platform covering Cameroon and Southern Cameroons since 2014.',
+  title: 'About Camer360 | Independent News from Cameroon',
+  description: 'Camer360 is an independent English-language news platform covering Cameroon and Southern Cameroons since 2014.',
 }
 
 export default function AboutPage() {
@@ -30,7 +30,7 @@ export default function AboutPage() {
 
       <div style={{ color: '#BBBBBB', lineHeight: 1.85, fontSize: '1.05rem' }}>
         <p style={{ marginBottom: '1.5rem' }}>
-          <strong style={{ color: '#EEE' }}>Cameroon Concord</strong> is an independent English-language digital news platform
+          <strong style={{ color: '#EEE' }}>Camer360</strong> is an independent English-language digital news platform
           dedicated to delivering accurate, unbiased, and timely reporting on Cameroon and Southern Cameroons.
           Founded in 2014, we have grown to become one of the most trusted sources of Cameroonian news for
           readers across Africa and in the diaspora.
@@ -41,7 +41,7 @@ export default function AboutPage() {
           Our team of reporters and contributors operates across Cameroon and internationally.
         </p>
         <p style={{ marginBottom: '1.5rem' }}>
-          Cameroon Concord is not affiliated with any political party, government, or corporate interest.
+          Camer360 is not affiliated with any political party, government, or corporate interest.
           We are funded by advertising revenue and reader support. Our editorial decisions are made
           independently of our commercial operations.
         </p>
@@ -62,8 +62,8 @@ export default function AboutPage() {
 
         <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#F5A623', margin: '2.5rem 0 1rem' }}>Contact the Newsroom</h2>
         <p>
-          Editorial inquiries: <a href="mailto:info@cameroon-concord.com" style={{ color: '#F5A623' }}>info@cameroon-concord.com</a><br />
-          Tips and press releases: <a href="mailto:tips@cameroon-concord.com" style={{ color: '#F5A623' }}>tips@cameroon-concord.com</a>
+          Editorial inquiries: <a href="mailto:info@camer360.com" style={{ color: '#F5A623' }}>info@camer360.com</a><br />
+          Tips and press releases: <a href="mailto:tips@camer360.com" style={{ color: '#F5A623' }}>tips@camer360.com</a>
         </p>
       </div>
     </div>

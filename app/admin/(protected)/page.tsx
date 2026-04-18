@@ -79,7 +79,7 @@ export default async function AdminDashboard() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
         <div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fff', margin: 0 }}>Dashboard</h1>
-          <p style={{ color: '#444', fontSize: '0.8rem', marginTop: '4px' }}>Cameroon Concord CMS</p>
+          <p style={{ color: '#444', fontSize: '0.8rem', marginTop: '4px' }}>Camer360 CMS</p>
         </div>
         <Link href="/admin/articles/new" style={{
           background: '#C8102E', color: '#fff', padding: '10px 20px',

@@ -51,7 +51,7 @@ export function Footer() {
           {/* Brand column */}
           <div>
             <Link href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
-              <Image src="/logo.png" alt="Cameroon Concord" width={160} height={40} />
+              <Image src="/logo.png" alt="Camer360" width={160} height={40} />
             </Link>
             <p style={{ color: '#444', fontSize: '0.8rem', marginTop: '12px', lineHeight: 1.7, maxWidth: '240px' }}>
               Independent English-language news covering Cameroon and Southern Cameroons since 2014.
@@ -64,7 +64,7 @@ export function Footer() {
                 style={{ background: '#111', border: '1px solid #1E1E1E', color: '#888', padding: '8px 14px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 700, textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 Facebook
               </a>
-              <a href="https://twitter.com/CameroonC" target="_blank" rel="noopener noreferrer"
+              <a href="https://twitter.com/Camer360" target="_blank" rel="noopener noreferrer"
                 className="hover:text-[#EEE] transition-colors"
                 style={{ background: '#111', border: '1px solid #1E1E1E', color: '#888', padding: '8px 14px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 700, textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 Twitter/X
@@ -75,7 +75,7 @@ export function Footer() {
             <div style={{ marginTop: '24px', background: '#111', border: '1px solid #1E1E1E', borderRadius: '10px', padding: '16px' }}>
               <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#EEE', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Newsletter</p>
               <p style={{ fontSize: '0.72rem', color: '#555', marginBottom: '12px', lineHeight: 1.5 }}>Cameroon news in your inbox</p>
-              <a href="mailto:info@cameroon-concord.com?subject=Newsletter Subscription"
+              <a href="mailto:info@camer360.com?subject=Newsletter Subscription"
                 style={{ display: 'block', background: '#C8102E', color: '#fff', padding: '8px 14px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 700, textDecoration: 'none', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 Subscribe
               </a>

@@ -26,14 +26,14 @@ export async function POST(req: NextRequest) {
 
   let sent = 0;
   for (const sub of subscribers) {
-    const unsubUrl = `https://www.cameroon-concord.com/api/newsletter/unsubscribe?token=${sub.token}`;
+    const unsubUrl = `https://www.camer360.com/api/newsletter/unsubscribe?token=${sub.token}`;
     const finalHtml = htmlBody.replace('{{UNSUBSCRIBE_URL}}', unsubUrl);
 
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Cameroon Concord <news@cameroon-concord.com>',
+        from: 'Camer360 <news@camer360.com>',
         to: sub.email,
         subject,
         html: finalHtml,

@@ -43,7 +43,7 @@ export default function CommentsAdmin() {
   }
 
   async function postAsCC(id: number, articleId: number) {
-    const text = prompt('Reply as Cameroon Concord:')
+    const text = prompt('Reply as Camer360:')
     if (!text) return
     await fetch('/api/admin/comments/reply', {
       method: 'POST',

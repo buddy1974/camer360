@@ -35,7 +35,7 @@ const twitter = new TwitterApi({
   accessSecret:      process.env.TWITTER_ACCESS_SECRET!,
 })
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.cameroon-concord.com'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.camer360.com'
 
 const pool = createPool({
   host:              process.env.DB_HOST,

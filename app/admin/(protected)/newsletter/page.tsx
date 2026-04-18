@@ -76,7 +76,7 @@ export default function NewsletterComposer() {
   }
 
   function buildHtml() {
-    const SITE = 'https://www.cameroon-concord.com'
+    const SITE = 'https://www.camer360.com'
     const articleCards = selected.map(a => `
       <tr><td style="padding:0 0 24px">
         <table width="100%" cellpadding="0" cellspacing="0">
@@ -108,7 +108,7 @@ export default function NewsletterComposer() {
               ${intro ? `<p style="color:#ccc;font-size:15px;line-height:1.6;margin:0 0 24px;padding-bottom:24px;border-bottom:1px solid #333">${intro}</p>` : ''}
               <table width="100%" cellpadding="0" cellspacing="0">${articleCards}</table>
               <p style="color:#555;font-size:12px;text-align:center;margin-top:24px;padding-top:24px;border-top:1px solid #222">
-                © ${new Date().getFullYear()} Cameroon Concord ·
+                © ${new Date().getFullYear()} Camer360 ·
                 <a href="{{UNSUBSCRIBE_URL}}" style="color:#C8102E">Unsubscribe</a>
               </p>
             </td></tr>
