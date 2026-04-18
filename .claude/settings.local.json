@@ -40,7 +40,8 @@
       "Bash(vercel whoami *)",
       "Bash(vercel --prod)",
       "Bash(vercel --prod --yes)",
-      "Bash(vercel env *)"
+      "Bash(vercel env *)",
+      "Bash(xargs cat *)"
     ]
   }
 }
