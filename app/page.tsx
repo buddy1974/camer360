@@ -866,32 +866,16 @@ export default async function HomePage() {
         
         {/* Ultra-Premium Header */}
         <div className="premium-header">
-          {/* Category nav bar */}
+          {/* Tier 1 — secondary categories + social */}
           <div className="trending-bar">
             <div className="trending-content">
-              {/* Entertainment group */}
               <div className="trending-items">
-                <span className="trending-label">Entertainment</span>
-                <Link href="/celebrities"    className="trending-link">Celebrities</Link>
-                <Link href="/music"          className="trending-link">Music</Link>
-                <Link href="/film-tv"        className="trending-link">Film &amp; TV</Link>
-                <Link href="/fashion-beauty" className="trending-link">Style</Link>
-                <Link href="/viral"          className="trending-link">Viral</Link>
-                <Link href="/gossip"         className="trending-link">Gossip</Link>
-              </div>
-              {/* Divider */}
-              <div style={{ width: '1px', height: '16px', background: 'rgba(255,255,255,0.1)', flexShrink: 0 }} />
-              {/* Culture group */}
-              <div className="trending-items">
-                <span className="trending-label">Culture</span>
-                <Link href="/diaspora"    className="trending-link">Diaspora</Link>
-                <Link href="/money-moves" className="trending-link">Entrepreneurs</Link>
-                <Link href="/sport-stars" className="trending-link">Sport Stars</Link>
+                <span className="trending-label">Also</span>
                 <Link href="/influencers" className="trending-link">Influencers</Link>
                 <Link href="/real-talk"   className="trending-link">Real Talk</Link>
                 <Link href="/exposed"     className="trending-link">Exposed</Link>
+                <Link href="/money-moves" className="trending-link">Entrepreneurs</Link>
               </div>
-              {/* Social */}
               <div className="social-links">
                 <a href="https://facebook.com/camer360"  target="_blank" rel="noopener noreferrer" className="social-link">f</a>
                 <a href="https://twitter.com/camer360"   target="_blank" rel="noopener noreferrer" className="social-link">t</a>
@@ -900,9 +884,23 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Logo row — centered, no duplicate nav links */}
-          <div style={{ display: 'flex', justifyContent: 'center', padding: '36px 40px 32px' }}>
+          {/* Tier 2 + 3 — left nav | logo | right nav */}
+          <div className="main-header">
+            <nav className="nav-left">
+              <Link href="/celebrities" className="nav-link">Celebrities</Link>
+              <Link href="/music"       className="nav-link">Music</Link>
+              <Link href="/film-tv"     className="nav-link">Film &amp; TV</Link>
+              <Link href="/gossip"      className="nav-link">Gossip</Link>
+            </nav>
+
             <Link href="/" className="logo playfair">Camer360</Link>
+
+            <nav className="nav-right">
+              <Link href="/fashion-beauty" className="nav-link">Style</Link>
+              <Link href="/viral"          className="nav-link">Viral</Link>
+              <Link href="/diaspora"       className="nav-link">Diaspora</Link>
+              <Link href="/sport-stars"    className="nav-link">Sport Stars</Link>
+            </nav>
           </div>
         </div>
 
