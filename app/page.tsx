@@ -866,79 +866,74 @@ export default async function HomePage() {
         <BreakingBanner articles={breaking} />
         <EbonyNavigation />
 
-        {/* ── Cinematic Hero Grid ── */}
-        {featured.length > 0 && (
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gridTemplateRows: '480px 280px', gap: '3px', background: '#111', margin: '0' }}>
+        {/* ── Hero: image left + newsletter right ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', minHeight: '520px', background: '#111' }}>
 
-            {/* MAIN — spans both rows */}
-            {featured[0] && (
-              <Link
-                href={`/${featured[0].category.slug}/${featured[0].slug}`}
-                style={{
-                  gridRow: '1 / 3',
-                  position: 'relative',
-                  display: 'block',
-                  overflow: 'hidden',
-                  background: '#1a1a1a',
-                  textDecoration: 'none',
-                }}
-              >
-                {featured[0].featuredImage && (
-                  <img
-                    src={featured[0].featuredImage}
-                    alt={featured[0].title}
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }}
-                    className="hero-img-zoom"
-                  />
-                )}
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)' }} />
-                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '40px 36px' }}>
-                  <span style={{ display: 'inline-block', background: '#D4AF37', color: '#1A1A1A', fontSize: '10px', fontWeight: 900, letterSpacing: '0.14em', textTransform: 'uppercase', padding: '4px 10px', borderRadius: '2px', marginBottom: '14px' }}>
-                    {featured[0].category.name}
-                  </span>
-                  <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.6rem, 3vw, 2.6rem)', fontWeight: 800, color: '#fff', lineHeight: 1.2, margin: '0 0 14px', textShadow: '0 2px 12px rgba(0,0,0,0.5)' }}>
-                    {featured[0].title}
-                  </h2>
-                  {featured[0].excerpt && (
-                    <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '14px', lineHeight: 1.6, margin: 0, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                      {featured[0].excerpt}
-                    </p>
-                  )}
-                </div>
-              </Link>
+          {/* LEFT — featured article with image + overlay */}
+          <Link
+            href={featured[0] ? `/${featured[0].category.slug}/${featured[0].slug}` : '/celebrities'}
+            style={{ position: 'relative', display: 'block', overflow: 'hidden', background: '#1a1a1a', textDecoration: 'none', minHeight: '520px' }}
+          >
+            {featured[0]?.featuredImage && (
+              <img
+                src={featured[0].featuredImage}
+                alt={featured[0]?.title ?? ''}
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+              />
             )}
+            {/* Dark overlay — dims the image so text pops */}
+            <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.50)' }} />
+            {/* Bottom gradient for extra text legibility */}
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.80) 0%, transparent 55%)' }} />
 
-            {/* SECONDARY cards */}
-            {[featured[1], featured[2]].map((article, i) => article && (
-              <Link
-                key={article.id}
-                href={`/${article.category.slug}/${article.slug}`}
-                style={{ position: 'relative', display: 'block', overflow: 'hidden', background: '#1a1a1a', textDecoration: 'none' }}
-              >
-                {article.featuredImage && (
-                  <img
-                    src={article.featuredImage}
-                    alt={article.title}
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }}
-                    className="hero-img-zoom"
-                  />
-                )}
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 70%, transparent 100%)' }} />
-                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px 22px' }}>
-                  <span style={{ display: 'inline-block', background: '#D4AF37', color: '#1A1A1A', fontSize: '9px', fontWeight: 900, letterSpacing: '0.14em', textTransform: 'uppercase', padding: '3px 8px', borderRadius: '2px', marginBottom: '8px' }}>
-                    {article.category.name}
-                  </span>
-                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(0.95rem, 1.6vw, 1.2rem)', fontWeight: 700, color: '#fff', lineHeight: 1.25, margin: 0, textShadow: '0 1px 8px rgba(0,0,0,0.6)', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                    {article.title}
-                  </h3>
+            {/* Text content */}
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '40px 44px' }}>
+              <span style={{ display: 'inline-block', background: '#D4AF37', color: '#1A1A1A', fontSize: '10px', fontWeight: 900, letterSpacing: '0.16em', textTransform: 'uppercase', padding: '4px 10px', borderRadius: '2px', marginBottom: '16px' }}>
+                {featured[0]?.category.name ?? 'Entertainment'}
+              </span>
+              <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 3.2vw, 2.8rem)', fontWeight: 800, color: '#fff', lineHeight: 1.18, margin: '0 0 16px', textShadow: '0 2px 16px rgba(0,0,0,0.6)' }}>
+                {featured[0]?.title ?? "Cameroon's Entertainment Revolution"}
+              </h1>
+              {featured[0]?.excerpt && (
+                <p style={{ color: 'rgba(255,255,255,0.80)', fontSize: '15px', lineHeight: 1.65, margin: '0 0 24px', maxWidth: '560px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
+                  {featured[0].excerpt}
+                </p>
+              )}
+              <span style={{ display: 'inline-block', background: 'linear-gradient(135deg,#D4AF37,#F7DC6F)', color: '#1A1A1A', fontSize: '11px', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', padding: '12px 28px', borderRadius: '2px' }}>
+                Read Full Story →
+              </span>
+            </div>
+          </Link>
+
+          {/* RIGHT — newsletter sidebar */}
+          <div style={{ background: '#0F0F0F', borderLeft: '1px solid #1E1E1E', display: 'flex', flexDirection: 'column', padding: '40px 32px', gap: '32px' }}>
+            <div>
+              <p style={{ fontSize: '10px', fontWeight: 900, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#D4AF37', marginBottom: '12px' }}>Newsletter</p>
+              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.4rem', fontWeight: 700, color: '#fff', lineHeight: 1.3, marginBottom: '12px' }}>Stay Ahead of the Story</h3>
+              <p style={{ fontSize: '13px', color: '#888', lineHeight: 1.65, marginBottom: '24px' }}>Exclusive Central &amp; West African entertainment news, delivered to your inbox.</p>
+              <input type="email" placeholder="Your email address" style={{ width: '100%', background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '3px', padding: '12px 14px', color: '#fff', fontSize: '13px', outline: 'none', marginBottom: '10px', boxSizing: 'border-box' }} />
+              <button style={{ width: '100%', background: 'linear-gradient(135deg,#D4AF37,#F7DC6F)', color: '#1A1A1A', border: 'none', borderRadius: '3px', padding: '13px', fontSize: '11px', fontWeight: 900, letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
+                Subscribe Now
+              </button>
+            </div>
+
+            {/* Mini trending list */}
+            {mostRead.length > 0 && (
+              <div>
+                <p style={{ fontSize: '10px', fontWeight: 900, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#D4AF37', marginBottom: '16px' }}>Trending</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {mostRead.slice(0, 4).map((article, i) => (
+                    <Link key={article.id} href={`/${article.category.slug}/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                      <span style={{ fontSize: '18px', fontWeight: 900, color: '#2A2A2A', lineHeight: 1, minWidth: '20px', flexShrink: 0 }}>{i + 1}</span>
+                      <span style={{ fontSize: '12px', color: '#999', lineHeight: 1.45, fontWeight: 500 }}>{article.title}</span>
+                    </Link>
+                  ))}
                 </div>
-              </Link>
-            ))}
-
+              </div>
+            )}
           </div>
-        )}
 
-        <style>{`.hero-img-zoom:hover { transform: scale(1.04); }`}</style>
+        </div>
 
         {/* Premium Content Section */}
         <div className="content-section section-luxury">
