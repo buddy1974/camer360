@@ -128,11 +128,8 @@ async function _getLatestArticles(limit = 20, offset = 0): Promise<ArticleWithRe
   }))
 }
 
-export const getLatestArticles = unstable_cache(
-  _getLatestArticles,
-  ['latest-articles'],
-  { revalidate: 60, tags: ['articles'] }
-)
+// No unstable_cache — homepage is force-dynamic; stale cache was hiding published articles
+export const getLatestArticles = _getLatestArticles
 
 export async function getFeaturedArticles(limit = 3): Promise<ArticleWithRelations[]> {
   const rows = await db
@@ -251,11 +248,7 @@ async function _getMostRead(limit = 5): Promise<ArticleWithRelations[]> {
   }))
 }
 
-export const getMostRead = unstable_cache(
-  _getMostRead,
-  ['most-read'],
-  { revalidate: 60, tags: ['articles'] }
-)
+export const getMostRead = _getMostRead
 
 async function _getRelatedArticles(
   articleId: number,
