@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { TrendingBar } from '@/components/layout/TrendingBar'
 import { BreakingBanner } from '@/components/article/BreakingBanner'
 import { ArticleCard } from '@/components/article/ArticleCard'
 import InstallBanner from '@/components/pwa/InstallBanner'
@@ -865,6 +866,7 @@ export default async function HomePage() {
         <JsonLd data={buildOrganizationSchema()} />
         <BreakingBanner articles={breaking} />
         <Header />
+        <TrendingBar />
 
         {/* Ultra-Sophisticated Hero */}
         <div className="hero-section">
