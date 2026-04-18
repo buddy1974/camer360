@@ -22,7 +22,7 @@ export type SocialQueue      = InferSelectModel<typeof socialQueue>
 export type Comment          = InferSelectModel<typeof comments>
 export type NewComment       = InferInsertModel<typeof comments>
 
-export type ArticleStatus = 'draft' | 'scheduled' | 'published' | 'archived'
+export type ArticleStatus = 'draft' | 'scheduled' | 'published' | 'archived' | 'unpublished'
 export type Platform      = 'twitter' | 'facebook' | 'whatsapp' | 'instagram' | 'telegram'
 export type PublishSource = 'web' | 'api' | 'mobile' | 'script' | 'ai'
 

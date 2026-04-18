@@ -17,7 +17,7 @@ export const articles = mysqlTable('articles', {
   featuredImage: varchar('featured_image', { length: 512 }),
   imageCaption:  varchar('image_caption', { length: 512 }),
   imageAlt:      varchar('image_alt', { length: 255 }),
-  status:        mysqlEnum('status', ['draft','scheduled','published','archived']).default('draft'),
+  status:        mysqlEnum('status', ['draft','scheduled','published','archived','unpublished']).default('draft'),
   isBreaking:    boolean('is_breaking').default(false),
   isFeatured:    boolean('is_featured').default(false),
   publishedAt:   datetime('published_at'),
