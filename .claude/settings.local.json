@@ -3,7 +3,30 @@
     "allow": [
       "Bash(git *)",
       "Bash(yes)",
-      "Bash(npx create-next-app@latest . --typescript --tailwind --app --no-src-dir --import-alias \"@/*\")"
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --no-src-dir --import-alias \"@/*\")",
+      "Read(//c/Users/loneb/Documents/ai-software-dev/projects/cameroon.concord/app/\\(public\\)/**)",
+      "Read(//c/Users/loneb/Documents/ai-software-dev/projects/cameroon.concord/app/\\(admin\\)/**)",
+      "Read(//c/Users/loneb/Documents/ai-software-dev/projects/cameroon.concord/components/**)",
+      "Read(//c/Users/loneb/Documents/ai-software-dev/projects/cameroon.concord/hooks/**)",
+      "Read(//c/Users/loneb/Documents/ai-software-dev/projects/cameroon.concord/server/**)",
+      "Bash(cp \"/c/Users/loneb/Documents/ai-software-dev/projects/cameroon.concord/proxy.ts\" .)",
+      "Bash(cp \"/c/Users/loneb/Documents/ai-software-dev/projects/cameroon.concord/drizzle.config.ts\" .)",
+      "Bash(cp \"/c/Users/loneb/Documents/ai-software-dev/projects/cameroon.concord/.env.example\" .)",
+      "Bash(cp -r \"/c/Users/loneb/Documents/ai-software-dev/projects/cameroon.concord/lib\" .)",
+      "Bash(cp -r \"/c/Users/loneb/Documents/ai-software-dev/projects/cameroon.concord/server\" .)",
+      "Bash(cp -r \"/c/Users/loneb/Documents/ai-software-dev/projects/cameroon.concord/components\" .)",
+      "Bash(cp -r \"/c/Users/loneb/Documents/ai-software-dev/projects/cameroon.concord/app\" .)",
+      "Bash(cp \"/c/Users/loneb/Documents/ai-software-dev/projects/cameroon.concord/next.config.ts\" next.config.ts)",
+      "Bash(cp \"/c/Users/loneb/Documents/ai-software-dev/projects/cameroon.concord/tsconfig.json\" tsconfig.json)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(sed -n '45,55p' \"/c/Users/loneb/Documents/ai-software-dev/projects/camer360.com/app/api/admin/articles/[id]/route.ts\")",
+      "Bash(sed -n '112,120p' \"/c/Users/loneb/Documents/ai-software-dev/projects/camer360.com/app/api/admin/articles/route.ts\")",
+      "Bash(node -e \"const n=require\\('next/package.json'\\);console.log\\(n.version\\)\")",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/next/package.json'\\).version\\)\")",
+      "Read(//c/c/Users/loneb/Documents/ai-software-dev/projects/camer360.com/node_modules/next/dist/shared/lib/router/utils/**)",
+      "Bash(xargs grep *)",
+      "Bash(npm run *)"
     ]
   }
 }
