@@ -1,0 +1,198 @@
+{
+  "name": "Camer360 RSS Ingestion Engine",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{"field": "hours", "hoursInterval": 2}]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Every 2 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 400]
+    },
+    {
+      "parameters": {
+        "url": "https://www.lindaikejisblog.com/feeds/posts/default",
+        "options": {}
+      },
+      "id": "linda-ikeji",
+      "name": "Linda Ikeji RSS",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [400, 200]
+    },
+    {
+      "parameters": {
+        "url": "https://www.pulse.ng/rss",
+        "options": {}
+      },
+      "id": "pulse-ng",
+      "name": "Pulse Nigeria RSS",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://www.bellanaija.com/feed/",
+        "options": {}
+      },
+      "id": "bellanaija",
+      "name": "BellaNaija RSS",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [400, 400]
+    },
+    {
+      "parameters": {
+        "url": "https://www.pulse.com.gh/rss",
+        "options": {}
+      },
+      "id": "pulse-gh",
+      "name": "Pulse Ghana RSS",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [400, 500]
+    },
+    {
+      "parameters": {
+        "url": "https://thenet.ng/feed/",
+        "options": {}
+      },
+      "id": "thenet",
+      "name": "The Net NG RSS",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [400, 600]
+    },
+    {
+      "parameters": {
+        "mode": "append"
+      },
+      "id": "merge-rss",
+      "name": "Merge RSS Sources",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [600, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const seen = new Set();\nconst unique = [];\n\nfor (const item of $input.all()) {\n  const url = item.json.link || item.json.url || '';\n  if (!url) continue;\n  if (seen.has(url)) continue;\n  seen.add(url);\n  unique.push({\n    json: {\n      title:       (item.json.title || '').trim(),\n      url:         url,\n      description: item.json.contentSnippet || item.json.summary || item.json.description || '',\n      pubDate:     item.json.pubDate || item.json.isoDate || '',\n      source:      item.json.meta?.title || item.json.feedTitle || 'RSS Feed',\n    }\n  });\n}\n\nreturn unique;"
+      },
+      "id": "dedupe-items",
+      "name": "Dedupe RSS Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://camer360com.vercel.app/api/n8n/claude",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key",     "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" },
+            { "name": "Content-Type",  "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"system\": \"You are an AI classifier for Camer360 entertainment magazine. Respond ONLY with valid JSON (no markdown): {\\\"category\\\":\\\"celebrities|music|gossip|viral|fashion-beauty|film-tv|influencers|money-moves|diaspora|sport-stars|real-talk|exposed\\\", \\\"score\\\":1-10, \\\"publish\\\":true}\",\n  \"user\": \"Title: {{ $json.title }}\\nSummary: {{ $json.description }}\"\n}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "ai-classify",
+      "name": "AI Classify Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1000, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Claude response and attach to original item\nconst item = $input.first();\ntry {\n  const ai = JSON.parse(item.json.text || '{}');\n  return [{ json: { ...item.json, ai_category: ai.category, ai_score: ai.score, ai_publish: ai.publish } }];\n} catch {\n  return [{ json: { ...item.json, ai_score: 0, ai_publish: false } }];\n}"
+      },
+      "id": "parse-classify",
+      "name": "Parse Classification",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "filter-score",
+              "leftValue":  "={{ $json.ai_score }}",
+              "rightValue": 6,
+              "operator": { "type": "number", "operation": "gte" }
+            },
+            {
+              "id": "filter-publish",
+              "leftValue":  "={{ $json.ai_publish }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "filter-quality",
+      "name": "Filter High Quality (≥6)",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [1400, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://camer360com.vercel.app/api/n8n/ingest",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key",    "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": "=[{\n  \"source_name\": \"{{ $json.source }}\",\n  \"source_url\":  \"{{ $json.url }}\",\n  \"raw_title\":   \"{{ $json.title }}\",\n  \"raw_body\":    \"{{ $json.description }}\",\n  \"language\":    \"en\"\n}]",
+        "options": { "timeout": 10000 }
+      },
+      "id": "store-content",
+      "name": "Store in Queue",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1600, 400]
+    }
+  ],
+  "connections": {
+    "Every 2 Hours": {
+      "main": [[
+        {"node": "Linda Ikeji RSS",   "type": "main", "index": 0},
+        {"node": "Pulse Nigeria RSS", "type": "main", "index": 0},
+        {"node": "BellaNaija RSS",    "type": "main", "index": 0},
+        {"node": "Pulse Ghana RSS",   "type": "main", "index": 0},
+        {"node": "The Net NG RSS",    "type": "main", "index": 0}
+      ]]
+    },
+    "Linda Ikeji RSS":   {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 0}]]},
+    "Pulse Nigeria RSS": {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 1}]]},
+    "BellaNaija RSS":    {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 2}]]},
+    "Pulse Ghana RSS":   {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 3}]]},
+    "The Net NG RSS":    {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 4}]]},
+    "Merge RSS Sources":     {"main": [[{"node": "Dedupe RSS Items",         "type": "main", "index": 0}]]},
+    "Dedupe RSS Items":      {"main": [[{"node": "AI Classify Content",      "type": "main", "index": 0}]]},
+    "AI Classify Content":   {"main": [[{"node": "Parse Classification",     "type": "main", "index": 0}]]},
+    "Parse Classification":  {"main": [[{"node": "Filter High Quality (≥6)", "type": "main", "index": 0}]]},
+    "Filter High Quality (≥6)": {"main": [[{"node": "Store in Queue",        "type": "main", "index": 0}]]}
+  },
+  "settings": { "executionOrder": "v1", "saveManualExecutions": true, "callerPolicy": "workflowsFromSameOwner" }
+}
