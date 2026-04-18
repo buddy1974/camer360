@@ -30,26 +30,26 @@ export default function EbonyNavigation() {
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
       {/* Main Navigation Bar */}
-      <nav className="container mx-auto px-4 py-4">
+      <nav className="container mx-auto px-6 py-5">
         <div className="flex items-center justify-between">
 
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt="Camer360" className="h-10 w-auto" />
+              <img src="/logo.png" alt="Camer360" className="h-16 w-auto" />
             </Link>
           </div>
 
           {/* Main Menu — desktop */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-10">
             {NAV.map(item => {
               const active = pathname === item.href || pathname.startsWith(item.href + '/')
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`font-bold tracking-wide transition-colors text-[13px] ${
+                  className={`text-xl font-bold tracking-wide transition-colors uppercase ${
                     active ? 'text-[#D4AF37]' : 'text-black hover:text-[#D4AF37]'
                   }`}
                 >
@@ -60,14 +60,14 @@ export default function EbonyNavigation() {
           </div>
 
           {/* Right side */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-5">
             <Link href="/newsletter" aria-label="Newsletter"
               className="hidden lg:block text-gray-600 hover:text-[#D4AF37] transition-colors">
-              <Mail className="w-5 h-5" />
+              <Mail className="w-6 h-6" />
             </Link>
             <Link href="/search" aria-label="Search"
               className="text-gray-600 hover:text-[#D4AF37] transition-colors">
-              <Search className="w-5 h-5" />
+              <Search className="w-6 h-6" />
             </Link>
             <button
               onClick={() => setOpen(v => !v)}
@@ -90,7 +90,7 @@ export default function EbonyNavigation() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className={`py-3 text-[13px] font-bold tracking-wide transition-colors ${
+                className={`py-4 text-lg font-bold tracking-wide uppercase transition-colors ${
                   pathname.startsWith(item.href) ? 'text-[#D4AF37]' : 'text-gray-700 hover:text-[#D4AF37]'
                 }`}
               >
