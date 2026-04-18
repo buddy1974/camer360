@@ -46,18 +46,15 @@ export function Footer() {
           <h3 className="footer-section-title">Entertainment</h3>
           <ul className="footer-links">
             {[
-              { href: '/celebrities',    icon: '⭐', label: 'Celebrities' },
-              { href: '/music',          icon: '🎵', label: 'Music' },
-              { href: '/film-tv',        icon: '🎬', label: 'Film & TV' },
-              { href: '/fashion-beauty', icon: '👑', label: 'Style' },
-              { href: '/viral',          icon: '🔥', label: 'Viral' },
-              { href: '/gossip',         icon: '👀', label: 'Gossip' },
+              { href: '/celebrities',    label: 'Celebrities' },
+              { href: '/music',          label: 'Music' },
+              { href: '/film-tv',        label: 'Film & TV' },
+              { href: '/fashion-beauty', label: 'Style' },
+              { href: '/viral',          label: 'Viral' },
+              { href: '/gossip',         label: 'Gossip' },
             ].map(item => (
               <li key={item.href} className="footer-link">
-                <Link href={item.href}>
-                  <span className="footer-cat-icon">{item.icon}</span>
-                  {item.label}
-                </Link>
+                <Link href={item.href}>{item.label}</Link>
               </li>
             ))}
           </ul>
@@ -68,18 +65,15 @@ export function Footer() {
           <h3 className="footer-section-title">Culture</h3>
           <ul className="footer-links">
             {[
-              { href: '/diaspora',    icon: '🌍', label: 'Diaspora' },
-              { href: '/money-moves', icon: '💰', label: 'Entrepreneurs' },
-              { href: '/sport-stars', icon: '🏆', label: 'Sport Stars' },
-              { href: '/influencers', icon: '📱', label: 'Influencers' },
-              { href: '/real-talk',   icon: '💬', label: 'Real Talk' },
-              { href: '/exposed',     icon: '🕵️', label: 'Exposed' },
+              { href: '/diaspora',    label: 'Diaspora' },
+              { href: '/money-moves', label: 'Entrepreneurs' },
+              { href: '/sport-stars', label: 'Sport Stars' },
+              { href: '/influencers', label: 'Influencers' },
+              { href: '/real-talk',   label: 'Real Talk' },
+              { href: '/exposed',     label: 'Exposed' },
             ].map(item => (
               <li key={item.href} className="footer-link">
-                <Link href={item.href}>
-                  <span className="footer-cat-icon">{item.icon}</span>
-                  {item.label}
-                </Link>
+                <Link href={item.href}>{item.label}</Link>
               </li>
             ))}
           </ul>
