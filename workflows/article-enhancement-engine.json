@@ -1,0 +1,185 @@
+{
+  "name": "Camer360 Article Enhancement Engine",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{"field": "minutes", "minutesInterval": 30}]
+        }
+      },
+      "id": "schedule-writer",
+      "name": "Every 30 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://camer360com.vercel.app/api/n8n/queue?limit=5",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" }
+          ]
+        },
+        "options": { "timeout": 10000 }
+      },
+      "id": "fetch-queue",
+      "name": "Fetch Queue Items",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Unpack array response into individual items\nconst rows = $input.first().json;\nif (!Array.isArray(rows) || rows.length === 0) return [];\nreturn rows.map(row => ({ json: row }));"
+      },
+      "id": "split-items",
+      "name": "Split Queue Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://camer360com.vercel.app/api/n8n/claude",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key",    "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"system\": \"You are a sharp, plugged-in African entertainment editor for Camer360, West and Central Africa's premier celebrity and lifestyle magazine. Write bold, punchy, entertaining copy. Name names. Keep it factual but never boring. Celebrate African excellence.\\n\\nRespond ONLY with valid JSON (no markdown, no code blocks):\\n{\\\"title\\\":\\\"scroll-stopping headline under 12 words\\\",\\\"slug\\\":\\\"url-friendly-slug\\\",\\\"excerpt\\\":\\\"2-sentence hook under 180 chars\\\",\\\"body\\\":\\\"full article HTML using <p><h2><strong> tags 400-600 words\\\",\\\"category_slug\\\":\\\"one of: celebrities|influencers|gossip|music|film-tv|fashion-beauty|money-moves|viral|diaspora|sport-stars|real-talk|exposed\\\",\\\"meta_title\\\":\\\"SEO title under 60 chars\\\",\\\"meta_desc\\\":\\\"SEO desc under 160 chars\\\"}\",\n  \"user\": \"Source: {{ $json.source_name }}\\nOriginal title: {{ $json.raw_title }}\\nContent: {{ $json.raw_body }}\\nLanguage: {{ $json.language }}\"\n}",
+        "options": { "timeout": 45000 }
+      },
+      "id": "ai-writer",
+      "name": "AI Article Writer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Claude response, validate required fields, carry queue id forward\nconst item = $input.first();\nconst queueId = item.json._sourceId ?? item.json.id;\ntry {\n  const ai = JSON.parse(item.json.text || '{}');\n  if (!ai.title || !ai.body || !ai.category_slug) throw new Error('Missing required fields: title/body/category_slug');\n  return [{ json: {\n    valid:         true,\n    queue_id:      queueId,\n    title:         ai.title,\n    slug:          ai.slug,\n    excerpt:       ai.excerpt || '',\n    body:          ai.body,\n    category_slug: ai.category_slug,\n    meta_title:    ai.meta_title || ai.title.slice(0, 60),\n    meta_desc:     ai.meta_desc  || ai.excerpt?.slice(0, 160) || '',\n  }}];\n} catch (e) {\n  return [{ json: { valid: false, queue_id: queueId, error: e.message } }];\n}"
+      },
+      "id": "parse-article",
+      "name": "Parse Article JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "valid-check",
+              "leftValue":  "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "filter-valid",
+      "name": "Filter Valid Articles",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://camer360com.vercel.app/api/n8n/articles",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key",    "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"title\":         \"{{ $json.title }}\",\n  \"slug\":          \"{{ $json.slug }}\",\n  \"excerpt\":       \"{{ $json.excerpt }}\",\n  \"body\":          \"{{ $json.body }}\",\n  \"category_slug\": \"{{ $json.category_slug }}\",\n  \"meta_title\":    \"{{ $json.meta_title }}\",\n  \"meta_desc\":     \"{{ $json.meta_desc }}\",\n  \"language\":      \"en\"\n}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "create-article",
+      "name": "Create Draft Article",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, 200]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://camer360com.vercel.app/api/n8n/queue",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key",    "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={ \"id\": {{ $('Parse Article JSON').item.json.queue_id }}, \"status\": \"processed\", \"article_id\": {{ $json.id ?? 0 }} }",
+        "options": { "timeout": 5000 }
+      },
+      "id": "mark-processed",
+      "name": "Mark as Processed",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1600, 200]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://camer360com.vercel.app/api/n8n/queue",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key",    "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={ \"id\": {{ $json.queue_id }}, \"status\": \"rejected\", \"reject_reason\": \"{{ $json.error }}\" }",
+        "options": { "timeout": 5000 }
+      },
+      "id": "mark-rejected",
+      "name": "Mark as Rejected",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, 420]
+    }
+  ],
+  "connections": {
+    "Every 30 Minutes":    {"main": [[{"node": "Fetch Queue Items",     "type": "main", "index": 0}]]},
+    "Fetch Queue Items":   {"main": [[{"node": "Split Queue Items",     "type": "main", "index": 0}]]},
+    "Split Queue Items":   {"main": [[{"node": "AI Article Writer",     "type": "main", "index": 0}]]},
+    "AI Article Writer":   {"main": [[{"node": "Parse Article JSON",    "type": "main", "index": 0}]]},
+    "Parse Article JSON":  {"main": [[{"node": "Filter Valid Articles",  "type": "main", "index": 0}]]},
+    "Filter Valid Articles": {
+      "main": [
+        [{"node": "Create Draft Article", "type": "main", "index": 0}],
+        [{"node": "Mark as Rejected",     "type": "main", "index": 0}]
+      ]
+    },
+    "Create Draft Article": {"main": [[{"node": "Mark as Processed", "type": "main", "index": 0}]]}
+  },
+  "settings": { "executionOrder": "v1", "saveManualExecutions": true, "callerPolicy": "workflowsFromSameOwner" }
+}
