@@ -42,13 +42,14 @@ export default function EbonyNavigation() {
           </div>
 
           {/* Main Menu — desktop */}
-          <div className="hidden lg:flex items-center space-x-10">
+          <div className="hidden lg:flex items-center" style={{ gap: '40px' }}>
             {NAV.map(item => {
               const active = pathname === item.href || pathname.startsWith(item.href + '/')
               return (
                 <Link
                   key={item.href}
                   href={item.href}
+                  style={{ whiteSpace: 'nowrap', padding: '0 4px' }}
                   className={`text-xl font-bold tracking-wide transition-colors uppercase ${
                     active ? 'text-[#D4AF37]' : 'text-black hover:text-[#D4AF37]'
                   }`}
