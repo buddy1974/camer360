@@ -8,7 +8,6 @@ import { ArticleCard }      from '@/components/article/ArticleCard'
 import AdUnit               from '@/components/ads/AdUnit'
 import { JsonLd }           from '@/components/seo/JsonLd'
 import CommentsSection      from '@/components/article/CommentSection'
-import SubscribeForm        from '@/components/newsletter/SubscribeForm'
 import ShareButtons          from '@/components/article/ShareButtons'
 import { ArticleImage }     from '@/components/article/ArticleImage'
 import { HitTracker }       from '@/components/article/HitTracker'
@@ -56,167 +55,248 @@ export default async function ArticlePage({ params }: Props) {
       <HitTracker articleId={article.id} />
       <ReadingProgress />
 
-      {/* Centered reading column — global container provides 1380px max-width */}
-      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '32px', paddingBottom: '64px' }}>
-        <div style={{ display: 'flex', gap: '32px', maxWidth: '1060px', width: '100%', alignItems: 'flex-start' }}>
-        <div style={{ maxWidth: '720px', width: '100%', display: 'flex', flexDirection: 'column', gap: '0' }}>
+      <div style={{ background: 'var(--luxury-bg)', minHeight: '100vh' }}>
 
-          {/* Category + Breaking badges */}
-          <div className="flex items-center gap-2 mb-3">
-            <Link
-              href={`/${catSlug}`}
-              className="inline-block bg-[#C8102E] text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded"
-            >
-              {article.category.name}
-            </Link>
-            {article.isBreaking && (
-              <span className="inline-block bg-[#F5A623] text-black text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded">
-                Breaking
-              </span>
-            )}
-            <span className="text-[11px] text-[#6B7280] ml-auto">{depth}</span>
+        {/* ── Breadcrumb bar ── */}
+        <div style={{ borderBottom: '1px solid var(--border-light)', background: 'white' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
+            <nav style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '14px 0', fontSize: '12px', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              <Link href="/" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.3s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--primary-gold)')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#9CA3AF')}>Home</Link>
+              <span style={{ color: 'var(--border-light)' }}>›</span>
+              <Link href={`/${catSlug}`} style={{ color: '#9CA3AF', textDecoration: 'none' }}>{article.category.name}</Link>
+              <span style={{ color: 'var(--border-light)' }}>›</span>
+              <span style={{ color: 'var(--primary-dark)', fontWeight: 500 }} className="line-clamp-1">{article.title}</span>
+            </nav>
           </div>
+        </div>
 
-          {/* Title */}
-          <h1 className="text-2xl md:text-4xl font-black text-[#F5A623] leading-[1.1] tracking-[-0.03em] mb-3">
-            {article.title}
-          </h1>
-          {article.subtitle && (
-            <p className="text-lg text-[#9CA3AF] leading-snug mb-4">{article.subtitle}</p>
-          )}
+        {/* ── Article header — full-width dark panel ── */}
+        <div style={{ background: 'var(--grad-dark)', paddingTop: '64px', paddingBottom: '64px', position: 'relative', overflow: 'hidden' }}>
+          {/* grain texture */}
+          <div style={{ position: 'absolute', inset: 0, opacity: 0.03, backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'200\' height=\'200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }} />
 
-          {/* Meta row */}
-          <div className="flex flex-wrap items-center gap-4 text-xs text-[#6B7280] pb-4 border-b border-[#2A2A2A] mb-5">
-            <span className="font-semibold text-[#9CA3AF]">
-              {article.author?.name || 'News Team'}
-            </span>
-            <span className="flex items-center gap-1">
-              <Calendar size={11} />
-              {formatDate(article.publishedAt!)}
-            </span>
-            <span className="flex items-center gap-1">
-              <Clock size={11} />
-              {minutes} min read
-            </span>
-            {article.hits > 0 && (
-              <span className="flex items-center gap-1 text-[#F5A623] font-semibold">
-                <Eye size={11} />
-                {formatHitCount(article.hits)}
-              </span>
-            )}
-          </div>
+          <div style={{ maxWidth: '820px', margin: '0 auto', padding: '0 40px', position: 'relative' }}>
 
-          {/* Summary box */}
-          {article.excerpt && (
-            <div className="bg-[#161616] border border-[#2A2A2A] border-l-4 border-l-[#C8102E] rounded-lg p-4 mb-6">
-              <p className="text-[10px] font-black uppercase tracking-widest text-[#C8102E] mb-2">Summary</p>
-              <p className="text-sm text-[#9CA3AF] leading-relaxed">{article.excerpt}</p>
+            {/* Category + Breaking + Depth */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '28px', flexWrap: 'wrap' }}>
+              <Link href={`/${catSlug}`} style={{
+                background: 'linear-gradient(45deg, var(--primary-gold), var(--gold-light))',
+                color: 'var(--primary-dark)',
+                padding: '8px 20px',
+                fontSize: '11px',
+                textTransform: 'uppercase',
+                letterSpacing: '2px',
+                fontWeight: 700,
+                borderRadius: '24px',
+                textDecoration: 'none',
+                display: 'inline-block',
+              }}>
+                {article.category.name}
+              </Link>
+              {article.isBreaking && (
+                <span style={{ background: '#DC2626', color: 'white', padding: '6px 16px', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', borderRadius: '4px' }}>
+                  Breaking
+                </span>
+              )}
+              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginLeft: 'auto', textTransform: 'uppercase', letterSpacing: '1px' }}>{depth}</span>
             </div>
-          )}
 
-          {/* Featured image */}
-          {article.featuredImage && (
-            <div className="mb-6">
-              <ArticleImage
-                src={article.featuredImage}
-                alt={article.imageAlt || article.title}
-                caption={article.imageCaption}
-                priority={true}
+            {/* Title */}
+            <h1 style={{
+              fontFamily: 'var(--font-serif)',
+              fontSize: 'clamp(32px, 5vw, 52px)',
+              fontWeight: 700,
+              lineHeight: 1.15,
+              color: 'white',
+              marginBottom: '20px',
+              letterSpacing: '-0.02em',
+            }}>
+              {article.title}
+            </h1>
+
+            {/* Subtitle */}
+            {article.subtitle && (
+              <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.6, marginBottom: '32px', fontWeight: 300 }}>
+                {article.subtitle}
+              </p>
+            )}
+
+            {/* Gold divider */}
+            <div style={{ width: '60px', height: '2px', background: 'linear-gradient(90deg, var(--primary-gold), var(--gold-light))', marginBottom: '28px', borderRadius: '1px' }} />
+
+            {/* Meta row */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '24px', fontSize: '13px', color: 'rgba(255,255,255,0.55)' }}>
+              <span style={{ fontWeight: 600, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                {article.author?.name || 'News Team'}
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Calendar size={12} />
+                {formatDate(article.publishedAt!)}
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Clock size={12} />
+                {minutes} min read
+              </span>
+              {article.hits > 0 && (
+                <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--primary-gold)', fontWeight: 600 }}>
+                  <Eye size={12} />
+                  {formatHitCount(article.hits)}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ── Body layout: reading column + sidebar ── */}
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px', display: 'flex', gap: '60px', alignItems: 'flex-start', paddingTop: '60px', paddingBottom: '80px' }}>
+
+          {/* Main column */}
+          <div style={{ flex: '1 1 0', minWidth: 0, maxWidth: '720px' }}>
+
+            {/* Summary */}
+            {article.excerpt && (
+              <div style={{ background: 'white', border: '1px solid var(--border-light)', borderLeft: '4px solid var(--primary-gold)', borderRadius: '0 12px 12px 0', padding: '24px 28px', marginBottom: '36px', boxShadow: 'var(--shadow-card)' }}>
+                <p style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: 'var(--primary-gold)', marginBottom: '10px' }}>Summary</p>
+                <p style={{ fontSize: '15px', color: '#4B5563', lineHeight: 1.75 }}>{article.excerpt}</p>
+              </div>
+            )}
+
+            {/* Featured image */}
+            {article.featuredImage && (
+              <div style={{ marginBottom: '36px', borderRadius: '16px', overflow: 'hidden', boxShadow: 'var(--shadow-hover)' }}>
+                <ArticleImage
+                  src={article.featuredImage}
+                  alt={article.imageAlt || article.title}
+                  caption={article.imageCaption}
+                  priority={true}
+                />
+              </div>
+            )}
+
+            {/* Article body */}
+            <div className="prose" id="article-content" style={{ background: 'white', padding: '40px', borderRadius: '16px', boxShadow: 'var(--shadow-card)', border: '1px solid var(--border-light)' }}>
+              {article.body ? (() => {
+                const parts = article.body.split('</p>')
+                if (parts.length <= 3) {
+                  return <div dangerouslySetInnerHTML={{ __html: article.body }} />
+                }
+                const first  = parts.slice(0, 3).join('</p>') + '</p>'
+                const middle = parts.slice(3, 6).join('</p>') + (parts.length > 6 ? '</p>' : '')
+                const last   = parts.length > 6 ? parts.slice(6).join('</p>') : ''
+                return (
+                  <>
+                    <div dangerouslySetInnerHTML={{ __html: first }} />
+                    <div style={{ margin: '32px -40px', padding: '0 40px' }}>
+                      <AdUnit slot="5471720771" format="auto" />
+                    </div>
+                    <div dangerouslySetInnerHTML={{ __html: middle }} />
+                    {last && (
+                      <>
+                        <div style={{ margin: '32px -40px', padding: '0 40px' }}>
+                          <AdUnit slot="5520370976" format="rectangle" />
+                        </div>
+                        <div dangerouslySetInnerHTML={{ __html: last }} />
+                      </>
+                    )}
+                  </>
+                )
+              })() : (
+                <p style={{ color: '#9CA3AF' }}>Content unavailable.</p>
+              )}
+            </div>
+
+            {/* Share bar */}
+            <div style={{ background: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '0 24px', margin: '32px 0', boxShadow: 'var(--shadow-card)' }}>
+              <ShareButtons
+                title={article.title}
+                categorySlug={article.category.slug}
+                slug={article.slug}
               />
             </div>
-          )}
 
-          {/* Article body — split after 3rd </p> for in-article ad */}
-          <div className="prose" id="article-content">
-            {article.body ? (() => {
-              const parts = article.body.split('</p>')
-              if (parts.length <= 3) {
-                return <div dangerouslySetInnerHTML={{ __html: article.body }} />
-              }
-              const first  = parts.slice(0, 3).join('</p>') + '</p>'
-              const middle = parts.slice(3, 6).join('</p>') + (parts.length > 6 ? '</p>' : '')
-              const last   = parts.length > 6 ? parts.slice(6).join('</p>') : ''
-              return (
-                <>
-                  <div dangerouslySetInnerHTML={{ __html: first }} />
-                  <div className="my-6 min-h-[250px]">
-                    <AdUnit slot="5471720771" format="auto" />
-                  </div>
-                  <div dangerouslySetInnerHTML={{ __html: middle }} />
-                  {last && (
-                    <>
-                      <div className="my-6 min-h-[250px]">
-                        <AdUnit slot="5520370976" format="rectangle" />
-                      </div>
-                      <div dangerouslySetInnerHTML={{ __html: last }} />
-                    </>
+            {/* Author card */}
+            {article.author && (
+              <div style={{ background: 'white', border: '1px solid var(--border-light)', borderRadius: '16px', padding: '32px', marginBottom: '40px', boxShadow: 'var(--shadow-card)', position: 'relative', overflow: 'hidden' }}>
+                {/* top gold line */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, var(--primary-gold), var(--gold-light), var(--primary-gold))' }} />
+                <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: '#9CA3AF', marginBottom: '20px' }}>About the Author</p>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  {article.author.avatarUrl ? (
+                    <img src={article.author.avatarUrl} alt={article.author.name} width={48} height={48} style={{ borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '2px solid var(--primary-gold)' }} />
+                  ) : (
+                    <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'linear-gradient(45deg, var(--primary-gold), var(--gold-light))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-dark)', fontWeight: 900, fontSize: '18px', flexShrink: 0 }}>
+                      {article.author.name.charAt(0)}
+                    </div>
                   )}
-                </>
-              )
-            })() : (
-              <p className="text-[#666]">Content unavailable.</p>
-            )}
-          </div>
-
-          {/* Share bar */}
-          <div style={{ borderTop: '1px solid #2A2A2A', borderBottom: '1px solid #2A2A2A', margin: '32px 0' }}>
-            <ShareButtons
-              title={article.title}
-              categorySlug={article.category.slug}
-              slug={article.slug}
-            />
-          </div>
-
-          {/* Author card */}
-          {article.author && (
-            <div className="bg-[#161616] border border-[#2A2A2A] rounded-xl p-5" style={{ marginBottom: '40px' }}>
-              <p className="text-[10px] font-black uppercase tracking-widest text-[#6B7280] mb-3">About the Author</p>
-              <div className="flex items-start gap-3">
-                {article.author.avatarUrl ? (
-                  <img src={article.author.avatarUrl} alt={article.author.name} width={40} height={40} style={{ borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-[#C8102E] flex items-center justify-center text-white font-black text-sm flex-shrink-0">
-                    {article.author.name.charAt(0)}
+                  <div>
+                    <p style={{ fontFamily: 'var(--font-serif)', fontWeight: 600, color: 'var(--primary-dark)', fontSize: '16px' }}>{article.author.name}</p>
+                    {article.author.bio && (
+                      <p style={{ fontSize: '14px', color: '#6B7280', marginTop: '6px', lineHeight: 1.65 }}>{article.author.bio}</p>
+                    )}
                   </div>
-                )}
-                <div>
-                  <p className="font-semibold text-white text-sm">{article.author.name}</p>
-                  {article.author.bio && (
-                    <p className="text-xs text-[#6B7280] mt-1 leading-relaxed">{article.author.bio}</p>
-                  )}
                 </div>
               </div>
+            )}
+
+            {/* Related articles */}
+            {related.length > 0 && (
+              <section style={{ marginBottom: '40px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '28px' }}>
+                  <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '22px', fontWeight: 700, color: 'var(--primary-dark)' }}>Related Stories</h3>
+                  <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, var(--border-light), transparent)' }} />
+                  <Link href={`/${catSlug}`} style={{ fontSize: '12px', color: 'var(--primary-gold)', textDecoration: 'none', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', whiteSpace: 'nowrap' }}>
+                    See All →
+                  </Link>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
+                  {related.map(a => (
+                    <ArticleCard key={a.id} article={a} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Comments */}
+            <div style={{ background: 'white', border: '1px solid var(--border-light)', borderRadius: '16px', padding: '32px', boxShadow: 'var(--shadow-card)' }}>
+              <CommentsSection articleId={article.id} />
             </div>
-          )}
 
-          {/* Related articles */}
-          {related.length > 0 && (
-            <section style={{ marginBottom: '40px' }}>
-              <h3 className="text-sm font-black uppercase tracking-widest text-white border-l-2 border-[#C8102E] pl-3 mb-4">
-                Related Articles
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {related.map(a => (
-                  <ArticleCard key={a.id} article={a} />
-                ))}
+          </div>
+
+          {/* ── Sidebar ── */}
+          <aside className="hidden lg:flex" style={{ width: '300px', flexShrink: 0, flexDirection: 'column' }}>
+            <div style={{ position: 'sticky', top: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+              {/* Ad */}
+              <div style={{ background: 'white', border: '1px solid var(--border-light)', borderRadius: '16px', padding: '16px', boxShadow: 'var(--shadow-card)', overflow: 'hidden' }}>
+                <AdUnit slot="5520370976" format="rectangle" />
               </div>
-            </section>
-          )}
 
-          {/* Comments */}
-          <div style={{ marginTop: '40px', paddingTop: '20px', borderTop: '1px solid #222' }}>
-            <CommentsSection articleId={article.id} />
-          </div>
+              {/* Category card */}
+              <div style={{ background: 'var(--grad-dark)', borderRadius: '16px', padding: '28px', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, var(--primary-gold), var(--gold-light))' }} />
+                <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: 'rgba(255,255,255,0.4)', marginBottom: '8px' }}>More from</p>
+                <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '22px', fontWeight: 700, color: 'white', marginBottom: '16px' }}>{article.category.name}</h4>
+                <Link href={`/${catSlug}`} style={{
+                  display: 'inline-block',
+                  background: 'linear-gradient(45deg, var(--primary-gold), var(--gold-light))',
+                  color: 'var(--primary-dark)',
+                  padding: '10px 20px',
+                  borderRadius: '24px',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                  textDecoration: 'none',
+                }}>
+                  Browse All →
+                </Link>
+              </div>
 
-        </div>
-
-        {/* Sidebar — desktop only */}
-        <div className="hidden lg:block w-[300px] shrink-0">
-          <div className="sticky top-4 flex flex-col gap-4">
-            <AdUnit slot="5520370976" format="rectangle" />
-            <SubscribeForm source="article" />
-          </div>
-        </div>
+            </div>
+          </aside>
 
         </div>
       </div>
