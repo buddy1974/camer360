@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     title: string; slug: string; body: string; excerpt?: string
     categoryId: number; featuredImage?: string; status: string
     metaTitle?: string; metaDesc?: string; isBreaking?: boolean; isFeatured?: boolean
-    authorId?: number | null
+    authorId?: number | null; country?: string | null
   }
 
   // Block low-quality or non-embeddable image sources
@@ -102,6 +102,7 @@ export async function POST(req: NextRequest) {
     metaTitle:     body.metaTitle || null,
     metaDesc:      body.metaDesc || null,
     authorId:      body.authorId || null,
+    country:       body.country || null,
     publishedAt:   body.status === 'published' ? now : null,
     createdAt:     now,
     updatedAt:     now,

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Clock, Eye } from 'lucide-react'
 import type { ArticleWithRelations } from '@/lib/types'
 import { formatRelative, readingTime, formatHitCount, truncate } from '@/lib/utils'
+import { CountryTag } from '@/components/article/CountryTag'
 
 interface Props {
   article: ArticleWithRelations
@@ -107,6 +108,7 @@ export function ArticleCard({ article, variant = 'default', priority = false, in
               }}>
                 {article.category.name.toUpperCase()}
               </span>
+              <CountryTag country={article.country} />
             </div>
 
             {/* TITLE */}
@@ -299,11 +301,12 @@ export function ArticleCard({ article, variant = 'default', priority = false, in
           <div style={{ position: 'absolute', top: '10px', left: '10px' }}>
             <span className="cat-pill">{article.category.name}</span>
           </div>
-          {article.isBreaking && (
-            <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
+          <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '4px', alignItems: 'center' }}>
+            {article.isBreaking && (
               <span className="cat-pill" style={{ background: '#F5A623', color: '#000' }}>⚡</span>
-            </div>
-          )}
+            )}
+            <CountryTag country={article.country} />
+          </div>
         </div>
 
         {/* CONTENT */}

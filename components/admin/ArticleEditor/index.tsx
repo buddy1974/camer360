@@ -2,6 +2,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Category, Article, ArticleStatus } from '@/lib/types'
+import { COUNTRIES } from '@/components/article/CountryTag'
 
 interface Props {
   categories: Category[]
@@ -45,6 +46,7 @@ export function ArticleEditor({ categories, article }: Props) {
   const [metaD,     setMetaD]     = useState(article?.metaDesc || '')
   const [authorId,  setAuthorId]  = useState<number|null>(article?.authorId ?? null)
   const [authorName, setAuthorName] = useState<string>('')
+  const [country,   setCountry]   = useState<string>(article?.country ?? '')
   const [saving,    setSaving]    = useState(false)
   const [aiLoading, setAiLoading] = useState(false)
   const [msg,       setMsg]       = useState('')
@@ -123,6 +125,7 @@ if (!body.trim())  { setMsg('Body is required'); return }
       isBreaking: breaking, isFeatured: featured,
       metaTitle: metaT || null, metaDesc: metaD || null,
       authorId: authorId || null,
+      country: country || null,
     }
     try {
       const res  = await fetch(
@@ -379,6 +382,39 @@ if (!body.trim())  { setMsg('Body is required'); return }
                 style={{ width: '100%', borderRadius: '6px', marginTop: '10px', aspectRatio: '16/9', objectFit: 'cover' }}
                 onError={e => { e.currentTarget.style.display = 'none' }}
               />
+            )}
+          </div>
+
+          {/* Country */}
+          <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', borderRadius: '12px', padding: '16px' }}>
+            <label style={labelStyle}>Country / Region</label>
+            <select
+              value={country}
+              onChange={e => setCountry(e.target.value)}
+              style={{ ...inputStyle, cursor: 'pointer' }}
+            >
+              <option value="">— None —</option>
+              {Object.entries(COUNTRIES).map(([code, meta]) => (
+                <option key={code} value={code}>{meta.name}</option>
+              ))}
+            </select>
+            {country && (
+              <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span style={{
+                  display: 'inline-block',
+                  background: COUNTRIES[country]?.bg,
+                  color: COUNTRIES[country]?.color,
+                  padding: '3px 10px',
+                  borderRadius: '3px',
+                  fontSize: '10px',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                }}>
+                  {COUNTRIES[country]?.name}
+                </span>
+                <span style={{ fontSize: '0.65rem', color: '#555' }}>tag preview</span>
+              </div>
             )}
           </div>
 
