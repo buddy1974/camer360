@@ -4,9 +4,7 @@
   "nodes": [
     {
       "parameters": {
-        "rule": {
-          "interval": [{"field": "hours", "hoursInterval": 2}]
-        }
+        "rule": { "interval": [{"field": "hours", "hoursInterval": 2}] }
       },
       "id": "schedule-trigger",
       "name": "Every 2 Hours",
@@ -15,10 +13,7 @@
       "position": [200, 400]
     },
     {
-      "parameters": {
-        "url": "https://www.lindaikejisblog.com/feed",
-        "options": {}
-      },
+      "parameters": { "url": "https://www.lindaikejisblog.com/feed", "options": {} },
       "id": "linda-ikeji",
       "name": "Linda Ikeji RSS",
       "type": "n8n-nodes-base.rssFeedRead",
@@ -26,48 +21,28 @@
       "position": [400, 200]
     },
     {
-      "parameters": {
-        "url": "https://www.pulse.ng/rss.xml",
-        "options": {}
-      },
-      "id": "pulse-ng",
-      "name": "Pulse Nigeria RSS",
-      "type": "n8n-nodes-base.rssFeedRead",
-      "typeVersion": 1,
-      "position": [400, 300]
-    },
-    {
-      "parameters": {
-        "url": "https://www.bellanaija.com/feed/",
-        "options": {}
-      },
+      "parameters": { "url": "https://www.bellanaija.com/feed/", "options": {} },
       "id": "bellanaija",
       "name": "BellaNaija RSS",
       "type": "n8n-nodes-base.rssFeedRead",
       "typeVersion": 1,
-      "position": [400, 400]
+      "position": [400, 340]
     },
     {
-      "parameters": {
-        "url": "https://www.pulse.com.gh/rss-articles.xml",
-        "options": {}
-      },
+      "parameters": { "url": "https://www.pulse.com.gh/rss-articles.xml", "options": {} },
       "id": "pulse-gh",
       "name": "Pulse Ghana RSS",
       "type": "n8n-nodes-base.rssFeedRead",
       "typeVersion": 1,
-      "position": [400, 500]
+      "position": [400, 480]
     },
     {
-      "parameters": {
-        "url": "https://thenet.ng/feed/",
-        "options": {}
-      },
+      "parameters": { "url": "https://thenet.ng/feed/", "options": {} },
       "id": "thenet",
       "name": "The Net NG RSS",
       "type": "n8n-nodes-base.rssFeedRead",
       "typeVersion": 1,
-      "position": [400, 600]
+      "position": [400, 620]
     },
     {
       "parameters": { "url": "https://notjustok.com/feed/", "options": {} },
@@ -75,27 +50,25 @@
       "name": "NotJustOk RSS",
       "type": "n8n-nodes-base.rssFeedRead",
       "typeVersion": 1,
-      "position": [400, 700]
+      "position": [400, 760]
     },
     {
-      "parameters": {
-        "mode": "append"
-      },
+      "parameters": { "mode": "append" },
       "id": "merge-rss",
       "name": "Merge RSS Sources",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
-      "position": [600, 400]
+      "position": [640, 480]
     },
     {
       "parameters": {
-        "jsCode": "const seen = new Set();\nconst unique = [];\n\nfor (const item of $input.all()) {\n  const url = item.json.link || item.json.url || '';\n  if (!url) continue;\n  if (seen.has(url)) continue;\n  seen.add(url);\n  unique.push({\n    json: {\n      title:       (item.json.title || '').trim(),\n      url:         url,\n      description: item.json.contentSnippet || item.json.summary || item.json.description || '',\n      pubDate:     item.json.pubDate || item.json.isoDate || '',\n      source:      item.json.meta?.title || item.json.feedTitle || 'RSS Feed',\n    }\n  });\n}\n\nreturn unique;"
+        "jsCode": "const seen = new Set();\nconst unique = [];\nfor (const item of $input.all()) {\n  const url = item.json.link || item.json.url || '';\n  if (!url || seen.has(url)) continue;\n  seen.add(url);\n  unique.push({ json: {\n    title:       (item.json.title || '').trim(),\n    url:         url,\n    description: item.json.contentSnippet || item.json.summary || item.json.description || '',\n    pubDate:     item.json.pubDate || item.json.isoDate || '',\n    source:      item.json.meta?.title || item.json.feedTitle || 'RSS Feed',\n  }});\n}\nreturn unique;"
       },
       "id": "dedupe-items",
       "name": "Dedupe RSS Items",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [800, 400]
+      "position": [860, 480]
     },
     {
       "parameters": {
@@ -105,8 +78,8 @@
         "specifyHeaders": "keypair",
         "headerParameters": {
           "parameters": [
-            { "name": "x-api-key",     "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" },
-            { "name": "Content-Type",  "value": "application/json" }
+            { "name": "x-api-key",    "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" },
+            { "name": "Content-Type", "value": "application/json" }
           ]
         },
         "sendBody": true,
@@ -118,17 +91,17 @@
       "name": "AI Classify Content",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1000, 400]
+      "position": [1080, 480]
     },
     {
       "parameters": {
-        "jsCode": "// Parse Claude response and attach to original item\nconst item = $input.first();\ntry {\n  const ai = JSON.parse(item.json.text || '{}');\n  return [{ json: { ...item.json, ai_category: ai.category, ai_score: ai.score, ai_publish: ai.publish } }];\n} catch {\n  return [{ json: { ...item.json, ai_score: 0, ai_publish: false } }];\n}"
+        "jsCode": "const item = $input.first();\ntry {\n  const ai = JSON.parse(item.json.text || '{}');\n  return [{ json: { ...item.json, ai_category: ai.category, ai_score: ai.score ?? 0, ai_publish: ai.publish ?? false } }];\n} catch {\n  return [{ json: { ...item.json, ai_score: 0, ai_publish: false } }];\n}"
       },
       "id": "parse-classify",
       "name": "Parse Classification",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1200, 400]
+      "position": [1300, 480]
     },
     {
       "parameters": {
@@ -155,7 +128,7 @@
       "name": "Filter High Quality (≥6)",
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2,
-      "position": [1400, 400]
+      "position": [1520, 480]
     },
     {
       "parameters": {
@@ -178,31 +151,29 @@
       "name": "Store in Queue",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1600, 400]
+      "position": [1740, 480]
     }
   ],
   "connections": {
     "Every 2 Hours": {
       "main": [[
-        {"node": "Linda Ikeji RSS",   "type": "main", "index": 0},
-        {"node": "Pulse Nigeria RSS", "type": "main", "index": 0},
-        {"node": "BellaNaija RSS",    "type": "main", "index": 0},
-        {"node": "Pulse Ghana RSS",   "type": "main", "index": 0},
-        {"node": "The Net NG RSS",    "type": "main", "index": 0},
-        {"node": "NotJustOk RSS",    "type": "main", "index": 0}
+        {"node": "Linda Ikeji RSS",  "type": "main", "index": 0},
+        {"node": "BellaNaija RSS",   "type": "main", "index": 0},
+        {"node": "Pulse Ghana RSS",  "type": "main", "index": 0},
+        {"node": "The Net NG RSS",   "type": "main", "index": 0},
+        {"node": "NotJustOk RSS",   "type": "main", "index": 0}
       ]]
     },
-    "Linda Ikeji RSS":   {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 0}]]},
-    "Pulse Nigeria RSS": {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 1}]]},
-    "BellaNaija RSS":    {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 2}]]},
-    "Pulse Ghana RSS":   {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 3}]]},
-    "The Net NG RSS":    {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 4}]]},
-    "NotJustOk RSS":     {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 5}]]},
-    "Merge RSS Sources":     {"main": [[{"node": "Dedupe RSS Items",         "type": "main", "index": 0}]]},
-    "Dedupe RSS Items":      {"main": [[{"node": "AI Classify Content",      "type": "main", "index": 0}]]},
-    "AI Classify Content":   {"main": [[{"node": "Parse Classification",     "type": "main", "index": 0}]]},
-    "Parse Classification":  {"main": [[{"node": "Filter High Quality (≥6)", "type": "main", "index": 0}]]},
-    "Filter High Quality (≥6)": {"main": [[{"node": "Store in Queue",        "type": "main", "index": 0}]]}
+    "Linda Ikeji RSS":  {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 0}]]},
+    "BellaNaija RSS":   {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 1}]]},
+    "Pulse Ghana RSS":  {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 2}]]},
+    "The Net NG RSS":   {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 3}]]},
+    "NotJustOk RSS":    {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 4}]]},
+    "Merge RSS Sources":    {"main": [[{"node": "Dedupe RSS Items",         "type": "main", "index": 0}]]},
+    "Dedupe RSS Items":     {"main": [[{"node": "AI Classify Content",      "type": "main", "index": 0}]]},
+    "AI Classify Content":  {"main": [[{"node": "Parse Classification",     "type": "main", "index": 0}]]},
+    "Parse Classification": {"main": [[{"node": "Filter High Quality (≥6)", "type": "main", "index": 0}]]},
+    "Filter High Quality (≥6)": {"main": [[{"node": "Store in Queue",       "type": "main", "index": 0}]]}
   },
   "settings": { "executionOrder": "v1", "saveManualExecutions": true, "callerPolicy": "workflowsFromSameOwner" }
 }
