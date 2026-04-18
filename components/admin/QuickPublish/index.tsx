@@ -20,9 +20,9 @@ interface Props {
 }
 
 const MAIN_SLUGS = [
-  'politics', 'society', 'sportsnews', 'southern-cameroons',
-  'health', 'business', 'lifestyle', 'editorial',
-  'headlines', 'inside-cpdm',
+  'celebrities', 'music', 'film-tv', 'fashion-beauty',
+  'gossip', 'viral', 'diaspora', 'money-moves',
+  'sport-stars', 'influencers', 'real-talk', 'exposed',
 ]
 
 const inputStyle: React.CSSProperties = {
@@ -38,6 +38,7 @@ const labelStyle: React.CSSProperties = {
 export function QuickPublish({ categories }: Props) {
   const router = useRouter()
   const filteredCats = categories.filter(c => MAIN_SLUGS.includes(c.slug))
+  const displayCats  = filteredCats.length > 0 ? filteredCats : categories
 
   const [rawText,    setRawText]    = useState('')
   const [imageUrl,   setImageUrl]   = useState('')
@@ -77,8 +78,8 @@ export function QuickPublish({ categories }: Props) {
       setMetaTitle(data.meta_title || '')
       setMetaDesc(data.meta_desc || '')
 
-      const match = filteredCats.find(c => c.slug === data.category_slug)
-      setCatId(match?.id ?? filteredCats[0]?.id ?? 0)
+      const match = displayCats.find(c => c.slug === data.category_slug)
+      setCatId(match?.id ?? displayCats[0]?.id ?? 0)
       setMsg('✓ AI processed')
     } catch {
       setMsg('✗ Processing failed')
@@ -213,7 +214,7 @@ export function QuickPublish({ categories }: Props) {
                     onChange={e => setCatId(parseInt(e.target.value))}
                     style={{ ...inputStyle, cursor: 'pointer' }}
                   >
-                    {filteredCats.map(c => (
+                    {displayCats.map(c => (
                       <option key={c.id} value={c.id}>{c.name}</option>
                     ))}
                   </select>

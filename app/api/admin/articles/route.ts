@@ -75,11 +75,6 @@ export async function POST(req: NextRequest) {
     authorId?: number | null
   }
 
-  const validCategoryIds = [1,2,3,4,5,6,7,8];
-  if (!validCategoryIds.includes(Number(body.categoryId))) {
-    body.categoryId = 7;
-  }
-
   // Block low-quality or non-embeddable image sources
   const BLOCKED_IMAGE_HOSTS = [
     'fbcdn.net',

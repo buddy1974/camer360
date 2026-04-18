@@ -32,8 +32,18 @@ export default function CategoriesPage() {
 
   const load = useCallback(async () => {
     setLoading(true)
-    const res = await fetch('/api/admin/categories')
-    if (res.ok) setRows(await res.json())
+    try {
+      const controller = new AbortController()
+      const timer = setTimeout(() => controller.abort(), 10000)
+      const res = await fetch('/api/admin/categories', { signal: controller.signal })
+      clearTimeout(timer)
+      if (res.ok) setRows(await res.json())
+      else if (res.status === 401) setMsg('Session expired — please log in again.')
+      else setMsg(`Failed to load categories (${res.status})`)
+    } catch (e: unknown) {
+      const isAbort = e instanceof Error && e.name === 'AbortError'
+      setMsg(isAbort ? 'Request timed out — check database connection.' : 'Network error loading categories.')
+    }
     setLoading(false)
   }, [])
 
