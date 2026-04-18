@@ -35,7 +35,12 @@
       "Bash(node *)",
       "Bash(npx tsx *)",
       "Bash(pkill -f \"next dev\")",
-      "Bash(xargs sed *)"
+      "Bash(xargs sed *)",
+      "Bash(vercel --version)",
+      "Bash(vercel whoami *)",
+      "Bash(vercel --prod)",
+      "Bash(vercel --prod --yes)",
+      "Bash(vercel env *)"
     ]
   }
 }

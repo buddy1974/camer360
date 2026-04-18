@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Playfair_Display } from 'next/font/google'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/react'
 import { buildSiteMetadata } from '@/lib/seo/metadata'
@@ -8,8 +8,9 @@ import ServiceWorkerRegistration from '@/components/pwa/ServiceWorkerRegistratio
 import AdSenseLoader from '@/components/ads/AdSenseLoader'
 import './globals.css'
 
-const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
-const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
+const geistSans   = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
+const geistMono   = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
+const playfair    = Playfair_Display({ variable: '--font-playfair', subsets: ['latin'], display: 'swap' })
 
 export const metadata: Metadata = {
   ...buildSiteMetadata(),
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <script
           type="application/ld+json"
@@ -63,7 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           });
         `}} />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}>
         <AdSenseLoader />
         {children}
         <ServiceWorkerRegistration />
