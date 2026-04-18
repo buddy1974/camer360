@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono, Playfair_Display } from 'next/font/google'
+import { Geist, Geist_Mono, Playfair_Display, Inter } from 'next/font/google'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/react'
 import { buildSiteMetadata } from '@/lib/seo/metadata'
@@ -11,6 +11,7 @@ import './globals.css'
 const geistSans   = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 const geistMono   = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
 const playfair    = Playfair_Display({ variable: '--font-playfair', subsets: ['latin'], display: 'swap' })
+const inter       = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' })
 
 export const metadata: Metadata = {
   ...buildSiteMetadata(),
@@ -53,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Camer360" />
-        <meta name="theme-color" content="#cc0000" />
+        <meta name="theme-color" content="#0A0A0A" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         {/* Capture beforeinstallprompt before React hydrates */}
@@ -64,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           });
         `}} />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${inter.variable} antialiased`}>
         <AdSenseLoader />
         {children}
         <ServiceWorkerRegistration />
