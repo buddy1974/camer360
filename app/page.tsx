@@ -863,49 +863,8 @@ export default async function HomePage() {
 
       <div className="ultra-premium-page">
         <JsonLd data={buildOrganizationSchema()} />
-        
-        {/* Ultra-Premium Header */}
-        <div className="premium-header">
-          {/* Tier 1 — secondary categories + social */}
-          <div className="trending-bar">
-            <div className="trending-content">
-              <div className="trending-items">
-                <span className="trending-label">Also</span>
-                <Link href="/influencers" className="trending-link">Influencers</Link>
-                <Link href="/real-talk"   className="trending-link">Real Talk</Link>
-                <Link href="/exposed"     className="trending-link">Exposed</Link>
-                <Link href="/money-moves" className="trending-link">Entrepreneurs</Link>
-              </div>
-              <div className="social-links">
-                <a href="https://facebook.com/camer360"  target="_blank" rel="noopener noreferrer" className="social-link">f</a>
-                <a href="https://twitter.com/camer360"   target="_blank" rel="noopener noreferrer" className="social-link">t</a>
-                <a href="https://instagram.com/camer360" target="_blank" rel="noopener noreferrer" className="social-link">i</a>
-              </div>
-            </div>
-          </div>
-
-          {/* Tier 2 + 3 — left nav | logo | right nav */}
-          <div className="main-header">
-            <nav className="nav-left">
-              <Link href="/celebrities" className="nav-link">Celebrities</Link>
-              <Link href="/music"       className="nav-link">Music</Link>
-              <Link href="/film-tv"     className="nav-link">Film &amp; TV</Link>
-              <Link href="/gossip"      className="nav-link">Gossip</Link>
-            </nav>
-
-            <Link href="/" className="logo">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt="Camer360" style={{ height: '48px', width: 'auto', display: 'block' }} />
-            </Link>
-
-            <nav className="nav-right">
-              <Link href="/fashion-beauty" className="nav-link">Style</Link>
-              <Link href="/viral"          className="nav-link">Viral</Link>
-              <Link href="/diaspora"       className="nav-link">Diaspora</Link>
-              <Link href="/sport-stars"    className="nav-link">Sport Stars</Link>
-            </nav>
-          </div>
-        </div>
+        <BreakingBanner articles={breaking} />
+        <Header />
 
         {/* Ultra-Sophisticated Hero */}
         <div className="hero-section">

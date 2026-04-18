@@ -22,7 +22,15 @@ export const CATEGORIES = [
   { slug: 'exposed',        name: 'Exposed',          color: '#8B0000' },
 ] as const
 
-export const NAV_CATEGORIES = CATEGORIES.slice(0, 8)
+export const NAV_CATEGORIES = [
+  { slug: 'gossip',         name: 'Entertainment' },
+  { slug: 'music',          name: 'Music'         },
+  { slug: 'celebrities',    name: 'Celebrities'   },
+  { slug: 'fashion-beauty', name: 'Style'         },
+  { slug: 'real-talk',      name: 'Culture'       },
+  { slug: 'sport-stars',    name: 'Sport Stars'   },
+  { slug: 'viral',          name: 'Viral'         },
+] as const
 
 export const ARTICLES_PER_PAGE   = 20
 export const BREAKING_NEWS_COUNT = 5
