@@ -41,7 +41,8 @@
       "Bash(vercel --prod)",
       "Bash(vercel --prod --yes)",
       "Bash(vercel env *)",
-      "Bash(xargs cat *)"
+      "Bash(xargs cat *)",
+      "Bash(vercel ls *)"
     ]
   }
 }
