@@ -879,7 +879,6 @@ export default async function HomePage() {
                 src={featured[0].featuredImage}
                 alt={featured[0]?.title ?? ''}
                 style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
               />
             )}
             {/* Dark overlay — dims the image so text pops */}
