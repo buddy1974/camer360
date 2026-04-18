@@ -1,136 +1,179 @@
 import Link from 'next/link'
-import Image from 'next/image'
-import { SITE_NAME, SITE_FB } from '@/lib/constants'
+import { SITE_NAME, SITE_FB, SITE_TWITTER } from '@/lib/constants'
+
+const CATEGORIES = [
+  { href: '/celebrities',    label: 'Celebrities' },
+  { href: '/music',          label: 'Music' },
+  { href: '/film-tv',        label: 'Film & TV' },
+  { href: '/fashion-beauty', label: 'Fashion & Beauty' },
+  { href: '/gossip',         label: 'Hot Gossip' },
+  { href: '/viral',          label: 'Viral' },
+]
+
+const MORE_CATEGORIES = [
+  { href: '/diaspora',    label: 'Diaspora' },
+  { href: '/money-moves', label: 'Money Moves' },
+  { href: '/sport-stars', label: 'Sport Stars' },
+  { href: '/influencers', label: 'Influencers' },
+  { href: '/real-talk',   label: 'Real Talk' },
+  { href: '/exposed',     label: 'Exposed' },
+]
+
+const COMPANY = [
+  { href: '/about',     label: 'About Us' },
+  { href: '/contact',   label: 'Contact' },
+  { href: '/advertise', label: 'Advertise' },
+  { href: '/privacy',   label: 'Privacy Policy' },
+  { href: '/rss',       label: 'RSS Feed' },
+  { href: '/search',    label: 'Search' },
+]
+
+const SOCIALS = [
+  { href: SITE_FB,                                              label: 'Facebook' },
+  { href: `https://twitter.com/${(SITE_TWITTER ?? '').replace('@', '')}`, label: 'X / Twitter' },
+  { href: 'https://instagram.com/camer360',                    label: 'Instagram' },
+  { href: 'https://tiktok.com/@camer360',                      label: 'TikTok' },
+]
+
+const EXPLORE_TAGS = [
+  { label: 'Afrobeats',       href: '/tag/afrobeats' },
+  { label: 'Nollywood',       href: '/tag/nollywood' },
+  { label: 'Lagos',           href: '/tag/lagos' },
+  { label: 'Douala',          href: '/tag/douala' },
+  { label: 'African Fashion', href: '/tag/african-fashion' },
+  { label: 'Grammy',          href: '/tag/grammy' },
+  { label: 'Diaspora Life',   href: '/tag/diaspora-life' },
+  { label: 'Netflix Africa',  href: '/tag/netflix-africa' },
+  { label: 'AMVCA',           href: '/tag/amvca' },
+  { label: 'Street Style',    href: '/tag/street-style' },
+  { label: 'African Music',   href: '/tag/african-music' },
+  { label: 'Celebrity News',  href: '/tag/celebrity-news' },
+]
 
 export function Footer() {
   const year = new Date().getFullYear()
 
-  const sections = [
-    {
-      title: 'Topics',
-      links: [
-        { href: '/politics',           label: 'Politics' },
-        { href: '/society',            label: 'Society' },
-        { href: '/sportsnews',         label: 'Sports' },
-        { href: '/southern-cameroons', label: 'S. Cameroons' },
-        { href: '/health',             label: 'Health' },
-        { href: '/business',           label: 'Business' },
-        { href: '/editorial',          label: 'Editorial' },
-      ],
-    },
-    {
-      title: 'Special Coverage',
-      links: [
-        { href: '/anglophone-crisis',  label: 'Anglophone Crisis' },
-        { href: '/tag/paul-biya',      label: 'Biya Era' },
-        { href: '/headlines',          label: 'Breaking News' },
-        { href: '/southern-cameroons', label: 'Ambazonia' },
-        { href: '/society',            label: 'Local News' },
-      ],
-    },
-    {
-      title: 'Company',
-      links: [
-        { href: '/about',      label: 'About Us' },
-        { href: '/contact',    label: 'Contact' },
-        { href: '/advertise',  label: 'Advertise' },
-        { href: '/privacy',    label: 'Privacy Policy' },
-        { href: '/rss',        label: 'RSS Feed' },
-        { href: '/search',     label: 'Search' },
-      ],
-    },
-  ]
-
   return (
-    <footer style={{ borderTop: '1px solid #1A1A1A', marginTop: '60px', background: '#080808' }}>
+    <footer style={{ background: '#060606', borderTop: '1px solid rgba(212,175,55,0.08)', marginTop: '80px' }}>
 
-      {/* Main footer grid */}
-      <div style={{ maxWidth: '1380px', margin: '0 auto', padding: '48px 24px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '40px' }}>
+      {/* Gold accent line */}
+      <div style={{ height: '2px', background: 'linear-gradient(90deg, transparent 0%, #D4AF37 20%, #F7DC6F 50%, #D4AF37 80%, transparent 100%)' }} />
+
+      {/* Main grid */}
+      <div style={{ maxWidth: '1380px', margin: '0 auto', padding: '56px 24px 48px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '48px' }}>
 
           {/* Brand column */}
           <div>
-            <Link href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
-              <Image src="/logo.png" alt="Camer360" width={160} height={40} />
+            <Link href="/" className="inline-block no-underline mb-4">
+              <span style={{
+                fontFamily: 'var(--font-serif), "Playfair Display", Georgia, serif',
+                fontSize: '2rem',
+                fontWeight: 700,
+                color: '#fff',
+                letterSpacing: '-0.02em',
+              }}>
+                Camer360
+              </span>
             </Link>
-            <p style={{ color: '#444', fontSize: '0.8rem', marginTop: '12px', lineHeight: 1.7, maxWidth: '240px' }}>
-              Independent English-language news covering Cameroon and Southern Cameroons since 2014.
+
+            <div style={{ width: '32px', height: '2px', background: 'linear-gradient(90deg, #D4AF37, #F7DC6F)', borderRadius: '1px', marginBottom: '16px' }} />
+
+            <p style={{ color: '#444', fontSize: '0.8rem', lineHeight: 1.75, maxWidth: '220px' }}>
+              West &amp; Central Africa&rsquo;s premier entertainment magazine. Celebrities, music, culture, and the stories that move the continent.
             </p>
 
             {/* Social links */}
-            <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-              <a href={SITE_FB} target="_blank" rel="noopener noreferrer"
-                className="hover:text-[#EEE] transition-colors"
-                style={{ background: '#111', border: '1px solid #1E1E1E', color: '#888', padding: '8px 14px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 700, textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                Facebook
-              </a>
-              <a href="https://twitter.com/Camer360" target="_blank" rel="noopener noreferrer"
-                className="hover:text-[#EEE] transition-colors"
-                style={{ background: '#111', border: '1px solid #1E1E1E', color: '#888', padding: '8px 14px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 700, textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                Twitter/X
-              </a>
+            <div className="flex flex-wrap gap-2 mt-6">
+              {SOCIALS.map(s => (
+                <a
+                  key={s.href}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#555] hover:text-[#D4AF37] transition-colors no-underline"
+                  style={{
+                    padding: '7px 14px',
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px solid rgba(255,255,255,0.07)',
+                    borderRadius: '6px',
+                    fontSize: '0.65rem',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                  }}
+                >
+                  {s.label}
+                </a>
+              ))}
             </div>
 
-            {/* Newsletter CTA */}
-            <div style={{ marginTop: '24px', background: '#111', border: '1px solid #1E1E1E', borderRadius: '10px', padding: '16px' }}>
-              <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#EEE', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Newsletter</p>
-              <p style={{ fontSize: '0.72rem', color: '#555', marginBottom: '12px', lineHeight: 1.5 }}>Cameroon news in your inbox</p>
-              <a href="mailto:info@camer360.com?subject=Newsletter Subscription"
-                style={{ display: 'block', background: '#C8102E', color: '#fff', padding: '8px 14px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 700, textDecoration: 'none', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                Subscribe
-              </a>
+            {/* Newsletter box */}
+            <div style={{
+              marginTop: '28px',
+              padding: '20px',
+              background: 'rgba(212,175,55,0.04)',
+              border: '1px solid rgba(212,175,55,0.12)',
+              borderRadius: '10px',
+            }}>
+              <p style={{ fontSize: '0.6rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.18em', color: '#D4AF37', marginBottom: '6px' }}>
+                Newsletter
+              </p>
+              <p style={{ fontSize: '0.72rem', color: '#444', marginBottom: '14px', lineHeight: 1.5 }}>
+                African entertainment in your inbox weekly.
+              </p>
+              <Link
+                href="/contact"
+                style={{
+                  display: 'block',
+                  background: 'linear-gradient(135deg, #D4AF37, #F7DC6F)',
+                  color: '#1A1A1A',
+                  padding: '10px 14px',
+                  borderRadius: '6px',
+                  fontSize: '0.65rem',
+                  fontWeight: 700,
+                  textDecoration: 'none',
+                  textAlign: 'center',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.12em',
+                }}
+              >
+                Subscribe Free
+              </Link>
             </div>
           </div>
 
-          {/* Link sections */}
-          {sections.map(section => (
-            <div key={section.title}>
-              <p style={{ fontSize: '0.58rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', color: '#2A2A2A', marginBottom: '16px' }}>
-                {section.title}
-              </p>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {section.links.map(link => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="hover:text-[#EEE] transition-colors"
-                      style={{ fontSize: '0.82rem', color: '#555', textDecoration: 'none' }}
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {/* Entertainment */}
+          <FooterLinkCol title="Entertainment" links={CATEGORIES} />
+
+          {/* More */}
+          <FooterLinkCol title="More" links={MORE_CATEGORIES} />
+
+          {/* Company */}
+          <FooterLinkCol title="Company" links={COMPANY} />
 
         </div>
       </div>
 
-      {/* Explore / tag cloud */}
-      <div style={{ borderTop: '1px solid #111' }}>
+      {/* Tag cloud */}
+      <div style={{ borderTop: '1px solid #0E0E0E' }}>
         <div style={{ maxWidth: '1380px', margin: '0 auto', padding: '24px' }}>
-          <p style={{ fontSize: '0.58rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', color: '#2A2A2A', marginBottom: '16px' }}>
+          <p style={{ fontSize: '0.55rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', color: '#222', marginBottom: '14px' }}>
             Explore
           </p>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            {[
-              { label: 'Paul Biya',          href: '/tag/paul-biya' },
-              { label: 'Anglophone Crisis',  href: '/tag/anglophone-crisis' },
-              { label: 'AFCON',              href: '/tag/afcon' },
-              { label: 'Ambazonia',          href: '/tag/ambazonia' },
-              { label: 'Douala',             href: '/tag/douala' },
-              { label: 'Yaoundé',            href: '/tag/yaounde' },
-              { label: 'Southern Cameroons', href: '/tag/southern-cameroons' },
-              { label: 'Indomitable Lions',  href: '/tag/indomitable-lions' },
-              { label: 'Cameroon Economy',   href: '/tag/cameroon-economy' },
-              { label: 'African Politics',   href: '/tag/african-politics' },
-            ].map(tag => (
+          <div className="flex flex-wrap gap-2">
+            {EXPLORE_TAGS.map(tag => (
               <Link
                 key={tag.href}
                 href={tag.href}
-                className="hover:text-[#EEE] hover:border-[#333] transition-colors"
-                style={{ background: '#111', border: '1px solid #1E1E1E', color: '#555', padding: '6px 12px', borderRadius: '20px', fontSize: '0.72rem', textDecoration: 'none', whiteSpace: 'nowrap' }}
+                className="text-[#333] hover:text-[#D4AF37] transition-colors no-underline whitespace-nowrap"
+                style={{
+                  background: 'rgba(255,255,255,0.02)',
+                  border: '1px solid #111',
+                  padding: '6px 12px',
+                  borderRadius: '20px',
+                  fontSize: '0.7rem',
+                }}
               >
                 {tag.label}
               </Link>
@@ -140,12 +183,12 @@ export function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div style={{ borderTop: '1px solid #0E0E0E' }}>
+      <div style={{ borderTop: '1px solid #0A0A0A' }}>
         <div style={{ maxWidth: '1380px', margin: '0 auto', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-          <p style={{ fontSize: '0.65rem', color: '#2A2A2A' }}>
-            © {year} {SITE_NAME}. All Rights Reserved.
+          <p style={{ fontSize: '0.62rem', color: '#222' }}>
+            © {year} {SITE_NAME} · 360° of African Life
           </p>
-          <div style={{ display: 'flex', gap: '16px' }}>
+          <div className="flex gap-5 items-center">
             {[
               { href: '/privacy',   label: 'Privacy' },
               { href: '/advertise', label: 'Advertise' },
@@ -154,8 +197,7 @@ export function Footer() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="hover:text-[#666] transition-colors"
-                style={{ fontSize: '0.65rem', color: '#2A2A2A', textDecoration: 'none' }}
+                className="text-[#222] hover:text-[#D4AF37] transition-colors no-underline text-[0.62rem]"
               >
                 {link.label}
               </Link>
@@ -165,5 +207,27 @@ export function Footer() {
       </div>
 
     </footer>
+  )
+}
+
+function FooterLinkCol({ title, links }: { title: string; links: { href: string; label: string }[] }) {
+  return (
+    <div>
+      <p style={{ fontSize: '0.55rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', color: '#D4AF37', marginBottom: '18px' }}>
+        {title}
+      </p>
+      <ul className="list-none p-0 m-0 flex flex-col gap-[11px]">
+        {links.map(link => (
+          <li key={link.href}>
+            <Link
+              href={link.href}
+              className="text-[#555] hover:text-[#D4AF37] transition-colors no-underline text-[0.82rem]"
+            >
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
