@@ -15,7 +15,8 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json()
   const { title, slug: rawSlug, excerpt, body: articleBody, category_slug,
-          meta_title, meta_desc, source_url, language } = body
+          meta_title, meta_desc, source_url, language,
+          featured_image, image_alt, image_caption } = body
 
   if (!title || !articleBody || !category_slug) {
     return NextResponse.json({ error: 'Missing required fields: title, body, category_slug' }, { status: 400 })
@@ -46,6 +47,9 @@ export async function POST(req: NextRequest) {
     metaTitle: meta_title ?? title.slice(0, 160),
     metaDesc: meta_desc ?? excerpt?.slice(0, 320) ?? '',
     canonicalUrl: source_url ?? '',
+    featuredImage: featured_image ?? null,
+    imageAlt: image_alt ?? null,
+    imageCaption: image_caption ?? null,
     status: 'draft',
     aiGenerated: true,
     lang: language ?? 'en',

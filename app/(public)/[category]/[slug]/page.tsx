@@ -61,9 +61,7 @@ export default async function ArticlePage({ params }: Props) {
         <div style={{ borderBottom: '1px solid var(--border-light)', background: 'white' }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
             <nav style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '14px 0', fontSize: '12px', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '1px' }}>
-              <Link href="/" style={{ color: '#9CA3AF', textDecoration: 'none', transition: 'color 0.3s' }}
-                onMouseEnter={e => (e.currentTarget.style.color = 'var(--primary-gold)')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#9CA3AF')}>Home</Link>
+              <Link href="/" className="hover:text-[#D4AF37] transition-colors" style={{ color: '#9CA3AF', textDecoration: 'none' }}>Home</Link>
               <span style={{ color: 'var(--border-light)' }}>›</span>
               <Link href={`/${catSlug}`} style={{ color: '#9CA3AF', textDecoration: 'none' }}>{article.category.name}</Link>
               <span style={{ color: 'var(--border-light)' }}>›</span>
