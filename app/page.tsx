@@ -3,9 +3,8 @@ export const revalidate = 0
 
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Header } from '@/components/layout/Header'
+import EbonyNavigation from '@/components/ebony-navigation'
 import { Footer } from '@/components/layout/Footer'
-import { TrendingBar } from '@/components/layout/TrendingBar'
 import { BreakingBanner } from '@/components/article/BreakingBanner'
 import { ArticleCard } from '@/components/article/ArticleCard'
 import InstallBanner from '@/components/pwa/InstallBanner'
@@ -865,8 +864,7 @@ export default async function HomePage() {
       <div className="ultra-premium-page">
         <JsonLd data={buildOrganizationSchema()} />
         <BreakingBanner articles={breaking} />
-        <Header />
-        <TrendingBar />
+        <EbonyNavigation />
 
         {/* Ultra-Sophisticated Hero */}
         <div className="hero-section">

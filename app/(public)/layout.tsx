@@ -1,6 +1,5 @@
-import { Header }         from '@/components/layout/Header'
+import EbonyNavigation    from '@/components/ebony-navigation'
 import { Footer }         from '@/components/layout/Footer'
-import { TrendingBar }    from '@/components/layout/TrendingBar'
 import { BreakingBanner } from '@/components/article/BreakingBanner'
 import { getBreakingNews } from '@/lib/db/queries'
 
@@ -10,8 +9,7 @@ export default async function PublicLayout({ children }: { children: React.React
   return (
     <>
       <BreakingBanner articles={breaking} />
-      <Header />
-      <TrendingBar />
+      <EbonyNavigation />
       <main className="min-h-screen w-full">
         <div style={{ maxWidth: '1380px', margin: '0 auto', padding: '0 24px' }}>
           {children}
