@@ -3,9 +3,9 @@
 
 /* ─── Design tokens ──────────────────────────────────────────── */
 @theme {
-  --color-brand:        #DC2626;
-  --color-brand-light:  #EF4444;
-  --color-brand-dark:   #991B1B;
+  --color-brand:        #D4AF37;
+  --color-brand-light:  #F7DC6F;
+  --color-brand-dark:   #B8960C;
   --color-gold:         #D4AF37;
   --color-surface:      #FFFFFF;
   --color-card:         #F8F8F8;
@@ -31,15 +31,15 @@
   --text-light:         rgba(255,255,255,0.9);
   --text-muted:         rgba(255,255,255,0.7);
 
-  --grad-brand:         linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
+  --grad-brand:         linear-gradient(135deg, #D4AF37 0%, #F7DC6F 100%);
   --grad-dark:          linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 50%, #1A1A1A 100%);
   --grad-header:        linear-gradient(180deg, #000000 0%, #0F0F0F 100%);
-  --grad-card-hover:    linear-gradient(135deg, #DC2626 0%, #D4AF37 100%);
+  --grad-card-hover:    linear-gradient(135deg, #D4AF37 0%, #B8960C 100%);
   --glass:              rgba(255,255,255,0.08);
   --glass-border:       rgba(255,255,255,0.12);
   --shadow-card:        0 4px 24px rgba(0,0,0,0.08);
   --shadow-hover:       0 16px 48px rgba(0,0,0,0.16);
-  --shadow-brand:       0 8px 32px rgba(220,38,38,0.25);
+  --shadow-brand:       0 8px 32px rgba(212,175,55,0.25);
   --shadow-premium:     0 32px 80px rgba(0,0,0,0.12);
 }
 
@@ -167,7 +167,7 @@ body {
 .article-card::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, #D4AF37, #DC2626);
+  background: linear-gradient(90deg, #B8960C, #D4AF37);
   transform: scaleX(0); transform-origin: left;
   transition: transform 0.28s ease;
 }
@@ -188,7 +188,7 @@ body {
   letter-spacing: 0.12em; text-transform: uppercase;
   padding: 2px 7px; border-radius: 3px;
   background: var(--grad-brand);
-  color: #fff; line-height: 1.6;
+  color: #1A1A1A; line-height: 1.6;
 }
 
 /* ─── Section header ─────────────────────────────────────────── */
@@ -224,7 +224,7 @@ body {
 .prose h2 { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 600; color: var(--color-text); margin-top: 2.5rem; }
 .prose h3 { font-size: 1.15rem; font-weight: 700; color: var(--color-text); margin-top: 2rem; }
 .prose p   { color: var(--color-text-2); }
-.prose a   { color: #DC2626; text-decoration: underline; text-underline-offset: 3px; }
+.prose a   { color: #D4AF37; text-decoration: underline; text-underline-offset: 3px; }
 .prose strong { color: var(--color-text); font-weight: 700; }
 .prose img { width: 100%; border-radius: 12px; margin: 1.5rem 0; display: block; box-shadow: var(--shadow-card); }
 .prose blockquote {

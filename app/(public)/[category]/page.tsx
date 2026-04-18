@@ -63,7 +63,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
           <nav className="text-[0.65rem] text-[#444] mb-3 flex items-center gap-1.5">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
             <span>›</span>
-            <span className="text-[#C8102E] font-semibold">{category.name}</span>
+            <span className="text-[#D4AF37] font-semibold">{category.name}</span>
           </nav>
           <div className="flex items-baseline gap-4">
             <h1 className="text-[2.5rem] md:text-[3.5rem] font-black uppercase tracking-[-0.03em] text-white leading-none">

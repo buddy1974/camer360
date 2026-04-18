@@ -99,8 +99,8 @@ export function ArticleCard({ article, variant = 'default', priority = false, in
                 </span>
               )}
               <span style={{
-                background: '#C8102E',
-                color: '#fff',
+                background: '#D4AF37',
+                color: '#1A1A1A',
                 fontSize: '11px',
                 fontWeight: 700,
                 padding: '4px 8px',
@@ -283,7 +283,7 @@ export function ArticleCard({ article, variant = 'default', priority = false, in
             background: 'linear-gradient(135deg, #120608 0%, #0A0A14 100%)',
             display: 'flex', alignItems: 'center', justifyContent: 'center'
           }}>
-            <span style={{ color: 'rgba(200,16,46,0.15)', fontSize: '3.5rem', fontWeight: 900, lineHeight: 1, userSelect: 'none' }}>
+            <span style={{ color: 'rgba(212,175,55,0.12)', fontSize: '3.5rem', fontWeight: 900, lineHeight: 1, userSelect: 'none' }}>
               {article.category.name.charAt(0)}
             </span>
           </div>

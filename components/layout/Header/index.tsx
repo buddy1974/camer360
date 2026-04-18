@@ -45,8 +45,8 @@ export function Header() {
             const active = pathname === `/${cat.slug}` || pathname.startsWith(`/${cat.slug}/`)
             return (
               <Link key={cat.slug} href={`/${cat.slug}`}
-                className={`relative px-3 py-2.5 text-[0.68rem] font-bold uppercase tracking-[0.08em] whitespace-nowrap transition-all duration-150 border-r border-[#1E1E1E] last:border-0 ${active ? 'text-[#C8102E]' : 'text-[#666] hover:text-[#EEE]'}`}>
-                {active && <span className="absolute bottom-0 inset-x-0 h-[2px] bg-[#C8102E] rounded-t" />}
+                className={`relative px-3 py-2.5 text-[0.68rem] font-bold uppercase tracking-[0.08em] whitespace-nowrap transition-all duration-150 border-r border-[#1E1E1E] last:border-0 ${active ? 'text-[#D4AF37]' : 'text-[#666] hover:text-[#EEE]'}`}>
+                {active && <span className="absolute bottom-0 inset-x-0 h-[2px] bg-[#D4AF37] rounded-t" />}
                 {cat.name}
               </Link>
             )
@@ -59,14 +59,14 @@ export function Header() {
         <nav className="lg:hidden fixed inset-x-0 top-[89px] bottom-0 bg-[#080808] z-50 overflow-y-auto p-4">
           <div className="grid grid-cols-2 gap-2">
             <Link href="/"
-              className="flex items-center gap-2.5 px-4 py-3 bg-[#101010] border border-[#C8102E] rounded-xl text-sm font-semibold text-white transition-all col-span-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C8102E] flex-shrink-0" />
+              className="flex items-center gap-2.5 px-4 py-3 bg-[#101010] border border-[#D4AF37] rounded-xl text-sm font-semibold text-white transition-all col-span-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] flex-shrink-0" />
               Home
             </Link>
             {NAV_CATEGORIES.map(cat => (
               <Link key={cat.slug} href={`/${cat.slug}`}
-                className="flex items-center gap-2.5 px-4 py-3 bg-[#101010] border border-[#1E1E1E] rounded-xl text-sm font-semibold text-[#999] hover:text-white hover:border-[#C8102E] transition-all">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C8102E] flex-shrink-0" />
+                className="flex items-center gap-2.5 px-4 py-3 bg-[#101010] border border-[#1E1E1E] rounded-xl text-sm font-semibold text-[#999] hover:text-white hover:border-[#D4AF37] transition-all">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] flex-shrink-0" />
                 {cat.name}
               </Link>
             ))}

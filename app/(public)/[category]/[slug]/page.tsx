@@ -94,7 +94,7 @@ export default async function ArticlePage({ params }: Props) {
                 {article.category.name}
               </Link>
               {article.isBreaking && (
-                <span style={{ background: '#DC2626', color: 'white', padding: '6px 16px', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', borderRadius: '4px' }}>
+                <span style={{ background: '#F5A623', color: '#1A1A1A', padding: '6px 16px', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', borderRadius: '4px' }}>
                   Breaking
                 </span>
               )}

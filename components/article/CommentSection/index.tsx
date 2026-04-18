@@ -65,17 +65,17 @@ export default function CommentsSection({ articleId }: { articleId: number }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
             width: '32px', height: '32px', borderRadius: '50%',
-            background: c.authorIsAdmin ? '#C8102E' : '#333',
+            background: c.authorIsAdmin ? '#D4AF37' : '#333',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: '0.85rem', fontWeight: 700, color: '#fff', flexShrink: 0
           }}>
             {c.authorName.charAt(0).toUpperCase()}
           </div>
           <div>
-            <span style={{ fontWeight: 700, color: c.authorIsAdmin ? '#C8102E' : '#fff', fontSize: '0.9rem' }}>
+            <span style={{ fontWeight: 700, color: c.authorIsAdmin ? '#B8960C' : '#fff', fontSize: '0.9rem' }}>
               {c.authorName}
             </span>
-            {c.authorIsAdmin ? <span style={{ fontSize: '0.7rem', background: '#C8102E', color: '#fff', padding: '1px 6px', borderRadius: '3px', marginLeft: '6px' }}>CC Staff</span> : null}
+            {c.authorIsAdmin ? <span style={{ fontSize: '0.7rem', background: '#D4AF37', color: '#1A1A1A', padding: '1px 6px', borderRadius: '3px', marginLeft: '6px' }}>CC Staff</span> : null}
           </div>
         </div>
         <span style={{ color: '#555', fontSize: '0.75rem' }}>
@@ -118,7 +118,7 @@ export default function CommentsSection({ articleId }: { articleId: number }) {
         </label>
       )}
       <button type="submit" disabled={submitting} style={{
-        marginTop: '10px', background: '#C8102E', color: '#fff', border: 'none',
+        marginTop: '10px', background: '#D4AF37', color: '#1A1A1A', border: 'none',
         padding: '10px 24px', borderRadius: '6px', cursor: submitting ? 'not-allowed' : 'pointer',
         fontWeight: 700, fontSize: '0.9rem'
       }}>
@@ -136,7 +136,7 @@ export default function CommentsSection({ articleId }: { articleId: number }) {
       {!loaded ? (
         <div style={{ textAlign: 'center', padding: '24px 0' }}>
           <button onClick={loadComments} disabled={loading} style={{
-            background: '#C8102E', color: '#fff', border: 'none', padding: '10px 28px',
+            background: '#D4AF37', color: '#1A1A1A', border: 'none', padding: '10px 28px',
             borderRadius: '6px', cursor: 'pointer', fontWeight: 700
           }}>
             {loading ? 'Loading...' : 'Load Comments'}

@@ -906,7 +906,12 @@ export default async function HomePage() {
 
         {/* Ultra-Sophisticated Hero */}
         <div className="hero-section">
-          <div className="hero-bg"></div>
+          <div className="hero-bg" style={featured[0]?.featuredImage ? {
+            backgroundImage: `url(${featured[0].featuredImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.4,
+          } : undefined} />
           <div className="hero-content">
             <div className="hero-main">
               <div className="hero-meta">
@@ -991,7 +996,11 @@ export default async function HomePage() {
             <div className="articles-grid">
               {latest.slice(0, 6).map(article => (
                 <Link key={article.id} href={`/${article.category.slug}/${article.slug}`} className="premium-article-card">
-                  <div className="article-image"></div>
+                  <div className="article-image" style={article.featuredImage ? {
+                    backgroundImage: `url(${article.featuredImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  } : undefined} />
                   <div className="article-content">
                     <div className="article-meta">
                       <span className="article-category">{article.category?.name || 'Entertainment'}</span>
@@ -1072,7 +1081,11 @@ export default async function HomePage() {
               <div className="articles-grid">
                 {row.articles.map(article => (
                   <Link key={article.id} href={`/${article.category.slug}/${article.slug}`} className="premium-article-card">
-                    <div className="article-image"></div>
+                    <div className="article-image" style={article.featuredImage ? {
+                      backgroundImage: `url(${article.featuredImage})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    } : undefined} />
                     <div className="article-content">
                       <div className="article-meta">
                         <span className="article-category">{article.category?.name || 'Entertainment'}</span>
