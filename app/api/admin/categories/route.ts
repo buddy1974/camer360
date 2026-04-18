@@ -18,19 +18,28 @@ async function authCheck() {
 export async function GET() {
   if (!await authCheck()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const rows = await db
-    .select({
-      id:    categories.id,
-      slug:  categories.slug,
-      name:  categories.name,
-      count: sql<number>`COUNT(${articles.id})`,
-    })
-    .from(categories)
-    .leftJoin(articles, eq(articles.categoryId, categories.id))
-    .groupBy(categories.id, categories.slug, categories.name)
-    .orderBy(categories.sortOrder, categories.name)
+  try {
+    const rows = await db
+      .select({
+        id:    categories.id,
+        slug:  categories.slug,
+        name:  categories.name,
+        count: sql<number>`COUNT(${articles.id})`,
+      })
+      .from(categories)
+      .leftJoin(articles, eq(articles.categoryId, categories.id))
+      .groupBy(categories.id, categories.slug, categories.name)
+      .orderBy(categories.sortOrder, categories.name)
 
-  return NextResponse.json(rows)
+    return NextResponse.json(rows)
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e)
+    console.error('[categories GET]', msg)
+    return NextResponse.json(
+      { error: 'Database error', detail: msg, hint: 'Check DB env vars in Vercel dashboard' },
+      { status: 500 }
+    )
+  }
 }
 
 // POST /api/admin/categories — create

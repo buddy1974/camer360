@@ -26,20 +26,33 @@ export async function POST() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const results: { slug: string; action: string }[] = []
+  const results: { slug: string; action: string; error?: string }[] = []
 
-  for (const cat of ENTERTAINMENT_CATEGORIES) {
-    try {
-      await db.insert(categories).values({
-        slug:      cat.slug,
-        name:      cat.name,
-        sortOrder: cat.sortOrder,
-      })
-      results.push({ slug: cat.slug, action: 'created' })
-    } catch {
-      results.push({ slug: cat.slug, action: 'already_exists' })
+  try {
+    for (const cat of ENTERTAINMENT_CATEGORIES) {
+      try {
+        await db.insert(categories).values({
+          slug:      cat.slug,
+          name:      cat.name,
+          sortOrder: cat.sortOrder,
+        })
+        results.push({ slug: cat.slug, action: 'created' })
+      } catch {
+        results.push({ slug: cat.slug, action: 'already_exists' })
+      }
     }
+    const created = results.filter(r => r.action === 'created').length
+    return NextResponse.json({
+      ok: true,
+      results,
+      message: `${created} created, ${results.length - created} already existed`,
+    })
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e)
+    console.error('[setup-entertainment]', msg)
+    return NextResponse.json(
+      { ok: false, error: 'Database error', detail: msg, hint: 'Check DB_HOST, DB_USER, DB_PASSWORD, DB_NAME in Vercel env vars' },
+      { status: 500 }
+    )
   }
-
-  return NextResponse.json({ ok: true, results })
 }
