@@ -12,15 +12,15 @@ export function Footer() {
         <div className="footer-section">
           <Link href="/" className="footer-logo">Camer360</Link>
           <p className="footer-tagline">
-            The premier destination for Central &amp; West African entertainment.
-            From Lagos to Douala, Paris to Atlanta — we celebrate the creativity
-            that moves our continent.
+            Cameroon&rsquo;s premier entertainment magazine &amp; the voice of Central &amp; West Africa.
+            From Yaoundé to London, Douala to New York — we celebrate the creativity
+            that moves our people.
           </p>
 
           <div className="footer-newsletter">
             <p className="footer-newsletter-title">Newsletter</p>
             <p className="footer-newsletter-desc">
-              Exclusive Central &amp; West African entertainment with Cameroon at the heart.
+              Cameroon stories, Central &amp; West African culture — delivered to your inbox.
             </p>
             <FooterNewsletter />
           </div>

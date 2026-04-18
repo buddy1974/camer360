@@ -870,10 +870,10 @@ export default async function HomePage() {
             <div className="trending-content">
               <div className="trending-items">
                 <span className="trending-label">Breaking</span>
-                <Link href="/celebrities" className="trending-link">Burna Boy Grammy Win</Link>
-                <Link href="/film-tv" className="trending-link">Nollywood Netflix Deal</Link>
-                <Link href="/music" className="trending-link">Wizkid Global Tour</Link>
-                <Link href="/diaspora" className="trending-link">Tems Billboard Chart</Link>
+                <Link href="/celebrities" className="trending-link">Eto&apos;o Foundation Expands</Link>
+                <Link href="/music" className="trending-link">Charlotte Dipanda New Album</Link>
+                <Link href="/sport-stars" className="trending-link">Onana Premier League Best</Link>
+                <Link href="/diaspora" className="trending-link">Cameroon Diaspora Atlanta</Link>
               </div>
               <div className="social-links">
                 <a href="https://facebook.com/camer360" target="_blank" rel="noopener noreferrer" className="social-link">f</a>
@@ -914,7 +914,7 @@ export default async function HomePage() {
                 {featured[0]?.title || 'The New African Renaissance'}
               </h1>
               <p className="hero-excerpt">
-                {featured[0]?.excerpt || 'From Lagos to London, African artists are redefining global entertainment. Discover the visionaries, the breakthrough moments, and the cultural revolution that\'s reshaping the world\'s creative landscape.'}
+                {featured[0]?.excerpt || 'From Yaoundé to London, Douala to New York — Cameroon\'s stars are redefining global entertainment. Discover the visionaries, the breakthrough moments, and the culture that moves our people.'}
               </p>
               <div className="hero-cta">
                 <Link href={featured[0] ? `/${featured[0].category.slug}/${featured[0].slug}` : '/celebrities'} className="cta-primary">Read Full Story</Link>
@@ -949,21 +949,21 @@ export default async function HomePage() {
                   {mostRead.length === 0 && (
                     <>
                       <div className="trending-item">
-                        <div className="trending-title">Wizkid announces surprise album collaboration</div>
+                        <div className="trending-title">Charlotte Dipanda's new album tops African charts</div>
                         <div className="trending-meta">
                           <span>Music</span>
                           <span>2 hours ago</span>
                         </div>
                       </div>
                       <div className="trending-item">
-                        <div className="trending-title">Genevieve Nnaji returns to Nollywood</div>
+                        <div className="trending-title">André Onana named Premier League's best keeper</div>
                         <div className="trending-meta">
-                          <span>Film</span>
+                          <span>Sport</span>
                           <span>4 hours ago</span>
                         </div>
                       </div>
                       <div className="trending-item">
-                        <div className="trending-title">Lagos Fashion Week breaks attendance records</div>
+                        <div className="trending-title">Douala Fashion Week breaks all records</div>
                         <div className="trending-meta">
                           <span>Style</span>
                           <span>6 hours ago</span>
@@ -1009,8 +1009,8 @@ export default async function HomePage() {
                         <span className="article-category">Celebrities</span>
                         <span className="article-date">2 hours ago</span>
                       </div>
-                      <h3 className="article-title">Davido's Star-Studded Wedding Ceremony</h3>
-                      <p className="article-excerpt">The Afrobeats superstar's wedding becomes the most talked-about celebrity event of the year.</p>
+                      <h3 className="article-title">Samuel Eto'o's Foundation Transforms Cameroon</h3>
+                      <p className="article-excerpt">The football legend's charitable work is reshaping communities from Yaoundé to the Adamawa region.</p>
                       <span className="read-more">Read More</span>
                     </div>
                   </div>
@@ -1021,8 +1021,8 @@ export default async function HomePage() {
                         <span className="article-category">Music</span>
                         <span className="article-date">4 hours ago</span>
                       </div>
-                      <h3 className="article-title">Afrobeats Dominates European Charts</h3>
-                      <p className="article-excerpt">African music continues its global expansion with record-breaking streaming numbers.</p>
+                      <h3 className="article-title">Charlotte Dipanda Conquers European Charts</h3>
+                      <p className="article-excerpt">Cameroon's queen of soul blends bikutsi rhythms with contemporary production on her landmark new album.</p>
                       <span className="read-more">Read More</span>
                     </div>
                   </div>
@@ -1033,8 +1033,8 @@ export default async function HomePage() {
                         <span className="article-category">Film & TV</span>
                         <span className="article-date">6 hours ago</span>
                       </div>
-                      <h3 className="article-title">Nollywood's Next Generation Directors</h3>
-                      <p className="article-excerpt">Meet the visionary filmmakers reshaping African cinema for global audiences.</p>
+                      <h3 className="article-title">Douala's Rising Filmmakers Take on the World</h3>
+                      <p className="article-excerpt">Meet the Cameroonian directors reshaping Central African cinema for global audiences.</p>
                       <span className="read-more">Read More</span>
                     </div>
                   </div>
