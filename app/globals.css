@@ -5,7 +5,7 @@
   --color-brand:        #DC2626;
   --color-brand-light:  #EF4444;
   --color-brand-dark:   #991B1B;
-  --color-gold:         #F59E0B;
+  --color-gold:         #D4AF37;
   --color-surface:      #FFFFFF;
   --color-card:         #F8F8F8;
   --color-bg:           #FAFAFA;
@@ -23,7 +23,7 @@
   --grad-brand:   linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
   --grad-dark:    linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
   --grad-header:  linear-gradient(180deg, #000000 0%, #0F0F0F 100%);
-  --grad-card-hover: linear-gradient(135deg, #DC2626 0%, #F59E0B 100%);
+  --grad-card-hover: linear-gradient(135deg, #DC2626 0%, #D4AF37 100%);
   --glass:        rgba(255,255,255,0.08);
   --glass-border: rgba(255,255,255,0.12);
   --shadow-card:  0 4px 24px rgba(0,0,0,0.08);
@@ -270,3 +270,87 @@ body {
   50%       { box-shadow: 0 0 0 8px rgba(220,38,38,0); }
 }
 .pulse-brand { animation: pulse-brand 2s ease-in-out infinite; }
+
+/* ─── EBONY 2026 Enhanced ───────────────────────────────────── */
+
+/* Magazine editorial section label */
+.ebony-section-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ebony-section-label::before {
+  content: '';
+  display: block;
+  flex-shrink: 0;
+  width: 3px;
+  height: 20px;
+  background: #D4AF37;
+  border-radius: 2px;
+}
+.ebony-label-text {
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+}
+.ebony-label-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+}
+
+/* Glass sidebar cards */
+.ebony-glass-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 20px;
+  backdrop-filter: blur(12px);
+}
+
+.ebony-sidebar-head {
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #D4AF37;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(212,175,55,0.2);
+}
+
+/* Category nav strip link hover */
+.cat-nav-link {
+  padding: 13px 16px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  white-space: nowrap;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  display: inline-block;
+}
+.cat-nav-link:hover {
+  color: #D4AF37;
+  border-bottom-color: #D4AF37;
+}
+
+/* Luxury gold divider */
+.gold-divider {
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(90deg, #D4AF37, #F5CC55, #D4AF37);
+  border-radius: 1px;
+  margin: 0 auto;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.slide-in { animation: slideIn 0.4s ease-out both; }
