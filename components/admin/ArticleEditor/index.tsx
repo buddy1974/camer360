@@ -172,11 +172,12 @@ if (!body.trim())  { setMsg('Body is required'); return }
   }
 
   const mainSlugs = [
-    'politics', 'society', 'sportsnews', 'southern-cameroons',
-    'health', 'business', 'lifestyle', 'editorial',
-    'headlines', 'inside-cpdm', 'technology', 'religion', 'poetry'
+    'celebrities', 'music', 'film-tv', 'fashion-beauty',
+    'gossip', 'viral', 'diaspora', 'money-moves',
+    'sport-stars', 'influencers', 'real-talk', 'exposed',
   ]
   const filteredCats = categories.filter(c => mainSlugs.includes(c.slug))
+  const displayCats  = filteredCats.length > 0 ? filteredCats : categories
 
   const inputStyle: React.CSSProperties = {
     width: '100%', background: '#080808', border: '1px solid #2A2A2A',
@@ -315,7 +316,7 @@ if (!body.trim())  { setMsg('Body is required'); return }
               onChange={e => setCatId(parseInt(e.target.value))}
               style={{ ...inputStyle, cursor: 'pointer' }}
             >
-              {filteredCats.map(c => (
+              {displayCats.map(c => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
