@@ -1,4 +1,4 @@
-export const revalidate = 120
+export const dynamic = 'force-dynamic'
 
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -7,6 +7,7 @@ import { ArticleCard } from '@/components/article/ArticleCard'
 import AdUnit from '@/components/ads/AdUnit'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { getCategoryBySlug, getArticlesByCategory } from '@/lib/db/queries'
+import type { ArticleWithRelations } from '@/lib/types'
 import { buildCategoryMetadata } from '@/lib/seo/metadata'
 import { buildBreadcrumbSchema } from '@/lib/seo/schema'
 import { SITE_URL } from '@/lib/constants'
@@ -29,10 +30,20 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const page = Math.max(1, parseInt(pageParam ?? '1'))
   const PER_PAGE = 24
 
-  const category = await getCategoryBySlug(slug)
+  let category, articles: ArticleWithRelations[] = [], total = 0
+  try {
+    category = await getCategoryBySlug(slug)
+  } catch (e) {
+    console.error('[category page] getCategoryBySlug error:', e)
+    notFound()
+  }
   if (!category) notFound()
 
-  const { articles, total } = await getArticlesByCategory(slug, page, PER_PAGE)
+  try {
+    ;({ articles, total } = await getArticlesByCategory(slug, page, PER_PAGE))
+  } catch (e) {
+    console.error('[category page] getArticlesByCategory error:', e)
+  }
   const totalPages = Math.ceil(total / PER_PAGE)
 
   const breadcrumb = buildBreadcrumbSchema([
