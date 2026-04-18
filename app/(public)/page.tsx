@@ -35,7 +35,7 @@ export default async function HomePage() {
     console.error('Homepage DB error:', err)
   }
 
-  const targetSlugs = ['politics', 'society', 'sportsnews', 'southern-cameroons', 'health', 'business']
+  const targetSlugs = ['celebrities', 'music', 'gossip', 'viral', 'film-tv', 'fashion-beauty']
   const availableSlugs = targetSlugs.filter(s => allCats.some(c => c.slug === s))
 
   let categoryRows: { slug: string; name: string; articles: ArticleWithRelations[] }[] = []
@@ -111,7 +111,7 @@ export default async function HomePage() {
           {/* MAIN — 3-column article grid */}
           <div>
             <div className="section-head">
-              <span className="section-head-title">Latest News</span>
+              <span className="section-head-title">Latest Stories</span>
               <span className="section-head-line" />
             </div>
             <div style={{
@@ -133,7 +133,7 @@ export default async function HomePage() {
             {latest.slice(0, 7).length > 0 && (
               <div className="bg-[#101010] border border-[#1E1E1E] rounded-xl p-5" style={{ marginBottom: '16px' }}>
                 <div className="section-head">
-                  <span className="section-head-title" style={{ color: '#F5A623' }}>Latest Articles</span>
+                  <span className="section-head-title" style={{ color: '#E91E8C' }}>Latest</span>
                   <span className="section-head-line" />
                 </div>
                 {latest.slice(0, 7).map((a, i) => (
@@ -143,7 +143,7 @@ export default async function HomePage() {
             )}
             <div className="bg-[#101010] border border-[#1E1E1E] rounded-xl p-5">
               <div className="section-head">
-                <span className="section-head-title" style={{ color: '#F5A623' }}>Most Read</span>
+                <span className="section-head-title" style={{ color: '#E91E8C' }}>Trending</span>
                 <span className="section-head-line" />
               </div>
               {mostRead.map((a, i) => (
@@ -162,7 +162,7 @@ export default async function HomePage() {
               <span className="section-head-line" />
               <Link
                 href={`/${row.slug}`}
-                className="text-[0.62rem] font-bold uppercase tracking-wider text-[#C8102E] hover:text-[#F5A623] transition-colors whitespace-nowrap"
+                className="text-[0.62rem] font-bold uppercase tracking-wider text-[#E91E8C] hover:text-[#DC2626] transition-colors whitespace-nowrap"
               >
                 See all →
               </Link>
