@@ -25,7 +25,7 @@ export function Header() {
       <div className="border-b border-[#1E1E1E]">
         <div className="max-w-[1380px] mx-auto px-4 sm:px-6 flex items-center justify-between h-[52px]">
           <Link href="/" className="flex items-center">
-            <Image src="/logo.png" alt="Camer360" width={200} height={36} priority className="h-9 w-auto" />
+            <Image src="/logo.svg" alt="Camer360" width={220} height={40} priority className="h-9 w-auto" />
           </Link>
           <div className="flex items-center gap-1">
             <Link href="/search" aria-label="Search" className="w-9 h-9 grid place-items-center text-[#555] hover:text-white hover:bg-[#181818] rounded-lg transition-colors">
