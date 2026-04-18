@@ -7,7 +7,7 @@ const pool = new Pool({
 })
 
 function authCheck(req: NextRequest) {
-  return req.headers.get('x-api-key') === process.env.NEXT_PUBLIC_AUTOMATION_API_KEY
+  return req.headers.get('x-api-key') === (process.env.AUTOMATION_API_KEY ?? process.env.NEXT_PUBLIC_AUTOMATION_API_KEY)
 }
 
 // GET /api/n8n/queue?limit=5 — fetch pending items for AI enhancement

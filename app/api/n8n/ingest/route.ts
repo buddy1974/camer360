@@ -8,7 +8,7 @@ const pool = new Pool({
 })
 
 function authCheck(req: NextRequest) {
-  return req.headers.get('x-api-key') === process.env.NEXT_PUBLIC_AUTOMATION_API_KEY
+  return req.headers.get('x-api-key') === (process.env.AUTOMATION_API_KEY ?? process.env.NEXT_PUBLIC_AUTOMATION_API_KEY)
 }
 
 // POST /api/n8n/ingest — receive RSS items from n8n, dedup + store in Neon

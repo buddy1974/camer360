@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm'
 import slugify from 'slugify'
 
 function authCheck(req: NextRequest) {
-  return req.headers.get('x-api-key') === process.env.NEXT_PUBLIC_AUTOMATION_API_KEY
+  return req.headers.get('x-api-key') === (process.env.AUTOMATION_API_KEY ?? process.env.NEXT_PUBLIC_AUTOMATION_API_KEY)
 }
 
 // POST /api/n8n/articles — create a draft article from AI-enhanced content
