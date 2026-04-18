@@ -900,23 +900,9 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Logo row */}
-          <div className="main-header">
-            <nav className="nav-left">
-              <Link href="/celebrities"    className="nav-link">Celebrities</Link>
-              <Link href="/music"          className="nav-link">Music</Link>
-              <Link href="/film-tv"        className="nav-link">Film &amp; TV</Link>
-              <Link href="/gossip"         className="nav-link">Gossip</Link>
-            </nav>
-
+          {/* Logo row — centered, no duplicate nav links */}
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '36px 40px 32px' }}>
             <Link href="/" className="logo playfair">Camer360</Link>
-
-            <nav className="nav-right">
-              <Link href="/fashion-beauty" className="nav-link">Style</Link>
-              <Link href="/viral"          className="nav-link">Viral</Link>
-              <Link href="/diaspora"       className="nav-link">Diaspora</Link>
-              <Link href="/sport-stars"    className="nav-link">Sport Stars</Link>
-            </nav>
           </div>
         </div>
 
