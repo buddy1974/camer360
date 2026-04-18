@@ -893,7 +893,10 @@ export default async function HomePage() {
               <Link href="/gossip"      className="nav-link">Gossip</Link>
             </nav>
 
-            <Link href="/" className="logo playfair">Camer360</Link>
+            <Link href="/" className="logo">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.png" alt="Camer360" style={{ height: '48px', width: 'auto', display: 'block' }} />
+            </Link>
 
             <nav className="nav-right">
               <Link href="/fashion-beauty" className="nav-link">Style</Link>
