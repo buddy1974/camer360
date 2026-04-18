@@ -16,7 +16,7 @@
     },
     {
       "parameters": {
-        "url": "https://www.lindaikejisblog.com/feeds/posts/default",
+        "url": "https://www.lindaikejisblog.com/feed",
         "options": {}
       },
       "id": "linda-ikeji",
@@ -27,7 +27,7 @@
     },
     {
       "parameters": {
-        "url": "https://www.pulse.ng/rss",
+        "url": "https://www.pulse.ng/rss.xml",
         "options": {}
       },
       "id": "pulse-ng",
@@ -49,7 +49,7 @@
     },
     {
       "parameters": {
-        "url": "https://www.pulse.com.gh/rss",
+        "url": "https://www.pulse.com.gh/rss-articles.xml",
         "options": {}
       },
       "id": "pulse-gh",
@@ -68,6 +68,14 @@
       "type": "n8n-nodes-base.rssFeedRead",
       "typeVersion": 1,
       "position": [400, 600]
+    },
+    {
+      "parameters": { "url": "https://notjustok.com/feed/", "options": {} },
+      "id": "notjustok",
+      "name": "NotJustOk RSS",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [400, 700]
     },
     {
       "parameters": {
@@ -180,7 +188,8 @@
         {"node": "Pulse Nigeria RSS", "type": "main", "index": 0},
         {"node": "BellaNaija RSS",    "type": "main", "index": 0},
         {"node": "Pulse Ghana RSS",   "type": "main", "index": 0},
-        {"node": "The Net NG RSS",    "type": "main", "index": 0}
+        {"node": "The Net NG RSS",    "type": "main", "index": 0},
+        {"node": "NotJustOk RSS",    "type": "main", "index": 0}
       ]]
     },
     "Linda Ikeji RSS":   {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 0}]]},
@@ -188,6 +197,7 @@
     "BellaNaija RSS":    {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 2}]]},
     "Pulse Ghana RSS":   {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 3}]]},
     "The Net NG RSS":    {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 4}]]},
+    "NotJustOk RSS":     {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 5}]]},
     "Merge RSS Sources":     {"main": [[{"node": "Dedupe RSS Items",         "type": "main", "index": 0}]]},
     "Dedupe RSS Items":      {"main": [[{"node": "AI Classify Content",      "type": "main", "index": 0}]]},
     "AI Classify Content":   {"main": [[{"node": "Parse Classification",     "type": "main", "index": 0}]]},
