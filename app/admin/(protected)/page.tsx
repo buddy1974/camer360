@@ -2,84 +2,90 @@ import { db } from '@/lib/db/client'
 import { articles, categories, articleHits } from '@/lib/db/schema'
 import { desc, eq, sql } from 'drizzle-orm'
 import Link from 'next/link'
-import { Pool } from 'pg'
 
 export const dynamic = 'force-dynamic'
 
-async function getQueueStats() {
-  const pool = new Pool({
-    connectionString: process.env.NEON_DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
-    max: 1,
-  })
+type StatRow = { count: number }
+
+async function safeQuery<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
+  try { return await fn() } catch { return fallback }
+}
+
+async function getQueueStats(): Promise<Record<string, number>> {
   try {
-    const { rows } = await pool.query(`
-      SELECT status, COUNT(*) as count
-      FROM ingested_content
-      GROUP BY status
-    `)
-    const stats: Record<string, number> = {}
-    for (const r of rows) stats[r.status] = Number(r.count)
-    return stats
+    const { Pool } = await import('pg')
+    const pool = new Pool({
+      connectionString: process.env.NEON_DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+      max: 1,
+      connectionTimeoutMillis: 4000,
+    })
+    try {
+      const { rows } = await pool.query(
+        `SELECT status, COUNT(*) as count FROM ingested_content GROUP BY status`
+      )
+      const stats: Record<string, number> = {}
+      for (const r of rows) stats[r.status] = Number(r.count)
+      return stats
+    } finally {
+      await pool.end()
+    }
   } catch {
     return {}
-  } finally {
-    await pool.end()
   }
 }
 
 export default async function AdminDashboard() {
-  const [totalArticles] = await db.select({ count: sql<number>`count(*)` }).from(articles)
-  const [published]     = await db.select({ count: sql<number>`count(*)` }).from(articles).where(eq(articles.status, 'published'))
-  const [drafts]        = await db.select({ count: sql<number>`count(*)` }).from(articles).where(eq(articles.status, 'draft'))
-  const [aiGenCount]    = await db.select({ count: sql<number>`count(*)` }).from(articles).where(eq(articles.aiGenerated, true))
+  const [
+    [totalArticles],
+    [published],
+    [drafts],
+    [aiGenCount],
+    recent,
+    topArticles,
+    categoryStats,
+    queueStats,
+  ] = await Promise.all([
+    safeQuery(() => db.select({ count: sql<number>`count(*)` }).from(articles), [{ count: 0 }] as StatRow[]),
+    safeQuery(() => db.select({ count: sql<number>`count(*)` }).from(articles).where(eq(articles.status, 'published')), [{ count: 0 }] as StatRow[]),
+    safeQuery(() => db.select({ count: sql<number>`count(*)` }).from(articles).where(eq(articles.status, 'draft')), [{ count: 0 }] as StatRow[]),
+    safeQuery(() => db.select({ count: sql<number>`count(*)` }).from(articles).where(eq(articles.aiGenerated, true)), [{ count: 0 }] as StatRow[]),
+    safeQuery(() => db
+      .select({
+        id: articles.id, title: articles.title, status: articles.status,
+        publishedAt: articles.publishedAt, catName: categories.name,
+        catSlug: categories.slug, slug: articles.slug, aiGenerated: articles.aiGenerated,
+      })
+      .from(articles)
+      .innerJoin(categories, eq(articles.categoryId, categories.id))
+      .orderBy(desc(articles.createdAt))
+      .limit(10), []),
+    safeQuery(() => db
+      .select({
+        id: articles.id, title: articles.title, slug: articles.slug,
+        hits: articleHits.hits, catSlug: categories.slug,
+      })
+      .from(articles)
+      .innerJoin(categories, eq(articles.categoryId, categories.id))
+      .leftJoin(articleHits, eq(articles.id, articleHits.articleId))
+      .where(eq(articles.status, 'published'))
+      .orderBy(desc(articleHits.hits))
+      .limit(8), []),
+    safeQuery(() => db
+      .select({
+        category: categories.name, slug: categories.slug,
+        totalHits: sql<number>`COALESCE(SUM(${articleHits.hits}), 0)`,
+        articleCount: sql<number>`COUNT(${articles.id})`,
+      })
+      .from(articles)
+      .innerJoin(categories, eq(articles.categoryId, categories.id))
+      .leftJoin(articleHits, eq(articles.id, articleHits.articleId))
+      .where(eq(articles.status, 'published'))
+      .groupBy(categories.id, categories.name, categories.slug)
+      .orderBy(desc(sql`SUM(${articleHits.hits})`)), []),
+    getQueueStats(),
+  ])
 
-  const recent = await db
-    .select({
-      id:          articles.id,
-      title:       articles.title,
-      status:      articles.status,
-      publishedAt: articles.publishedAt,
-      catName:     categories.name,
-      catSlug:     categories.slug,
-      slug:        articles.slug,
-      aiGenerated: articles.aiGenerated,
-    })
-    .from(articles)
-    .innerJoin(categories, eq(articles.categoryId, categories.id))
-    .orderBy(desc(articles.createdAt))
-    .limit(10)
-
-  const topArticles = await db
-    .select({
-      id:      articles.id,
-      title:   articles.title,
-      slug:    articles.slug,
-      hits:    articleHits.hits,
-      catSlug: categories.slug,
-    })
-    .from(articles)
-    .innerJoin(categories,  eq(articles.categoryId, categories.id))
-    .leftJoin(articleHits,  eq(articles.id, articleHits.articleId))
-    .where(eq(articles.status, 'published'))
-    .orderBy(desc(articleHits.hits))
-    .limit(8)
-
-  const categoryStats = await db
-    .select({
-      category:     categories.name,
-      slug:         categories.slug,
-      totalHits:    sql<number>`COALESCE(SUM(${articleHits.hits}), 0)`,
-      articleCount: sql<number>`COUNT(${articles.id})`,
-    })
-    .from(articles)
-    .innerJoin(categories,  eq(articles.categoryId, categories.id))
-    .leftJoin(articleHits,  eq(articles.id, articleHits.articleId))
-    .where(eq(articles.status, 'published'))
-    .groupBy(categories.id, categories.name, categories.slug)
-    .orderBy(desc(sql`SUM(${articleHits.hits})`))
-
-  const queueStats = await getQueueStats()
   const queuePending    = queueStats['pending']    ?? 0
   const queueProcessing = queueStats['processing'] ?? 0
   const queueProcessed  = queueStats['processed']  ?? 0
@@ -89,7 +95,7 @@ export default async function AdminDashboard() {
   return (
     <div style={{ maxWidth: '1200px' }}>
 
-      {/* Page header */}
+      {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '36px' }}>
         <div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fff', margin: 0, letterSpacing: '-0.02em' }}>
@@ -123,17 +129,12 @@ export default async function AdminDashboard() {
       {/* Article stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '28px' }}>
         {[
-          { label: 'Total Articles', value: Number(totalArticles.count).toLocaleString(), color: '#D4AF37',  border: 'rgba(212,175,55,0.2)' },
-          { label: 'Published',      value: Number(published.count).toLocaleString(),     color: '#4CAF50',  border: 'rgba(76,175,80,0.2)' },
-          { label: 'Drafts',         value: Number(drafts.count).toLocaleString(),         color: '#FF9800',  border: 'rgba(255,152,0,0.2)' },
-          { label: 'AI Generated',   value: Number(aiGenCount.count).toLocaleString(),     color: '#9C27B0',  border: 'rgba(156,39,176,0.2)' },
+          { label: 'Total Articles', value: Number(totalArticles?.count ?? 0).toLocaleString(), color: '#D4AF37', border: 'rgba(212,175,55,0.2)' },
+          { label: 'Published',      value: Number(published?.count ?? 0).toLocaleString(),     color: '#4CAF50', border: 'rgba(76,175,80,0.2)' },
+          { label: 'Drafts',         value: Number(drafts?.count ?? 0).toLocaleString(),         color: '#FF9800', border: 'rgba(255,152,0,0.2)' },
+          { label: 'AI Generated',   value: Number(aiGenCount?.count ?? 0).toLocaleString(),     color: '#9C27B0', border: 'rgba(156,39,176,0.2)' },
         ].map(s => (
-          <div key={s.label} style={{
-            background: '#0F0F0F',
-            border: `1px solid ${s.border}`,
-            borderRadius: '12px',
-            padding: '20px',
-          }}>
+          <div key={s.label} style={{ background: '#0F0F0F', border: `1px solid ${s.border}`, borderRadius: '12px', padding: '20px' }}>
             <div style={{ fontSize: '2.2rem', fontWeight: 900, color: s.color, lineHeight: 1 }}>{s.value}</div>
             <div style={{ fontSize: '0.62rem', color: '#333', marginTop: '6px', textTransform: 'uppercase', letterSpacing: '0.12em' }}>{s.label}</div>
           </div>
@@ -141,19 +142,13 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Automation Pipeline */}
-      <div style={{
-        background: '#080808',
-        border: '1px solid rgba(212,175,55,0.15)',
-        borderRadius: '12px',
-        padding: '20px 24px',
-        marginBottom: '28px',
-      }}>
+      <div style={{ background: '#080808', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '12px', padding: '20px 24px', marginBottom: '28px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <div style={{ fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#D4AF37' }}>
             Automation Pipeline · Neon Queue
           </div>
           <div style={{ fontSize: '0.62rem', color: '#333' }}>
-            {queueTotal.toLocaleString()} total items
+            {queueTotal > 0 ? `${queueTotal.toLocaleString()} total items` : 'Queue unavailable'}
           </div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
@@ -163,12 +158,7 @@ export default async function AdminDashboard() {
             { label: 'Processed',  value: queueProcessed,  color: '#4CAF50' },
             { label: 'Rejected',   value: queueRejected,   color: '#F44336' },
           ].map(s => (
-            <div key={s.label} style={{
-              background: '#0A0A0A',
-              border: '1px solid #1A1A1A',
-              borderRadius: '8px',
-              padding: '14px 16px',
-            }}>
+            <div key={s.label} style={{ background: '#0A0A0A', border: '1px solid #1A1A1A', borderRadius: '8px', padding: '14px 16px' }}>
               <div style={{ fontSize: '1.6rem', fontWeight: 900, color: s.color, lineHeight: 1 }}>
                 {s.value.toLocaleString()}
               </div>
@@ -186,7 +176,6 @@ export default async function AdminDashboard() {
       {/* 2-col: top articles + category performance */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '28px' }}>
 
-        {/* Top Articles */}
         <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', borderRadius: '12px', overflow: 'hidden' }}>
           <div style={{ padding: '14px 18px', borderBottom: '1px solid #1A1A1A' }}>
             <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
@@ -198,9 +187,7 @@ export default async function AdminDashboard() {
               {topArticles.map((a, i) => (
                 <tr key={a.id} style={{ borderBottom: '1px solid #111' }}>
                   <td style={{ padding: '9px 18px', width: '28px' }}>
-                    <span style={{ fontSize: '0.72rem', fontWeight: 900, color: i < 3 ? '#D4AF37' : '#222' }}>
-                      {i + 1}
-                    </span>
+                    <span style={{ fontSize: '0.72rem', fontWeight: 900, color: i < 3 ? '#D4AF37' : '#222' }}>{i + 1}</span>
                   </td>
                   <td style={{ padding: '9px 6px' }}>
                     <a href={`/${a.catSlug}/${a.slug}`} target="_blank" style={{ color: '#CCC', textDecoration: 'none', fontSize: '0.78rem', lineHeight: 1.3 }}>
@@ -208,9 +195,7 @@ export default async function AdminDashboard() {
                     </a>
                   </td>
                   <td style={{ padding: '9px 18px', textAlign: 'right', whiteSpace: 'nowrap' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#D4AF37' }}>
-                      {(a.hits || 0).toLocaleString()}
-                    </span>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#D4AF37' }}>{(a.hits || 0).toLocaleString()}</span>
                   </td>
                 </tr>
               ))}
@@ -221,7 +206,6 @@ export default async function AdminDashboard() {
           </table>
         </div>
 
-        {/* Category Performance */}
         <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', borderRadius: '12px', overflow: 'hidden' }}>
           <div style={{ padding: '14px 18px', borderBottom: '1px solid #1A1A1A', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
@@ -234,12 +218,8 @@ export default async function AdminDashboard() {
               {categoryStats.slice(0, 8).map(c => (
                 <tr key={c.slug} style={{ borderBottom: '1px solid #111' }}>
                   <td style={{ padding: '9px 18px', fontSize: '0.8rem', color: '#CCC' }}>{c.category}</td>
-                  <td style={{ padding: '9px 6px', fontSize: '0.72rem', color: '#444', textAlign: 'right' }}>
-                    {Number(c.articleCount).toLocaleString()} art.
-                  </td>
-                  <td style={{ padding: '9px 18px', fontSize: '0.78rem', fontWeight: 700, color: '#D4AF37', textAlign: 'right' }}>
-                    {Number(c.totalHits).toLocaleString()}
-                  </td>
+                  <td style={{ padding: '9px 6px', fontSize: '0.72rem', color: '#444', textAlign: 'right' }}>{Number(c.articleCount).toLocaleString()} art.</td>
+                  <td style={{ padding: '9px 18px', fontSize: '0.78rem', fontWeight: 700, color: '#D4AF37', textAlign: 'right' }}>{Number(c.totalHits).toLocaleString()}</td>
                 </tr>
               ))}
               {categoryStats.length === 0 && (
@@ -256,9 +236,7 @@ export default async function AdminDashboard() {
           <span style={{ fontSize: '0.62rem', fontWeight: 700, color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
             Recent Articles
           </span>
-          <Link href="/admin/articles" style={{ fontSize: '0.62rem', color: '#333', textDecoration: 'none' }}>
-            View all →
-          </Link>
+          <Link href="/admin/articles" style={{ fontSize: '0.62rem', color: '#333', textDecoration: 'none' }}>View all →</Link>
         </div>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <tbody>
@@ -300,6 +278,11 @@ export default async function AdminDashboard() {
                 </td>
               </tr>
             ))}
+            {recent.length === 0 && (
+              <tr><td colSpan={3} style={{ padding: '32px', textAlign: 'center', color: '#333', fontSize: '0.8rem' }}>
+                No articles yet. <Link href="/admin/articles/new" style={{ color: '#D4AF37' }}>Create one →</Link>
+              </td></tr>
+            )}
           </tbody>
         </table>
       </div>

@@ -12,9 +12,9 @@ export function Footer() {
         <div className="footer-section">
           <Link href="/" className="footer-logo">Camer360</Link>
           <p className="footer-tagline">
-            Cameroon&rsquo;s premier entertainment magazine &amp; the voice of Central &amp; West Africa.
-            From Yaoundé to London, Douala to New York — we celebrate the creativity
-            that moves our people.
+            Central &amp; West Africa&rsquo;s entertainment magazine with Cameroon at the heart.
+            Yaoundé celebrities, Cameroonian diaspora stories, and the culture
+            that defines our generation.
           </p>
 
           <div className="footer-newsletter">
@@ -110,7 +110,7 @@ export function Footer() {
       <div className="footer-bottom">
         <p className="footer-copyright">
           © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
-          Central &amp; West Africa&rsquo;s entertainment magazine.
+          Central &amp; West Africa&rsquo;s entertainment magazine with Cameroon at the heart.
         </p>
         <nav className="footer-legal">
           <Link href="/privacy">Privacy Policy</Link>

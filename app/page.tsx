@@ -870,10 +870,10 @@ export default async function HomePage() {
             <div className="trending-content">
               <div className="trending-items">
                 <span className="trending-label">Breaking</span>
-                <Link href="/celebrities" className="trending-link">Eto&apos;o Foundation Expands</Link>
-                <Link href="/music" className="trending-link">Charlotte Dipanda New Album</Link>
-                <Link href="/sport-stars" className="trending-link">Onana Premier League Best</Link>
-                <Link href="/diaspora" className="trending-link">Cameroon Diaspora Atlanta</Link>
+                <Link href="/celebrities" className="trending-link">Eto&apos;o Business Empire</Link>
+                <Link href="/music" className="trending-link">Charlotte Dipanda Grammy Buzz</Link>
+                <Link href="/diaspora" className="trending-link">Cameroonian UK Success</Link>
+                <Link href="/sport-stars" className="trending-link">Onana Champions League</Link>
               </div>
               <div className="social-links">
                 <a href="https://facebook.com/camer360" target="_blank" rel="noopener noreferrer" className="social-link">f</a>
@@ -911,10 +911,10 @@ export default async function HomePage() {
                 <div className="hero-date">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
               </div>
               <h1 className="hero-title playfair">
-                {featured[0]?.title || 'The New African Renaissance'}
+                {featured[0]?.title || "Cameroon's Entertainment Revolution"}
               </h1>
               <p className="hero-excerpt">
-                {featured[0]?.excerpt || 'From Yaoundé to London, Douala to New York — Cameroon\'s stars are redefining global entertainment. Discover the visionaries, the breakthrough moments, and the culture that moves our people.'}
+                {featured[0]?.excerpt || "From Yaoundé to the diaspora, Central & West African stars are conquering global entertainment. Discover Cameroon's A-listers, regional celebrities, and the cultural movements shaping our continent."}
               </p>
               <div className="hero-cta">
                 <Link href={featured[0] ? `/${featured[0].category.slug}/${featured[0].slug}` : '/celebrities'} className="cta-primary">Read Full Story</Link>
@@ -925,7 +925,7 @@ export default async function HomePage() {
             <div className="hero-sidebar">
               <div className="sidebar-card">
                 <h3 className="card-title playfair">Newsletter</h3>
-                <p style={{color: '#666', marginBottom: '24px', fontSize: '14px'}}>Get exclusive African entertainment insights delivered weekly.</p>
+                <p style={{color: '#666', marginBottom: '24px', fontSize: '14px'}}>Get exclusive Central &amp; West African entertainment insights with Cameroon at the heart.</p>
                 <div className="newsletter-form">
                   <input type="email" className="newsletter-input" placeholder="Enter your email address" />
                   <button className="newsletter-btn">Subscribe Now</button>
