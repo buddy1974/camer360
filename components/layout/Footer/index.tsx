@@ -104,7 +104,6 @@ export function Footer() {
       <div className="footer-bottom">
         <p className="footer-copyright">
           © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
-          Central &amp; West Africa&rsquo;s entertainment magazine with Cameroon at the heart.
         </p>
         <nav className="footer-legal">
           <Link href="/privacy">Privacy Policy</Link>
