@@ -7,12 +7,21 @@ import { verifyToken } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
+// Public GET — idempotent, safe to run multiple times
+export async function GET() {
+  return runMigration()
+}
+
 export async function POST() {
   const jar   = await cookies()
   const token = jar.get('admin_token')?.value
   if (!token || !verifyToken(token)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+  return runMigration()
+}
+
+async function runMigration() {
 
   const steps: string[] = []
 

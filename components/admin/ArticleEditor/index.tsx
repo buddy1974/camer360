@@ -175,9 +175,8 @@ if (!body.trim())  { setMsg('Body is required'); return }
   }
 
   const mainSlugs = [
-    'celebrities', 'music', 'film-tv', 'fashion-beauty',
-    'gossip', 'viral', 'diaspora', 'money-moves',
-    'sport-stars', 'influencers', 'real-talk', 'exposed',
+    'celebrities', 'music', 'film-tv', 'sport-stars',
+    'style', 'entrepreneurs', 'usa', 'europe',
   ]
   const filteredCats = categories.filter(c => mainSlugs.includes(c.slug))
   const displayCats  = filteredCats.length > 0 ? filteredCats : categories

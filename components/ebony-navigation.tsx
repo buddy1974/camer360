@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Search, Mail, Menu, X } from 'lucide-react'
+import SearchModal from '@/components/search/SearchModal'
 
 const NAV_LEFT = [
   { label: 'CELEBRITIES',  href: '/celebrities'  },
@@ -45,7 +46,8 @@ function NavLink({ item, pathname }: { item: { label: string; href: string }; pa
 }
 
 export default function EbonyNavigation() {
-  const [open, setOpen] = useState(false)
+  const [open,       setOpen]       = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const pathname = usePathname()
 
   return (
@@ -93,10 +95,10 @@ export default function EbonyNavigation() {
               className="text-gray-500 hover:text-[#D4AF37] transition-colors">
               <Mail className="w-5 h-5" />
             </Link>
-            <Link href="/search" aria-label="Search"
-              className="text-gray-500 hover:text-[#D4AF37] transition-colors">
+            <button onClick={() => setSearchOpen(true)} aria-label="Search"
+              className="text-gray-500 hover:text-[#D4AF37] transition-colors bg-transparent border-none cursor-pointer p-0">
               <Search className="w-5 h-5" />
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -108,10 +110,10 @@ export default function EbonyNavigation() {
           <img src="/logo.png" alt="Camer360" className="h-12 w-auto" />
         </Link>
         <div className="flex items-center gap-4">
-          <Link href="/search" aria-label="Search"
-            className="text-gray-600 hover:text-[#D4AF37] transition-colors">
+          <button onClick={() => setSearchOpen(true)} aria-label="Search"
+            className="text-gray-600 hover:text-[#D4AF37] transition-colors bg-transparent border-none cursor-pointer p-0">
             <Search className="w-5 h-5" />
-          </Link>
+          </button>
           <button
             onClick={() => setOpen(v => !v)}
             aria-label={open ? 'Close menu' : 'Open menu'}
@@ -141,6 +143,9 @@ export default function EbonyNavigation() {
           </div>
         </div>
       )}
+
+      {/* ── Search modal ── */}
+      {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} />}
 
       {/* ── Gold trending bar ── */}
       <div className="bg-[#D4AF37] py-2">
