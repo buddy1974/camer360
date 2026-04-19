@@ -2,7 +2,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Category, Article, ArticleStatus } from '@/lib/types'
-import { COUNTRIES } from '@/components/article/CountryTag'
+import { COUNTRIES, COUNTRY_GROUPS } from '@/components/article/CountryTag'
 
 interface Props {
   categories: Category[]
@@ -394,8 +394,12 @@ if (!body.trim())  { setMsg('Body is required'); return }
               style={{ ...inputStyle, cursor: 'pointer' }}
             >
               <option value="">— None —</option>
-              {Object.entries(COUNTRIES).map(([code, meta]) => (
-                <option key={code} value={code}>{meta.name}</option>
+              {COUNTRY_GROUPS.map(group => (
+                <optgroup key={group.label} label={group.label}>
+                  {group.codes.map(code => (
+                    <option key={code} value={code}>{COUNTRIES[code]?.name}</option>
+                  ))}
+                </optgroup>
               ))}
             </select>
             {country && (
