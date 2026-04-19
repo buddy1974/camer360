@@ -2,7 +2,11 @@ import { db } from '@/lib/db/client'
 import { categories, articles } from '@/lib/db/schema'
 import { eq, inArray } from 'drizzle-orm'
 
-const TARGET_SLUGS  = ['celebrities', 'music', 'film-tv', 'sport-stars', 'influencers', 'entrepreneurs', 'events']
+const TARGET_SLUGS  = [
+  'celebrities', 'music', 'film-tv', 'sport-stars', 'influencers', 'entrepreneurs', 'events',
+  // Editorial content features
+  'celebrity-timelines', 'family-trees', 'ones-to-watch', 'cultural-moments',
+]
 const CLEANUP_SLUGS = ['style', 'usa', 'europe']
 
 /**
@@ -41,6 +45,20 @@ export async function runCategoryMigration(): Promise<{ ok: boolean; steps: stri
         sortOrder: 7,
       })
       steps.push('Created events')
+    }
+
+    // ── Step 2b: Create editorial feature categories ──────────
+    const featureCategories = [
+      { slug: 'celebrity-timelines', name: 'Celebrity Timelines', description: 'Interactive career timelines for African celebrities',   sortOrder: 8  },
+      { slug: 'family-trees',        name: 'Family Trees',        description: 'Entertainment dynasties and family connections',         sortOrder: 9  },
+      { slug: 'ones-to-watch',       name: 'Ones to Watch',       description: 'Editorial picks for rising African stars',               sortOrder: 10 },
+      { slug: 'cultural-moments',    name: 'Cultural Moments',    description: 'Defining moments in African entertainment and culture',  sortOrder: 11 },
+    ]
+    for (const cat of featureCategories) {
+      if (!bySlug[cat.slug]) {
+        await db.insert(categories).values(cat)
+        steps.push(`Created ${cat.slug}`)
+      }
     }
 
     // ── Refresh after inserts ─────────────────────────────────

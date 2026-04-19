@@ -63,9 +63,13 @@ export function Footer() {
           <h3 className="footer-section-title">Culture</h3>
           <ul className="footer-links">
             {[
-              { href: '/influencers',   label: 'Influencers' },
-              { href: '/entrepreneurs', label: 'Entrepreneurs' },
-              { href: '/events',        label: 'Events' },
+              { href: '/influencers',      label: 'Influencers' },
+              { href: '/entrepreneurs',    label: 'Entrepreneurs' },
+              { href: '/events',           label: 'Events' },
+              { href: '/timelines',        label: 'Celebrity Timelines' },
+              { href: '/family-trees',     label: 'Family Trees' },
+              { href: '/ones-to-watch',    label: 'Ones to Watch' },
+              { href: '/cultural-moments', label: 'Cultural Moments' },
             ].map(item => (
               <li key={item.href} className="footer-link">
                 <Link href={item.href}>{item.label}</Link>
