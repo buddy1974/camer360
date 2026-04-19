@@ -50,7 +50,7 @@ export default async function HomePage() {
     categoryRows = await Promise.all(
       availableSlugs.slice(0, 6).map(async slug => {
         const cat = allCats.find(c => c.slug === slug)!
-        const { articles: arts } = await getArticlesByCategory(cat.slug, 1, 4)
+        const { articles: arts } = await getArticlesByCategory(cat.slug, 1, 6)
         return { slug: cat.slug, name: cat.name, articles: arts }
       })
     )
