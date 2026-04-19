@@ -4,6 +4,7 @@ export const revalidate = 0
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import EbonyNavigation from '@/components/ebony-navigation'
+import BackToTop from '@/components/ui/BackToTop'
 import { Footer } from '@/components/layout/Footer'
 import { BreakingBanner } from '@/components/article/BreakingBanner'
 import { ArticleCard } from '@/components/article/ArticleCard'
@@ -867,12 +868,13 @@ export default async function HomePage() {
         <EbonyNavigation />
 
         {/* ── Hero: image left + newsletter right ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', minHeight: '520px', background: '#111' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px]" style={{ minHeight: '520px', background: '#111' }}>
 
           {/* LEFT — featured article with image + overlay */}
           <Link
             href={featured[0] ? `/${featured[0].category.slug}/${featured[0].slug}` : '/celebrities'}
-            style={{ position: 'relative', display: 'block', overflow: 'hidden', background: '#1a1a1a', textDecoration: 'none', minHeight: '520px' }}
+            className="min-h-[360px] lg:min-h-[520px]"
+            style={{ position: 'relative', display: 'block', overflow: 'hidden', background: '#1a1a1a', textDecoration: 'none' }}
           >
             {featured[0]?.featuredImage && (
               <img
@@ -905,8 +907,8 @@ export default async function HomePage() {
             </div>
           </Link>
 
-          {/* RIGHT — newsletter sidebar */}
-          <div style={{ background: '#0F0F0F', borderLeft: '1px solid #1E1E1E', display: 'flex', flexDirection: 'column', padding: '40px 32px', gap: '32px' }}>
+          {/* RIGHT — newsletter sidebar (hidden on mobile, shown on lg+) */}
+          <div className="hidden lg:flex" style={{ background: '#0F0F0F', borderLeft: '1px solid #1E1E1E', flexDirection: 'column', padding: '40px 32px', gap: '32px' }}>
             <div>
               <p style={{ fontSize: '10px', fontWeight: 900, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#D4AF37', marginBottom: '12px' }}>Newsletter</p>
               <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.4rem', fontWeight: 700, color: '#fff', lineHeight: 1.3, marginBottom: '12px' }}>Stay Ahead of the Story</h3>
@@ -946,11 +948,16 @@ export default async function HomePage() {
             <div className="articles-grid">
               {latest.slice(0, 6).map(article => (
                 <Link key={article.id} href={`/${article.category.slug}/${article.slug}`} className="premium-article-card">
-                  <div className="article-image" style={article.featuredImage ? {
-                    backgroundImage: `url(${article.featuredImage})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  } : undefined} />
+                  <div className="article-image" style={{ position: 'relative' }}>
+                    {article.featuredImage && (
+                      <img
+                        src={article.featuredImage}
+                        alt={article.title}
+                        loading="lazy"
+                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    )}
+                  </div>
                   <div className="article-content">
                     <div className="article-meta">
                       <span className="article-category">{article.category?.name || 'Entertainment'}</span>
@@ -1031,11 +1038,16 @@ export default async function HomePage() {
               <div className="articles-grid">
                 {row.articles.map(article => (
                   <Link key={article.id} href={`/${article.category.slug}/${article.slug}`} className="premium-article-card">
-                    <div className="article-image" style={article.featuredImage ? {
-                      backgroundImage: `url(${article.featuredImage})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                    } : undefined} />
+                    <div className="article-image" style={{ position: 'relative' }}>
+                      {article.featuredImage && (
+                        <img
+                          src={article.featuredImage}
+                          alt={article.title}
+                          loading="lazy"
+                          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      )}
+                    </div>
                     <div className="article-content">
                       <div className="article-meta">
                         <span className="article-category">{article.category?.name || 'Entertainment'}</span>
@@ -1054,6 +1066,7 @@ export default async function HomePage() {
 
         <Footer />
       </div>
+      <BackToTop />
     </>
   )
 }
