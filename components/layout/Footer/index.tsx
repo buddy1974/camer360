@@ -79,13 +79,14 @@ export function Footer() {
           <h3 className="footer-section-title">Company</h3>
           <ul className="footer-links">
             {[
-              { href: '/about',       label: 'About Camer360' },
-              { href: '/contact',     label: 'Contact Us' },
-              { href: '/newsletter',  label: 'Newsletter' },
-              { href: '/advertise',   label: 'Advertise' },
-              { href: '/rss',         label: 'RSS Feed' },
-              { href: '/privacy',     label: 'Privacy Policy' },
-              { href: '/terms',       label: 'Terms of Service' },
+              { href: '/about',           label: 'About Camer360' },
+              { href: '/contact',         label: 'Contact Us' },
+              { href: '/newsletter',      label: 'Newsletter' },
+              { href: '/advertise',       label: 'Advertise' },
+              { href: '/rss',             label: 'RSS Feed' },
+              { href: '/privacy',         label: 'Privacy Policy' },
+              { href: '/terms',           label: 'Terms of Service' },
+              { href: '/content-policy',  label: 'Content Policy' },
             ].map(item => (
               <li key={item.href} className="footer-link">
                 <Link href={item.href}>{item.label}</Link>
@@ -100,6 +101,9 @@ export function Footer() {
       <div className="footer-bottom">
         <p className="footer-copyright">
           © {new Date().getFullYear()} {SITE_NAME}. All rights reserved.
+          <span style={{ display: 'block', fontSize: '0.68rem', color: '#444', marginTop: '4px' }}>
+            This site displays Google AdSense advertisements. Ads are clearly labelled and do not influence editorial content.
+          </span>
         </p>
         <nav className="footer-legal">
           <Link href="/privacy">Privacy Policy</Link>

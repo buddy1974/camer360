@@ -6,6 +6,8 @@ import { buildSiteMetadata } from '@/lib/seo/metadata'
 import { buildOrganizationSchema, buildWebSiteSchema } from '@/lib/seo/schema'
 import ServiceWorkerRegistration from '@/components/pwa/ServiceWorkerRegistration'
 import AdSenseLoader from '@/components/ads/AdSenseLoader'
+import { ConsentProvider } from '@/components/ads/ConsentContext'
+import CookieBanner from '@/components/ads/CookieBanner'
 import './globals.css'
 
 const geistSans   = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
@@ -67,11 +69,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         `}} />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${inter.variable} antialiased`}>
-        <AdSenseLoader />
-        {children}
-        <ServiceWorkerRegistration />
-        <SpeedInsights />
-        <Analytics />
+        <ConsentProvider>
+          <AdSenseLoader />
+          {children}
+          <CookieBanner />
+          <ServiceWorkerRegistration />
+          <SpeedInsights />
+          <Analytics />
+        </ConsentProvider>
       </body>
     </html>
   )

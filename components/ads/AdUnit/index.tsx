@@ -1,5 +1,6 @@
 'use client'
 import { useEffect } from 'react'
+import { ADSENSE_ID } from '@/lib/constants'
 
 interface AdUnitProps {
   slot: string
@@ -25,7 +26,7 @@ export default function AdUnit({ slot, format = 'auto', className = '', style }:
       <ins
         className="adsbygoogle"
         style={{ display: 'block' }}
-        data-ad-client="ca-pub-0554291063972402"
+        data-ad-client={ADSENSE_ID}
         data-ad-slot={slot}
         data-ad-format={format}
         data-full-width-responsive="true"
