@@ -18,7 +18,7 @@ export function buildNewsArticleSchema(article: ArticleWithRelations): object {
     'datePublished':  article.publishedAt,
     'dateModified':   article.updatedAt || article.publishedAt,
     'articleSection': article.category.name,
-    'keywords':       `${article.category.name}, Cameroon, Africa, news`,
+    'keywords':       `${article.category.name}, Cameroon, Africa, entertainment`,
     'inLanguage':     'en',
     'image': [image],
     'author': {
@@ -47,14 +47,15 @@ export function buildNewsArticleSchema(article: ArticleWithRelations): object {
 export function buildOrganizationSchema(): object {
   return {
     '@context':    'https://schema.org',
-    '@type':       'NewsMediaOrganization',
+    '@type':       'Organization',
     'name':        SITE_NAME,
     'url':         SITE_URL,
     'logo':        SITE_LOGO,
     'sameAs':      [SITE_FB, `https://twitter.com/${SITE_TWITTER.replace('@', '')}`],
-    'foundingDate': '2014',
-    'areaServed':  ['Cameroon', 'Southern Cameroons', 'Africa'],
+    'foundingDate': '2025',
+    'areaServed':  ['Cameroon', 'West Africa', 'Central Africa', 'Africa'],
     'knowsLanguage': ['en', 'fr'],
+    'description': "West & Central Africa's premier entertainment magazine covering celebrities, music, film, sport stars, influencers, entrepreneurs and events.",
   }
 }
 

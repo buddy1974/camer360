@@ -1,7 +1,7 @@
 export const SITE_NAME    = 'Camer360'
 export const SITE_URL     = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.camer360.com'
-export const SITE_TAGLINE = '360° of African Life'
-export const SITE_DESCRIPTION = 'West & Central Africa\'s premier celebrity and entertainment magazine. Celebrities, music, fashion, gossip, and lifestyle.'
+export const SITE_TAGLINE = '360° of African Entertainment'
+export const SITE_DESCRIPTION = "West & Central Africa's premier entertainment magazine. Celebrities, music, film, sport stars, influencers, entrepreneurs and events — with Cameroon at the heart."
 export const SITE_TWITTER  = '@Camer360'
 export const SITE_FB       = 'https://www.facebook.com/camer360'
 export const SITE_LOGO     = `${SITE_URL}/icons/logo.png`

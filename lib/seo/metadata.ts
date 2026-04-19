@@ -10,16 +10,16 @@ export function buildSiteMetadata(): Metadata {
   return {
     metadataBase: new URL(SITE_URL),
     title: {
-      default:  `${SITE_NAME} — Independent Cameroon News`,
+      default:  `${SITE_NAME} — West & Central Africa's Entertainment Magazine`,
       template: `%s | ${SITE_NAME}`,
     },
-    description: 'Independent English-language news covering Cameroon and Southern Cameroons since 2014. Politics, society, sports, business and more.',
+    description: SITE_DESCRIPTION,
     openGraph: {
       type:        'website',
       siteName:    SITE_NAME,
       locale:      'en_US',
       url:         SITE_URL,
-      title:       `${SITE_NAME} — Cameroon News`,
+      title:       `${SITE_NAME} — African Entertainment`,
       description: SITE_DESCRIPTION,
       images: [{
         url:    `${SITE_URL}/icons/og-default.jpg`,
@@ -71,9 +71,9 @@ export function buildArticleMetadata(article: ArticleWithRelations): Metadata {
     keywords: [
       article.category.name,
       'Cameroon',
-      'Cameroon news',
-      'Southern Cameroons',
-      'Africa news',
+      'African entertainment',
+      'Cameroon celebrities',
+      'African music',
     ].join(', '),
     openGraph: {
       type:          'article',
@@ -106,9 +106,9 @@ export function buildArticleMetadata(article: ArticleWithRelations): Metadata {
 }
 
 export function buildCategoryMetadata(category: Category): Metadata {
-  const title = `${category.name} News — Latest Updates | ${SITE_NAME}`
+  const title = `${category.name} — African ${category.name} | ${SITE_NAME}`
   const description = category.metaDesc
-    || `Latest ${category.name} news from Cameroon and Southern Cameroons. Breaking updates, analysis and reports.`
+    || `Latest ${category.name} stories from Cameroon, West & Central Africa and the diaspora. Celebrity news, exclusive features and cultural coverage.`
 
   return {
     title,
