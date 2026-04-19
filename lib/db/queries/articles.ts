@@ -223,7 +223,7 @@ async function _getMostRead(limit = 6): Promise<ArticleWithRelations[]> {
     .from(articles)
     .innerJoin(categories,  eq(articles.categoryId,   categories.id))
     .leftJoin(authors,      eq(articles.authorId,     authors.id))
-    .innerJoin(articleHits, eq(articleHits.articleId, articles.id))
+    .leftJoin(articleHits,  eq(articleHits.articleId, articles.id))
     .where(eq(articles.status, 'published'))
     .orderBy(desc(articleHits.hits))
     .limit(limit)
