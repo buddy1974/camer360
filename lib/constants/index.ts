@@ -12,10 +12,9 @@ export const CATEGORIES = [
   { slug: 'music',         name: 'Music',         color: '#FF9800' },
   { slug: 'film-tv',       name: 'Film & TV',     color: '#2196F3' },
   { slug: 'sport-stars',   name: 'Sport Stars',   color: '#3F51B5' },
-  { slug: 'style',         name: 'Style',         color: '#E91E8C' },
+  { slug: 'influencers',   name: 'Influencers',   color: '#9C27B0' },
   { slug: 'entrepreneurs', name: 'Entrepreneurs', color: '#4CAF50' },
-  { slug: 'usa',           name: 'USA',           color: '#B22222' },
-  { slug: 'europe',        name: 'Europe',        color: '#003399' },
+  { slug: 'events',        name: 'Events',        color: '#D4AF37' },
 ] as const
 
 export const NAV_CATEGORIES = [
@@ -23,10 +22,9 @@ export const NAV_CATEGORIES = [
   { slug: 'music',         name: 'Music'         },
   { slug: 'film-tv',       name: 'Film & TV'     },
   { slug: 'sport-stars',   name: 'Sport Stars'   },
-  { slug: 'style',         name: 'Style'         },
+  { slug: 'influencers',   name: 'Influencers'   },
   { slug: 'entrepreneurs', name: 'Entrepreneurs' },
-  { slug: 'usa',           name: 'USA'           },
-  { slug: 'europe',        name: 'Europe'        },
+  { slug: 'events',        name: 'Events'        },
 ] as const
 
 export const ARTICLES_PER_PAGE   = 20

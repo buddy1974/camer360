@@ -176,7 +176,7 @@ if (!body.trim())  { setMsg('Body is required'); return }
 
   const mainSlugs = [
     'celebrities', 'music', 'film-tv', 'sport-stars',
-    'style', 'entrepreneurs', 'usa', 'europe',
+    'influencers', 'entrepreneurs', 'events',
   ]
   const filteredCats = categories.filter(c => mainSlugs.includes(c.slug))
   const displayCats  = filteredCats.length > 0 ? filteredCats : categories

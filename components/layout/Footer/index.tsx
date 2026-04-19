@@ -63,10 +63,9 @@ export function Footer() {
           <h3 className="footer-section-title">Culture</h3>
           <ul className="footer-links">
             {[
-              { href: '/style',         label: 'Style' },
+              { href: '/influencers',   label: 'Influencers' },
               { href: '/entrepreneurs', label: 'Entrepreneurs' },
-              { href: '/usa',           label: 'USA' },
-              { href: '/europe',        label: 'Europe' },
+              { href: '/events',        label: 'Events' },
             ].map(item => (
               <li key={item.href} className="footer-link">
                 <Link href={item.href}>{item.label}</Link>
@@ -84,7 +83,6 @@ export function Footer() {
               { href: '/contact',   label: 'Contact Us' },
               { href: '/advertise', label: 'Advertise' },
               { href: '/rss',       label: 'RSS Feed' },
-              { href: '/search',    label: 'Search' },
               { href: '/privacy',   label: 'Privacy Policy' },
             ].map(item => (
               <li key={item.href} className="footer-link">

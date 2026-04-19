@@ -35,7 +35,7 @@ export default async function HomePage() {
     console.error('Homepage DB error:', err)
   }
 
-  const targetSlugs = ['celebrities', 'music', 'film-tv', 'sport-stars', 'style', 'entrepreneurs', 'usa', 'europe']
+  const targetSlugs = ['celebrities', 'music', 'film-tv', 'sport-stars', 'influencers', 'entrepreneurs', 'events']
   const availableSlugs = targetSlugs.filter(s => allCats.some(c => c.slug === s))
 
   let categoryRows: { slug: string; name: string; articles: ArticleWithRelations[] }[] = []

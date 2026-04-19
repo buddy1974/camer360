@@ -13,10 +13,9 @@ const NAV_LEFT = [
 ]
 
 const NAV_RIGHT = [
-  { label: 'STYLE',         href: '/style'         },
+  { label: 'INFLUENCERS',  href: '/influencers'  },
   { label: 'ENTREPRENEURS', href: '/entrepreneurs' },
-  { label: 'USA',           href: '/usa'           },
-  { label: 'EUROPE',        href: '/europe'        },
+  { label: 'EVENTS',       href: '/events'       },
 ]
 
 const NAV_ALL = [...NAV_LEFT, ...NAV_RIGHT]
@@ -24,10 +23,10 @@ const NAV_ALL = [...NAV_LEFT, ...NAV_RIGHT]
 const TRENDING = [
   { label: 'CAMER360 POWER 100',         href: '/celebrities'   },
   { label: 'AFROBEATS RISING STARS',     href: '/music'         },
-  { label: 'AFRICAN BEAUTY AWARDS 2026', href: '/style'         },
-  { label: 'CAMEROONIANS IN AMERICA',    href: '/usa'           },
-  { label: 'SPORT STARS TO WATCH',       href: '/sport-stars'   },
+  { label: 'TOP INFLUENCERS 2026',       href: '/influencers'   },
   { label: 'AFRICAN MOGULS 2026',        href: '/entrepreneurs' },
+  { label: 'SPORT STARS TO WATCH',       href: '/sport-stars'   },
+  { label: 'UPCOMING EVENTS',            href: '/events'        },
 ]
 
 function NavLink({ item, pathname }: { item: { label: string; href: string }; pathname: string }) {

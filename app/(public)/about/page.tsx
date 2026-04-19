@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: "About Camer360 | West & Central Africa's Entertainment Magazine",
-  description: "Camer360 is West & Central Africa's premier entertainment magazine — celebrities, music, film, sport stars, style and culture from Cameroon to the diaspora.",
+  description: "Camer360 is West & Central Africa's premier entertainment magazine — celebrities, music, film, sport stars, influencers, entrepreneurs and events from Cameroon to the world.",
 }
 
 export default function AboutPage() {
@@ -27,7 +27,7 @@ export default function AboutPage() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '48px' }}>
         {[
           { number: '500K+', label: 'Monthly Readers'    },
-          { number: '8',     label: 'Content Categories' },
+          { number: '7',     label: 'Content Categories' },
           { number: '3',     label: 'Continents Covered' },
         ].map(stat => (
           <div key={stat.label} style={{ background: '#111', border: '1px solid #1E1E1E', borderRadius: '12px', padding: '24px', textAlign: 'center' }}>
@@ -53,7 +53,7 @@ export default function AboutPage() {
         </p>
         <p style={{ marginBottom: '1.5rem' }}>
           We cover eight content verticals —{' '}
-          {['Celebrities', 'Music', 'Film & TV', 'Sport Stars', 'Style', 'Entrepreneurs', 'USA', 'Europe'].map((cat, i, arr) => (
+          {['Celebrities', 'Music', 'Film & TV', 'Sport Stars', 'Influencers', 'Entrepreneurs', 'Events'].map((cat, i, arr) => (
             <span key={cat}><strong style={{ color: '#EEE' }}>{cat}</strong>{i < arr.length - 1 ? ', ' : ''}</span>
           ))}
           {' '}— chosen to reflect the full spectrum of African achievement and ambition.
