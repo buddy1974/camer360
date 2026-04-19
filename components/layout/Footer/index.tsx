@@ -79,11 +79,13 @@ export function Footer() {
           <h3 className="footer-section-title">Company</h3>
           <ul className="footer-links">
             {[
-              { href: '/about',     label: 'About Camer360' },
-              { href: '/contact',   label: 'Contact Us' },
-              { href: '/advertise', label: 'Advertise' },
-              { href: '/rss',       label: 'RSS Feed' },
-              { href: '/privacy',   label: 'Privacy Policy' },
+              { href: '/about',       label: 'About Camer360' },
+              { href: '/contact',     label: 'Contact Us' },
+              { href: '/newsletter',  label: 'Newsletter' },
+              { href: '/advertise',   label: 'Advertise' },
+              { href: '/rss',         label: 'RSS Feed' },
+              { href: '/privacy',     label: 'Privacy Policy' },
+              { href: '/terms',       label: 'Terms of Service' },
             ].map(item => (
               <li key={item.href} className="footer-link">
                 <Link href={item.href}>{item.label}</Link>

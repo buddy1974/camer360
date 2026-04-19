@@ -73,6 +73,25 @@ export default function AboutPage() {
           homeland to African voices shaping culture abroad.
         </p>
 
+        <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#D4AF37', margin: '2.5rem 0 1rem' }}>Our Editorial Team</h2>
+        <p style={{ marginBottom: '1.5rem' }}>
+          Camer360 is produced by a team of writers, photographers and cultural correspondents
+          operating across Cameroon, West &amp; Central Africa, and the diaspora. Our editorial
+          decisions are made independently of our commercial operations — no advertiser influences
+          what we cover or how we cover it.
+        </p>
+
+        <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#D4AF37', margin: '2.5rem 0 1rem' }}>Publisher</h2>
+        <div style={{ background: '#111', border: '1px solid #1E1E1E', borderRadius: '12px', padding: '24px', marginBottom: '1.5rem' }}>
+          <div style={{ color: '#BBBBBB', fontSize: '0.9rem', lineHeight: 1.9 }}>
+            <strong style={{ color: '#EEE', fontSize: '1rem' }}>Camer360</strong><br />
+            PO Box 1926, Bamenda<br />
+            North West Region, Cameroon<br />
+            Phone: <a href="tel:+23769985745" style={{ color: '#D4AF37', textDecoration: 'none' }}>+237 69985745</a><br />
+            Email: <a href="mailto:info@camer360.com" style={{ color: '#D4AF37', textDecoration: 'none' }}>info@camer360.com</a>
+          </div>
+        </div>
+
         <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#D4AF37', margin: '2.5rem 0 1rem' }}>Advertise With Us</h2>
         <p style={{ marginBottom: '1.5rem' }}>
           Reach a highly engaged audience of African entertainment fans across web, social and

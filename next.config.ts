@@ -12,7 +12,8 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       // Legacy site redirects
-      { source: '/privacy-policy', destination: '/privacy',    permanent: true },
+      { source: '/privacy-policy',    destination: '/privacy', permanent: true },
+      { source: '/terms-of-service',  destination: '/terms',   permanent: true },
       { source: '/sports',         destination: '/sport-stars', permanent: true },
       { source: '/sports/:path*',  destination: '/sport-stars/:path*', permanent: true },
 
