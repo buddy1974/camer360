@@ -5,22 +5,23 @@ import { usePathname } from 'next/navigation'
 import { Search, Mail, ShoppingBag, Menu, X } from 'lucide-react'
 
 const NAV = [
-  { label: 'ENTERTAINMENT', href: '/gossip'         },
-  { label: 'STYLE',         href: '/fashion-beauty' },
-  { label: 'SPORTS',        href: '/sport-stars'    },
-  { label: 'CULTURE',       href: '/real-talk'      },
-  { label: 'MUSIC',         href: '/music'          },
-  { label: 'VIRAL',         href: '/viral'          },
-  { label: 'CELEBRITIES',   href: '/celebrities'    },
+  { label: 'CELEBRITIES',   href: '/celebrities'   },
+  { label: 'MUSIC',         href: '/music'         },
+  { label: 'FILM & TV',     href: '/film-tv'       },
+  { label: 'SPORT STARS',   href: '/sport-stars'   },
+  { label: 'STYLE',         href: '/style'         },
+  { label: 'ENTREPRENEURS', href: '/entrepreneurs' },
+  { label: 'USA',           href: '/usa'           },
+  { label: 'EUROPE',        href: '/europe'        },
 ]
 
 const TRENDING = [
-  { label: 'CAMER360 POWER 100',          href: '/celebrities'    },
-  { label: 'AFRICAN BEAUTY AWARDS 2026',  href: '/fashion-beauty' },
-  { label: 'AFROBEATS RISING STARS',      href: '/music'          },
-  { label: 'DIASPORA SPOTLIGHT',          href: '/diaspora'       },
-  { label: 'VIRAL THIS WEEK',             href: '/viral'          },
-  { label: 'SPORT STARS TO WATCH',        href: '/sport-stars'    },
+  { label: 'CAMER360 POWER 100',         href: '/celebrities'   },
+  { label: 'AFROBEATS RISING STARS',     href: '/music'         },
+  { label: 'AFRICAN BEAUTY AWARDS 2026', href: '/style'         },
+  { label: 'CAMEROONIANS IN AMERICA',    href: '/usa'           },
+  { label: 'SPORT STARS TO WATCH',       href: '/sport-stars'   },
+  { label: 'AFRICAN MOGULS 2026',        href: '/entrepreneurs' },
 ]
 
 export default function EbonyNavigation() {

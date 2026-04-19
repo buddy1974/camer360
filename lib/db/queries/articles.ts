@@ -1,7 +1,7 @@
 import { unstable_cache } from 'next/cache'
 import { db } from '@/lib/db/client'
 import { articles, categories, authors, articleHits } from '@/lib/db/schema'
-import { eq, desc, and, or, like, sql, inArray } from 'drizzle-orm'
+import { eq, desc, and, or, like, sql } from 'drizzle-orm'
 import type { ArticleWithRelations } from '@/lib/types'
 
 function cleanImg(url: string | null | undefined): string | null {
@@ -132,6 +132,7 @@ async function _getLatestArticles(limit = 20, offset = 0): Promise<ArticleWithRe
 export const getLatestArticles = _getLatestArticles
 
 export async function getFeaturedArticles(limit = 3): Promise<ArticleWithRelations[]> {
+  // Primary: isFeatured = true, any category
   const rows = await db
     .select({
       article:  articles,
@@ -143,54 +144,42 @@ export async function getFeaturedArticles(limit = 3): Promise<ArticleWithRelatio
     .innerJoin(categories, eq(articles.categoryId, categories.id))
     .leftJoin(authors,     eq(articles.authorId,   authors.id))
     .leftJoin(articleHits, eq(articleHits.articleId, articles.id))
-    .where(
-      and(
-        eq(articles.status,     'published'),
-        eq(articles.isFeatured, true),
-        inArray(articles.categoryId, [6, 9, 10, 12]),
-      )
-    )
+    .where(and(eq(articles.status, 'published'), eq(articles.isFeatured, true)))
     .orderBy(desc(articles.publishedAt))
     .limit(limit)
 
-  if (rows.length < limit) {
-    const needed = limit - rows.length
-    const ids = new Set(rows.map(r => r.article.id))
-    const extra = await db
-      .select({
-        article:  articles,
-        category: categories,
-        author:   authors,
-        hits:     articleHits.hits,
-      })
-      .from(articles)
-      .innerJoin(categories, eq(articles.categoryId, categories.id))
-      .leftJoin(authors,     eq(articles.authorId,   authors.id))
-      .leftJoin(articleHits, eq(articleHits.articleId, articles.id))
-      .where(
-        and(
-          eq(articles.status, 'published'),
-          inArray(articles.categoryId, [6, 9, 10, 12]),
-        )
-      )
-      .orderBy(desc(articles.publishedAt))
-      .limit(needed + ids.size)
-    return [
-      ...rows.map(r => ({ ...r.article, featuredImage: cleanImg(r.article.featuredImage), category: r.category, author: r.author ?? null, tags: [], hits: r.hits ?? 0 })),
-      ...extra
-          .map(r => ({ ...r.article, featuredImage: cleanImg(r.article.featuredImage), category: r.category, author: r.author ?? null, tags: [], hits: r.hits ?? 0 }))
-          .filter(a => !ids.has(a.id))
-          .slice(0, needed),
-    ]
+  if (rows.length >= limit) {
+    return rows.map(r => ({
+      ...r.article, featuredImage: cleanImg(r.article.featuredImage),
+      category: r.category, author: r.author ?? null, tags: [], hits: r.hits ?? 0,
+    }))
   }
 
-  return rows.map(r => ({
-    ...r.article, featuredImage: cleanImg(r.article.featuredImage),
-    category: r.category,
-    author:   r.author ?? null,
-    tags:     [],
-    hits:     r.hits ?? 0,
-  }))
+  // Fallback: fill with latest published if not enough featured
+  const needed  = limit - rows.length
+  const seenIds = new Set(rows.map(r => r.article.id))
+  const extra   = await db
+    .select({
+      article:  articles,
+      category: categories,
+      author:   authors,
+      hits:     articleHits.hits,
+    })
+    .from(articles)
+    .innerJoin(categories, eq(articles.categoryId, categories.id))
+    .leftJoin(authors,     eq(articles.authorId,   authors.id))
+    .leftJoin(articleHits, eq(articleHits.articleId, articles.id))
+    .where(eq(articles.status, 'published'))
+    .orderBy(desc(articles.publishedAt))
+    .limit(needed + seenIds.size)
+
+  return [
+    ...rows.map(r => ({ ...r.article, featuredImage: cleanImg(r.article.featuredImage), category: r.category, author: r.author ?? null, tags: [], hits: r.hits ?? 0 })),
+    ...extra
+        .filter(r => !seenIds.has(r.article.id))
+        .slice(0, needed)
+        .map(r => ({ ...r.article, featuredImage: cleanImg(r.article.featuredImage), category: r.category, author: r.author ?? null, tags: [], hits: r.hits ?? 0 })),
+  ]
 }
 
 export async function getBreakingNews(limit = 5): Promise<ArticleWithRelations[]> {

@@ -8,28 +8,25 @@ export const SITE_LOGO     = `${SITE_URL}/icons/logo.png`
 export const ADSENSE_ID    = 'ca-pub-0554291063972402'
 
 export const CATEGORIES = [
-  { slug: 'celebrities',    name: 'Celebrities',      color: '#E91E8C' },
-  { slug: 'influencers',    name: 'Influencers',      color: '#9C27B0' },
-  { slug: 'gossip',         name: 'Hot Gossip',       color: '#F44336' },
-  { slug: 'music',          name: 'Music',            color: '#FF9800' },
-  { slug: 'film-tv',        name: 'Film & TV',        color: '#2196F3' },
-  { slug: 'fashion-beauty', name: 'Fashion & Beauty', color: '#E91E8C' },
-  { slug: 'money-moves',    name: 'Money Moves',      color: '#4CAF50' },
-  { slug: 'viral',          name: 'Viral',            color: '#FF5722' },
-  { slug: 'diaspora',       name: 'Diaspora',         color: '#009688' },
-  { slug: 'sport-stars',    name: 'Sport Stars',      color: '#3F51B5' },
-  { slug: 'real-talk',      name: 'Real Talk',        color: '#607D8B' },
-  { slug: 'exposed',        name: 'Exposed',          color: '#8B0000' },
+  { slug: 'celebrities',   name: 'Celebrities',   color: '#E91E8C' },
+  { slug: 'music',         name: 'Music',         color: '#FF9800' },
+  { slug: 'film-tv',       name: 'Film & TV',     color: '#2196F3' },
+  { slug: 'sport-stars',   name: 'Sport Stars',   color: '#3F51B5' },
+  { slug: 'style',         name: 'Style',         color: '#E91E8C' },
+  { slug: 'entrepreneurs', name: 'Entrepreneurs', color: '#4CAF50' },
+  { slug: 'usa',           name: 'USA',           color: '#B22222' },
+  { slug: 'europe',        name: 'Europe',        color: '#003399' },
 ] as const
 
 export const NAV_CATEGORIES = [
-  { slug: 'gossip',         name: 'Entertainment' },
-  { slug: 'music',          name: 'Music'         },
-  { slug: 'celebrities',    name: 'Celebrities'   },
-  { slug: 'fashion-beauty', name: 'Style'         },
-  { slug: 'real-talk',      name: 'Culture'       },
-  { slug: 'sport-stars',    name: 'Sport Stars'   },
-  { slug: 'viral',          name: 'Viral'         },
+  { slug: 'celebrities',   name: 'Celebrities'   },
+  { slug: 'music',         name: 'Music'         },
+  { slug: 'film-tv',       name: 'Film & TV'     },
+  { slug: 'sport-stars',   name: 'Sport Stars'   },
+  { slug: 'style',         name: 'Style'         },
+  { slug: 'entrepreneurs', name: 'Entrepreneurs' },
+  { slug: 'usa',           name: 'USA'           },
+  { slug: 'europe',        name: 'Europe'        },
 ] as const
 
 export const ARTICLES_PER_PAGE   = 20

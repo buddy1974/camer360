@@ -5,18 +5,14 @@ import { categories } from '../lib/db/schema/categories'
 import { sql } from 'drizzle-orm'
 
 const cats = [
-  { slug: 'celebrities',    name: 'Celebrities' },
-  { slug: 'influencers',    name: 'Influencers' },
-  { slug: 'gossip',         name: 'Hot Gossip' },
-  { slug: 'music',          name: 'Music' },
-  { slug: 'film-tv',        name: 'Film & TV' },
-  { slug: 'fashion-beauty', name: 'Fashion & Beauty' },
-  { slug: 'money-moves',    name: 'Money Moves' },
-  { slug: 'viral',          name: 'Viral' },
-  { slug: 'diaspora',       name: 'Diaspora' },
-  { slug: 'sport-stars',    name: 'Sport Stars' },
-  { slug: 'real-talk',      name: 'Real Talk' },
-  { slug: 'exposed',        name: 'Exposed' },
+  { slug: 'celebrities',   name: 'Celebrities',   sortOrder: 1 },
+  { slug: 'music',         name: 'Music',         sortOrder: 2 },
+  { slug: 'film-tv',       name: 'Film & TV',     sortOrder: 3 },
+  { slug: 'sport-stars',   name: 'Sport Stars',   sortOrder: 4 },
+  { slug: 'style',         name: 'Style',         sortOrder: 5 },
+  { slug: 'entrepreneurs', name: 'Entrepreneurs', sortOrder: 6 },
+  { slug: 'usa',           name: 'USA',           sortOrder: 7 },
+  { slug: 'europe',        name: 'Europe',        sortOrder: 8 },
 ]
 
 async function seed() {

@@ -46,12 +46,10 @@ export function Footer() {
           <h3 className="footer-section-title">Entertainment</h3>
           <ul className="footer-links">
             {[
-              { href: '/celebrities',    label: 'Celebrities' },
-              { href: '/music',          label: 'Music' },
-              { href: '/film-tv',        label: 'Film & TV' },
-              { href: '/fashion-beauty', label: 'Style' },
-              { href: '/viral',          label: 'Viral' },
-              { href: '/gossip',         label: 'Gossip' },
+              { href: '/celebrities',   label: 'Celebrities' },
+              { href: '/music',         label: 'Music' },
+              { href: '/film-tv',       label: 'Film & TV' },
+              { href: '/sport-stars',   label: 'Sport Stars' },
             ].map(item => (
               <li key={item.href} className="footer-link">
                 <Link href={item.href}>{item.label}</Link>
@@ -65,12 +63,10 @@ export function Footer() {
           <h3 className="footer-section-title">Culture</h3>
           <ul className="footer-links">
             {[
-              { href: '/diaspora',    label: 'Diaspora' },
-              { href: '/money-moves', label: 'Entrepreneurs' },
-              { href: '/sport-stars', label: 'Sport Stars' },
-              { href: '/influencers', label: 'Influencers' },
-              { href: '/real-talk',   label: 'Real Talk' },
-              { href: '/exposed',     label: 'Exposed' },
+              { href: '/style',         label: 'Style' },
+              { href: '/entrepreneurs', label: 'Entrepreneurs' },
+              { href: '/usa',           label: 'USA' },
+              { href: '/europe',        label: 'Europe' },
             ].map(item => (
               <li key={item.href} className="footer-link">
                 <Link href={item.href}>{item.label}</Link>
