@@ -4,6 +4,7 @@ export const revalidate = 0
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import EbonyNavigation from '@/components/ebony-navigation'
+import HeroSlider from '@/components/hero/HeroSlider'
 import BackToTop from '@/components/ui/BackToTop'
 import { Footer } from '@/components/layout/Footer'
 import { BreakingBanner } from '@/components/article/BreakingBanner'
@@ -33,7 +34,7 @@ export default async function HomePage() {
     ;[featured, latest, mostRead, allCats, breaking] = await Promise.all([
       getFeaturedArticles(7),
       getLatestArticles(18),
-      getMostRead(5),
+      getMostRead(6),
       getAllCategories(),
       getBreakingNews(5),
     ])
@@ -867,45 +868,11 @@ export default async function HomePage() {
         <BreakingBanner articles={breaking} />
         <EbonyNavigation />
 
-        {/* ── Hero: image left + newsletter right ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px]" style={{ minHeight: '520px', background: '#111' }}>
+        {/* ── Hero: slider left + newsletter right ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px]" style={{ background: '#111' }}>
 
-          {/* LEFT — featured article with image + overlay */}
-          <Link
-            href={featured[0] ? `/${featured[0].category.slug}/${featured[0].slug}` : '/celebrities'}
-            className="min-h-[360px] lg:min-h-[520px]"
-            style={{ position: 'relative', display: 'block', overflow: 'hidden', background: '#1a1a1a', textDecoration: 'none' }}
-          >
-            {featured[0]?.featuredImage && (
-              <img
-                src={featured[0].featuredImage}
-                alt={featured[0]?.title ?? ''}
-                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            )}
-            {/* Dark overlay — dims the image so text pops */}
-            <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.50)' }} />
-            {/* Bottom gradient for extra text legibility */}
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.80) 0%, transparent 55%)' }} />
-
-            {/* Text content */}
-            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '40px 44px' }}>
-              <span style={{ display: 'inline-block', background: '#D4AF37', color: '#1A1A1A', fontSize: '10px', fontWeight: 900, letterSpacing: '0.16em', textTransform: 'uppercase', padding: '4px 10px', borderRadius: '2px', marginBottom: '16px' }}>
-                {featured[0]?.category.name ?? 'Entertainment'}
-              </span>
-              <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 3.2vw, 2.8rem)', fontWeight: 800, color: '#fff', lineHeight: 1.18, margin: '0 0 16px', textShadow: '0 2px 16px rgba(0,0,0,0.6)' }}>
-                {featured[0]?.title ?? "Cameroon's Entertainment Revolution"}
-              </h1>
-              {featured[0]?.excerpt && (
-                <p style={{ color: 'rgba(255,255,255,0.80)', fontSize: '15px', lineHeight: 1.65, margin: '0 0 24px', maxWidth: '560px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
-                  {featured[0].excerpt}
-                </p>
-              )}
-              <span style={{ display: 'inline-block', background: 'linear-gradient(135deg,#D4AF37,#F7DC6F)', color: '#1A1A1A', fontSize: '11px', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', padding: '12px 28px', borderRadius: '2px' }}>
-                Read Full Story →
-              </span>
-            </div>
-          </Link>
+          {/* LEFT — dynamic hero slider */}
+          <HeroSlider articles={featured} />
 
           {/* RIGHT — newsletter sidebar (hidden on mobile, shown on lg+) */}
           <div className="hidden lg:flex" style={{ background: '#0F0F0F', borderLeft: '1px solid #1E1E1E', flexDirection: 'column', padding: '40px 32px', gap: '32px' }}>
@@ -924,7 +891,7 @@ export default async function HomePage() {
               <div>
                 <p style={{ fontSize: '10px', fontWeight: 900, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#D4AF37', marginBottom: '16px' }}>Trending</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {mostRead.slice(0, 4).map((article, i) => (
+                  {mostRead.slice(0, 6).map((article, i) => (
                     <Link key={article.id} href={`/${article.category.slug}/${article.slug}`} style={{ textDecoration: 'none', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
                       <span style={{ fontSize: '18px', fontWeight: 900, color: '#2A2A2A', lineHeight: 1, minWidth: '20px', flexShrink: 0 }}>{i + 1}</span>
                       <span style={{ fontSize: '12px', color: '#999', lineHeight: 1.45, fontWeight: 500 }}>{article.title}</span>
