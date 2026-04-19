@@ -212,7 +212,7 @@ export async function getBreakingNews(limit = 5): Promise<ArticleWithRelations[]
   }))
 }
 
-async function _getMostRead(limit = 5): Promise<ArticleWithRelations[]> {
+async function _getMostRead(limit = 6): Promise<ArticleWithRelations[]> {
   const rows = await db
     .select({
       article:  articles,

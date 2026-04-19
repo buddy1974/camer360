@@ -28,14 +28,14 @@ export default async function HomePage() {
     ;[featured, latest, mostRead, allCats] = await Promise.all([
       getFeaturedArticles(7),
       getLatestArticles(18),
-      getMostRead(5),
+      getMostRead(6),
       getAllCategories(),
     ])
   } catch (err) {
     console.error('Homepage DB error:', err)
   }
 
-  const targetSlugs = ['celebrities', 'music', 'gossip', 'viral', 'film-tv', 'fashion-beauty']
+  const targetSlugs = ['celebrities', 'music', 'film-tv', 'sport-stars', 'style', 'entrepreneurs', 'usa', 'europe']
   const availableSlugs = targetSlugs.filter(s => allCats.some(c => c.slug === s))
 
   let categoryRows: { slug: string; name: string; articles: ArticleWithRelations[] }[] = []
@@ -143,7 +143,7 @@ export default async function HomePage() {
             )}
             <div className="bg-[#101010] border border-[#1E1E1E] rounded-xl p-5">
               <div className="section-head">
-                <span className="section-head-title" style={{ color: '#E91E8C' }}>Trending</span>
+                <span className="section-head-title" style={{ color: '#D4AF37' }}>Trending</span>
                 <span className="section-head-line" />
               </div>
               {mostRead.map((a, i) => (
