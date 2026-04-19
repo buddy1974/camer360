@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { verifyToken } from '@/lib/auth'
 import { AdminShell } from '@/components/admin/AdminShell'
+import { runCategoryMigration } from '@/lib/db/migrations/category-migration'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies()
@@ -12,6 +13,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const payload = await verifyToken(token)
   console.log('[auth] payload valid:', !!payload)
   if (!payload) redirect('/admin/login')
+
+  // Auto-run idempotent category migration (no-op if already done)
+  const migResult = await runCategoryMigration()
+  if (!migResult.skipped) {
+    console.log('[admin] category migration:', migResult.steps)
+  }
 
   return <AdminShell>{children}</AdminShell>
 }
