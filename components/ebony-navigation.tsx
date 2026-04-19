@@ -60,10 +60,28 @@ export default function EbonyNavigation() {
           {NAV_LEFT.map(item => <NavLink key={item.href} item={item} pathname={pathname} />)}
         </div>
 
-        {/* Center logo */}
-        <Link href="/" className="flex items-center justify-center">
+        {/* Center logo + taglines */}
+        <Link href="/" className="flex items-center justify-center gap-3">
+          <span style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontStyle: 'italic', fontSize: '11px',
+            color: '#D4AF37', textAlign: 'right',
+            lineHeight: 1.4, letterSpacing: '0.04em',
+            whiteSpace: 'nowrap',
+          }}>
+            Cameroon&rsquo;s<br />Premier
+          </span>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.png" alt="Camer360" className="h-20 w-auto" />
+          <span style={{
+            fontFamily: "'Playfair Display', Georgia, serif",
+            fontStyle: 'italic', fontSize: '11px',
+            color: '#D4AF37', textAlign: 'left',
+            lineHeight: 1.4, letterSpacing: '0.04em',
+            whiteSpace: 'nowrap',
+          }}>
+            Lifestyle<br />Magazine
+          </span>
         </Link>
 
         {/* Right nav */}
