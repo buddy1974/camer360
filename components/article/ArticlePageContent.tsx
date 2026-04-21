@@ -15,6 +15,7 @@ import { PerspectiveEngine } from '@/components/article/PerspectiveEngine'
 import { ReadingStreak }    from '@/components/user/ReadingStreak'
 import { buildNewsArticleSchema, buildBreadcrumbSchema } from '@/lib/seo/schema'
 import { linkCelebrities }  from '@/lib/celebrity-linker'
+import { injectVideoEmbeds } from '@/lib/video-embeds'
 import { formatDate, readingTime, formatHitCount, depthScore } from '@/lib/utils'
 import { SITE_URL } from '@/lib/constants'
 import type { ArticleWithRelations } from '@/lib/types'
@@ -133,7 +134,7 @@ export async function ArticlePageContent({ article, related }: Props) {
             <AudioReader title={article.title} body={article.body ?? ''} />
 
             <div className="prose" id="article-content" style={{ background: 'white', padding: '40px', borderRadius: '16px', boxShadow: 'var(--shadow-card)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
-              <ProgressiveBody body={linkCelebrities(article.body ?? '')} />
+              <ProgressiveBody body={injectVideoEmbeds(linkCelebrities(article.body ?? ''))} />
             </div>
 
             <ReactionBar articleId={article.id} />

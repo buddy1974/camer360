@@ -17,6 +17,7 @@ import { musicDrops } from '@/lib/db/schema'
 import { buildSiteMetadata } from '@/lib/seo/metadata'
 import { buildOrganizationSchema } from '@/lib/seo/schema'
 import { desc } from 'drizzle-orm'
+import { BirthdayCountdown } from '@/components/widgets/BirthdayCountdown'
 import type { ArticleWithRelations, Category } from '@/lib/types'
 
 export const metadata: Metadata = buildSiteMetadata()
@@ -159,6 +160,7 @@ export default async function HomePage() {
                 <ArticleCard key={a.id} article={a} variant="list" index={i} />
               ))}
             </div>
+            <BirthdayCountdown />
           </aside>
 
         </div>

@@ -2,8 +2,9 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Search, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { NAV_CATEGORIES } from '@/lib/constants'
+import { SearchBar } from '@/components/layout/SearchBar'
 
 export function Header() {
   const [open, setOpen]         = useState(false)
@@ -73,13 +74,7 @@ export function Header() {
               className="w-8 h-8 grid place-items-center text-[#555] hover:text-white transition-colors">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
             </a>
-            <Link
-              href="/search"
-              aria-label="Search"
-              className="w-8 h-8 grid place-items-center text-[#555] hover:text-white transition-colors ml-1"
-            >
-              <Search size={16} strokeWidth={2} />
-            </Link>
+            <SearchBar />
             <button
               onClick={() => setOpen(v => !v)}
               aria-label={open ? 'Close menu' : 'Open menu'}
