@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk'
+import OpenAI from 'openai'
 import { createPool } from 'mysql2/promise'
 import { appendFileSync, writeFileSync } from 'fs'
 import { config } from 'dotenv'
@@ -9,7 +9,7 @@ const LOG_FILE = 'server/migration/ai-meta-batch.log'
 const DELAY_MS = 1200
 const BATCH_REPORT_EVERY = 50
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
 const pool = createPool({
   host: process.env.DB_HOST,
@@ -36,8 +36,8 @@ async function generateMeta(
   body: string
 ): Promise<{ meta_title: string; meta_desc: string } | null> {
   const bodySnippet = stripHtml(body).slice(0, 500)
-  const msg = await client.messages.create({
-    model: 'claude-sonnet-4-6',
+  const completion = await client.chat.completions.create({
+    model: 'gpt-4o-mini',
     max_tokens: 200,
     messages: [
       {
@@ -50,12 +50,7 @@ Format: {"meta_title":"max 60 chars, include Cameroon if relevant","meta_desc":"
       },
     ],
   })
-  const block = msg.content?.[0]
-  if (!block || block.type !== 'text' || !(block as any).text) {
-    const blockInfo = JSON.stringify(msg.content?.slice(0, 1))
-    throw new Error('Empty or non-text response: ' + blockInfo)
-  }
-  const text = (block as { type: string; text: string }).text.trim()
+  const text = (completion.choices[0]?.message?.content ?? '').trim()
   const clean = text.replace(/```json|```/g, '').trim()
   const parsed = JSON.parse(clean)
   return {
