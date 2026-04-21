@@ -29,6 +29,38 @@ const CC_AUTHORS = [
   { id: 10, name: 'Ndong Eyong' },
 ]
 
+function SocialAsset({ icon, label, content }: { icon: string; label: string; content: string }) {
+  const [copied, setCopied] = useState(false)
+  function copy() {
+    navigator.clipboard.writeText(content).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+  return (
+    <div style={{ marginBottom: '16px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+        <span style={{ fontSize: '0.65rem', fontWeight: 700, color: '#555', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+          {icon} {label}
+        </span>
+        <button onClick={copy} style={{
+          background: 'transparent', border: '1px solid #2A2A2A', color: copied ? '#D4AF37' : '#555',
+          padding: '3px 10px', borderRadius: '4px', fontSize: '0.65rem', cursor: 'pointer', fontWeight: 700,
+        }}>
+          {copied ? '✓ Copied' : 'Copy'}
+        </button>
+      </div>
+      <pre style={{
+        background: '#111', border: '1px solid #1A1A1A', borderRadius: '8px',
+        padding: '12px 14px', fontSize: '0.78rem', color: '#CCC', lineHeight: 1.6,
+        whiteSpace: 'pre-wrap', wordBreak: 'break-word', margin: 0, fontFamily: 'inherit',
+      }}>
+        {content}
+      </pre>
+    </div>
+  )
+}
+
 export function ArticleEditor({ categories, article }: Props) {
   const router = useRouter()
   const isEdit = !!article
@@ -47,9 +79,13 @@ export function ArticleEditor({ categories, article }: Props) {
   const [authorId,  setAuthorId]  = useState<number|null>(article?.authorId ?? null)
   const [authorName, setAuthorName] = useState<string>('')
   const [country,   setCountry]   = useState<string>(article?.country ?? '')
-  const [saving,    setSaving]    = useState(false)
-  const [aiLoading, setAiLoading] = useState(false)
-  const [msg,       setMsg]       = useState('')
+  const [saving,       setSaving]       = useState(false)
+  const [aiLoading,    setAiLoading]    = useState(false)
+  const [msg,          setMsg]          = useState('')
+  const [tiktokScript, setTiktokScript] = useState('')
+  const [twitterThread,setTwitterThread]= useState<string[]>([])
+  const [whatsappMsg,  setWhatsappMsg]  = useState('')
+  const [fbPost,       setFbPost]       = useState('')
 
   // Pre-fill from Quick Publish "Review in Full Editor" flow
   useEffect(() => {
@@ -96,16 +132,26 @@ export function ArticleEditor({ categories, article }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ title, body, type: 'full' }),
       })
-      const data = await res.json() as { title?: string; meta_title?: string; meta_desc?: string; excerpt?: string; enhanced_body?: string; error?: string; author_id?: number; author_name?: string; author_avatar?: string }
+      const data = await res.json() as {
+        title?: string; meta_title?: string; meta_desc?: string; excerpt?: string
+        enhanced_body?: string; error?: string; author_id?: number
+        author_name?: string; author_avatar?: string
+        tiktok_script?: string; twitter_thread?: string[]
+        whatsapp_message?: string; facebook_post?: string
+      }
       if (data.title) {
         setTitle(data.title)
         setSlug(slugify(data.title))
       }
-      if (data.meta_title)    setMetaT(data.meta_title)
-      if (data.meta_desc)     setMetaD(data.meta_desc)
-      if (data.excerpt)       setExcerpt(data.excerpt)
-      if (data.enhanced_body) setBody(data.enhanced_body)
-      if (data.author_id)     { setAuthorId(data.author_id); setAuthorName(data.author_name ?? '') }
+      if (data.meta_title)       setMetaT(data.meta_title)
+      if (data.meta_desc)        setMetaD(data.meta_desc)
+      if (data.excerpt)          setExcerpt(data.excerpt)
+      if (data.enhanced_body)    setBody(data.enhanced_body)
+      if (data.author_id)        { setAuthorId(data.author_id); setAuthorName(data.author_name ?? '') }
+      if (data.tiktok_script)    setTiktokScript(data.tiktok_script)
+      if (data.twitter_thread)   setTwitterThread(data.twitter_thread)
+      if (data.whatsapp_message) setWhatsappMsg(data.whatsapp_message)
+      if (data.facebook_post)    setFbPost(data.facebook_post)
       setMsg(data.error ? '✗ AI error' : '✓ AI enhanced')
     } catch {
       setMsg('✗ AI request failed')
@@ -305,6 +351,35 @@ if (!body.trim())  { setMsg('Body is required'); return }
               style={{ ...inputStyle, resize: 'vertical', fontFamily: 'monospace', fontSize: '0.82rem', lineHeight: 1.7 }}
             />
           </div>
+
+          {/* ── Social Assets Panel ── */}
+          {(tiktokScript || twitterThread.length > 0 || whatsappMsg || fbPost) && (
+            <div style={{ background: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '12px', padding: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+                <span style={{ fontSize: '1rem' }}>✨</span>
+                <h3 style={{ fontSize: '0.7rem', fontWeight: 900, color: '#D4AF37', textTransform: 'uppercase', letterSpacing: '0.15em', margin: 0 }}>
+                  Social Assets
+                </h3>
+              </div>
+
+              {tiktokScript && (
+                <SocialAsset icon="🎵" label="TikTok / Reels Script" content={tiktokScript} />
+              )}
+              {twitterThread.length > 0 && (
+                <SocialAsset
+                  icon="🐦"
+                  label="Twitter / X Thread"
+                  content={twitterThread.map((t, i) => `${i + 1}. ${t}`).join('\n\n')}
+                />
+              )}
+              {whatsappMsg && (
+                <SocialAsset icon="💬" label="WhatsApp Broadcast" content={whatsappMsg} />
+              )}
+              {fbPost && (
+                <SocialAsset icon="📘" label="Facebook Post" content={fbPost} />
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right — sidebar settings */}

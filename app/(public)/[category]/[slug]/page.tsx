@@ -12,6 +12,7 @@ import ShareButtons          from '@/components/article/ShareButtons'
 import { ArticleImage }     from '@/components/article/ArticleImage'
 import { HitTracker }       from '@/components/article/HitTracker'
 import { ReadingProgress }  from '@/components/article/ReadingProgress'
+import { ReactionBar }      from '@/components/article/ReactionBar'
 import {
   getArticleBySlug,
   getRelatedArticles,
@@ -204,6 +205,9 @@ export default async function ArticlePage({ params }: Props) {
                 <p style={{ color: '#9CA3AF' }}>Content unavailable.</p>
               )}
             </div>
+
+            {/* Reaction bar */}
+            <ReactionBar articleId={article.id} />
 
             {/* Share bar */}
             <div style={{ background: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '0 24px', margin: '32px 0', boxShadow: 'var(--shadow-card)' }}>
