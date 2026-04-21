@@ -23,6 +23,7 @@ import {
 } from '@/lib/db/queries'
 import { buildArticleMetadata }              from '@/lib/seo/metadata'
 import { buildNewsArticleSchema, buildBreadcrumbSchema } from '@/lib/seo/schema'
+import { linkCelebrities } from '@/lib/celebrity-linker'
 import { formatDate, readingTime, formatHitCount, depthScore } from '@/lib/utils'
 import { SITE_URL } from '@/lib/constants'
 
@@ -184,7 +185,7 @@ export default async function ArticlePage({ params }: Props) {
 
             {/* Article body */}
             <div className="prose" id="article-content" style={{ background: 'white', padding: '40px', borderRadius: '16px', boxShadow: 'var(--shadow-card)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
-              <ProgressiveBody body={article.body ?? ''} />
+              <ProgressiveBody body={linkCelebrities(article.body ?? '')} />
             </div>
 
             {/* Reaction bar */}

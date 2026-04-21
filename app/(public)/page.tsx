@@ -12,8 +12,11 @@ import {
   getFeaturedArticles, getLatestArticles,
   getMostRead, getArticlesByCategory, getAllCategories,
 } from '@/lib/db/queries'
+import { db } from '@/lib/db/client'
+import { musicDrops } from '@/lib/db/schema'
 import { buildSiteMetadata } from '@/lib/seo/metadata'
 import { buildOrganizationSchema } from '@/lib/seo/schema'
+import { desc } from 'drizzle-orm'
 import type { ArticleWithRelations, Category } from '@/lib/types'
 
 export const metadata: Metadata = buildSiteMetadata()
@@ -23,6 +26,8 @@ export default async function HomePage() {
   let latest:         ArticleWithRelations[] = []
   let mostRead:       ArticleWithRelations[] = []
   let allCats:        Category[]             = []
+  type MusicDrop = typeof musicDrops.$inferSelect
+  let drops:          MusicDrop[]            = []
 
   try {
     ;[featured, latest, mostRead, allCats] = await Promise.all([
@@ -34,6 +39,10 @@ export default async function HomePage() {
   } catch (err) {
     console.error('Homepage DB error:', err)
   }
+
+  try {
+    drops = await db.select().from(musicDrops).orderBy(desc(musicDrops.releaseDate)).limit(5)
+  } catch { /* table may not exist yet */ }
 
   const targetSlugs = ['celebrities', 'music', 'film-tv', 'sport-stars', 'influencers', 'entrepreneurs', 'events']
   const availableSlugs = targetSlugs.filter(s => allCats.some(c => c.slug === s))
@@ -153,6 +162,59 @@ export default async function HomePage() {
           </aside>
 
         </div>
+
+        {/* ── MUSIC DROPS WIDGET ── */}
+        {drops.length > 0 && (
+          <section>
+            <div className="section-head">
+              <span className="section-head-title">New Releases</span>
+              <span className="section-head-line" />
+              <Link
+                href="/music/new-releases"
+                className="text-[0.62rem] font-bold uppercase tracking-wider text-[#D4AF37] whitespace-nowrap"
+              >
+                All Releases →
+              </Link>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px' }}>
+              {drops.map(drop => {
+                const TYPE_COLOR: Record<string, string> = {
+                  album: '#D4AF37', EP: '#E91E8C', single: '#22C55E', mixtape: '#3B82F6',
+                }
+                const color = TYPE_COLOR[drop.type ?? 'single'] ?? '#888'
+                return (
+                  <div key={drop.id} style={{ background: '#0A0A0A', border: '1px solid #1E1E1E', borderRadius: '12px', overflow: 'hidden' }}>
+                    {drop.coverUrl ? (
+                      <div style={{ aspectRatio: '1', overflow: 'hidden' }}>
+                        <img src={drop.coverUrl} alt={`${drop.artist} – ${drop.title}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                      </div>
+                    ) : (
+                      <div style={{ aspectRatio: '1', background: 'linear-gradient(135deg, #1A1A1A, #2A2A2A)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem' }}>
+                        🎵
+                      </div>
+                    )}
+                    <div style={{ padding: '12px' }}>
+                      <span style={{ display: 'inline-block', fontSize: '0.58rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em', color, background: `${color}18`, border: `1px solid ${color}40`, borderRadius: '4px', padding: '2px 6px', marginBottom: '6px' }}>
+                        {drop.type ?? 'single'}
+                      </span>
+                      <p style={{ margin: 0, fontWeight: 800, color: '#EEE', fontSize: '0.82rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {drop.title}
+                      </p>
+                      <p style={{ margin: '2px 0 0', fontSize: '0.72rem', color: '#888', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {drop.artist}
+                      </p>
+                      {drop.streamUrl && (
+                        <a href={drop.streamUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: '8px', fontSize: '0.65rem', fontWeight: 700, color: '#D4AF37', textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                          Stream →
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </section>
+        )}
 
         {/* ── CATEGORY SECTIONS ── */}
         {categoryRows.map(row => row.articles.length > 0 && (

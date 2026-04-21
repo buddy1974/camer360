@@ -3,11 +3,24 @@ import {
   SITE_FB, SITE_TWITTER,
 } from '@/lib/constants'
 import type { ArticleWithRelations } from '@/lib/types'
+import type { CelebrityProfile }     from '@/lib/celebrities'
 import { absoluteUrl } from '@/lib/utils'
 
 export function buildNewsArticleSchema(article: ArticleWithRelations): object {
   const url   = absoluteUrl(`/${article.category.slug}/${article.slug}`)
   const image = article.featuredImage || `${SITE_URL}/icons/og-default.jpg`
+
+  const author = article.author
+    ? {
+        '@type': 'Person',
+        'name':  article.author.name,
+        'url':   `${SITE_URL}/authors/${article.author.slug}`,
+      }
+    : {
+        '@type': 'Organization',
+        'name':  SITE_NAME,
+        'url':   SITE_URL,
+      }
 
   return {
     '@context':       'https://schema.org',
@@ -21,10 +34,7 @@ export function buildNewsArticleSchema(article: ArticleWithRelations): object {
     'keywords':       `${article.category.name}, Cameroon, Africa, entertainment`,
     'inLanguage':     'en',
     'image': [image],
-    'author': {
-      '@type': 'Organization',
-      'name':  SITE_NAME,
-    },
+    'author':  author,
     'publisher': {
       '@type': 'Organization',
       'name':  SITE_NAME,
@@ -41,6 +51,19 @@ export function buildNewsArticleSchema(article: ArticleWithRelations): object {
       '@type': 'WebPage',
       '@id':   url,
     },
+  }
+}
+
+export function buildPersonSchema(celeb: CelebrityProfile): object {
+  return {
+    '@context':   'https://schema.org',
+    '@type':      'Person',
+    'name':       celeb.name,
+    'url':        `${SITE_URL}/celebrities/${celeb.slug}`,
+    'description': celeb.bio,
+    'nationality': celeb.nationality,
+    'knowsAbout':  celeb.tags,
+    'sameAs':      [],
   }
 }
 

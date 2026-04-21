@@ -5,6 +5,8 @@ import { getCelebrity, CELEBRITIES } from '@/lib/celebrities'
 import { searchArticles } from '@/lib/db/queries'
 import { ArticleCard } from '@/components/article/ArticleCard'
 import { FollowButton } from '@/components/celebrities/FollowButton'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { buildPersonSchema, buildBreadcrumbSchema } from '@/lib/seo/schema'
 import { SITE_URL } from '@/lib/constants'
 
 interface Props { params: Promise<{ name: string }> }
@@ -35,8 +37,17 @@ export default async function CelebrityHubPage({ params }: Props) {
 
   const articles = await searchArticles(celeb.searchName, 20)
 
+  const personSchema    = buildPersonSchema(celeb)
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: 'Home',        url: SITE_URL },
+    { name: 'Celebrities', url: `${SITE_URL}/celebrities` },
+    { name: celeb.name,    url: `${SITE_URL}/celebrities/${celeb.slug}` },
+  ])
+
   return (
     <div style={{ background: 'var(--luxury-bg)', minHeight: '100vh' }}>
+      <JsonLd data={personSchema} />
+      <JsonLd data={breadcrumbSchema} />
 
       {/* ── Hero ── */}
       <div style={{
