@@ -17,6 +17,13 @@ function cleanSrc(url: string | null | undefined): string {
   return url.split('#')[0].trim()
 }
 
+function heatLabel(hits: number): { emoji: string; label: string } | null {
+  if (hits >= 5000) return { emoji: '🔥', label: 'Trending' }
+  if (hits >= 1000) return { emoji: '💅', label: 'Poppin'   }
+  if (hits >= 250)  return { emoji: '👀', label: 'Rising'   }
+  return null
+}
+
 export function ArticleCard({ article, variant = 'default', priority = false, index }: Props) {
   const href = `/${article.category.slug}/${article.slug}`
   const mins = readingTime(article.body)
@@ -24,6 +31,7 @@ export function ArticleCard({ article, variant = 'default', priority = false, in
 
   /* ── HERO ── */
   if (variant === 'hero') {
+    const heroHeat = heatLabel(article.hits)
     return (
       <Link href={href} style={{ display: 'block', textDecoration: 'none' }}>
         <div
@@ -85,7 +93,7 @@ export function ArticleCard({ article, variant = 'default', priority = false, in
             }}
           >
             {/* BADGES */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               {article.isBreaking && (
                 <span style={{
                   background: '#F5A623',
@@ -96,6 +104,16 @@ export function ArticleCard({ article, variant = 'default', priority = false, in
                   borderRadius: '4px'
                 }}>
                   ⚡ Breaking
+                </span>
+              )}
+              {heroHeat && (
+                <span style={{
+                  background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)',
+                  border: '1px solid rgba(212,175,55,0.4)',
+                  color: '#D4AF37', padding: '4px 10px', borderRadius: '4px',
+                  fontSize: '11px', fontWeight: 900,
+                }}>
+                  {heroHeat.emoji} {heroHeat.label}
                 </span>
               )}
               <span style={{
@@ -257,6 +275,7 @@ export function ArticleCard({ article, variant = 'default', priority = false, in
   }
 
   /* ── DEFAULT CARD ── */
+  const heat = heatLabel(article.hits)
   return (
     <Link href={href} className="group" style={{ display: 'block', textDecoration: 'none', height: '100%' }}>
       <div style={{
@@ -302,6 +321,16 @@ export function ArticleCard({ article, variant = 'default', priority = false, in
             <span className="cat-pill">{article.category.name}</span>
           </div>
           <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '4px', alignItems: 'center' }}>
+            {heat && (
+              <span style={{
+                background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)',
+                border: '1px solid rgba(212,175,55,0.3)',
+                color: '#D4AF37', padding: '3px 7px', borderRadius: '4px',
+                fontSize: '0.6rem', fontWeight: 900, letterSpacing: '0.06em',
+              }}>
+                {heat.emoji} {heat.label}
+              </span>
+            )}
             {article.isBreaking && (
               <span className="cat-pill" style={{ background: '#F5A623', color: '#000' }}>⚡</span>
             )}

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { getCelebrity, CELEBRITIES } from '@/lib/celebrities'
 import { searchArticles } from '@/lib/db/queries'
 import { ArticleCard } from '@/components/article/ArticleCard'
+import { FollowButton } from '@/components/celebrities/FollowButton'
 import { SITE_URL } from '@/lib/constants'
 
 interface Props { params: Promise<{ name: string }> }
@@ -115,9 +116,15 @@ export default async function CelebrityHubPage({ params }: Props) {
             ))}
           </div>
 
-          {/* Nationality */}
-          <div style={{ marginTop: '20px', fontSize: '0.72rem', color: '#444', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-            {celeb.nationality}
+          {/* Nationality + Follow */}
+          <div style={{ marginTop: '20px', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.72rem', color: '#444', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+              {celeb.nationality}
+            </span>
+            <FollowButton type="celeb" slug={celeb.slug} label={celeb.name} />
+            <Link href="/my-feed" style={{ fontSize: '0.72rem', color: '#555', textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              View My Feed →
+            </Link>
           </div>
         </div>
       </div>
