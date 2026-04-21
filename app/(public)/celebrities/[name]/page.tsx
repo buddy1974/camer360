@@ -2,11 +2,13 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getCelebrity, CELEBRITIES } from '@/lib/celebrities'
-import { searchArticles } from '@/lib/db/queries'
+import { searchArticles, getArticleBySlug, getRelatedArticles } from '@/lib/db/queries'
 import { ArticleCard } from '@/components/article/ArticleCard'
 import { FollowButton } from '@/components/celebrities/FollowButton'
+import { ArticlePageContent } from '@/components/article/ArticlePageContent'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { buildPersonSchema, buildBreadcrumbSchema } from '@/lib/seo/schema'
+import { buildArticleMetadata } from '@/lib/seo/metadata'
 import { SITE_URL } from '@/lib/constants'
 
 interface Props { params: Promise<{ name: string }> }
@@ -18,22 +20,34 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { name } = await params
   const celeb = getCelebrity(name)
-  if (!celeb) return {}
-  return {
-    title:       `${celeb.name} | Camer360`,
-    description: `Latest news, stories and coverage of ${celeb.name} — ${celeb.known_for}. Follow ${celeb.name} on Camer360.`,
-    openGraph: {
-      title:       `${celeb.name} — Celebrity Hub | Camer360`,
-      description: celeb.bio.slice(0, 155),
-      url:         `${SITE_URL}/celebrities/${celeb.slug}`,
-    },
+  if (celeb) {
+    return {
+      title:       `${celeb.name} | Camer360`,
+      description: `Latest news, stories and coverage of ${celeb.name} — ${celeb.known_for}. Follow ${celeb.name} on Camer360.`,
+      openGraph: {
+        title:       `${celeb.name} — Celebrity Hub | Camer360`,
+        description: celeb.bio.slice(0, 155),
+        url:         `${SITE_URL}/celebrities/${celeb.slug}`,
+      },
+    }
   }
+  // Fall back to article metadata
+  const article = await getArticleBySlug('celebrities', name)
+  if (!article) return {}
+  return buildArticleMetadata(article)
 }
 
 export default async function CelebrityHubPage({ params }: Props) {
   const { name } = await params
   const celeb = getCelebrity(name)
-  if (!celeb) notFound()
+
+  // ── Not a known celebrity profile — try as an article in the celebrities category ──
+  if (!celeb) {
+    const article = await getArticleBySlug('celebrities', name)
+    if (!article) notFound()
+    const related = await getRelatedArticles(article.id, article.categoryId, 4)
+    return <ArticlePageContent article={article} related={related} />
+  }
 
   const articles = await searchArticles(celeb.searchName, 20)
 
