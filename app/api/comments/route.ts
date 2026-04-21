@@ -2,14 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/client';
 import { comments, commentBans } from '@/lib/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+import { openai, MODEL_FAST, completionText } from '@/lib/ai/client';
 
 async function moderateComment(body: string, authorName: string): Promise<{ flagged: boolean; reason: string }> {
   try {
-    const msg = await anthropic.messages.create({
-      model: 'claude-haiku-4-5-20251001',
+    const completion = await openai.chat.completions.create({
+      model: MODEL_FAST,
       max_tokens: 100,
       messages: [{
         role: 'user',
@@ -17,7 +15,7 @@ async function moderateComment(body: string, authorName: string): Promise<{ flag
 Comment by "${authorName}": ${body}`
       }]
     });
-    const text = msg.content[0].type === 'text' ? msg.content[0].text : '{"flagged":false,"reason":null}';
+    const text = completionText(completion) || '{"flagged":false,"reason":null}';
     return JSON.parse(text.replace(/```json\n?/gi, '').replace(/```\n?/gi, '').trim());
   } catch {
     return { flagged: false, reason: '' };

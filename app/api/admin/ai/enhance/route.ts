@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
+import { openai, MODEL_QUALITY, completionText } from '@/lib/ai/client'
 import { db } from '@/lib/db/client'
 import { authors } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
-
-const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
 
 export async function POST(req: NextRequest) {
   const { title, body, type } = await req.json() as {
@@ -75,13 +73,13 @@ Body: ${body}
 Return ONLY valid JSON. No markdown fences. No explanation.
 {"title":"...","meta_title":"...","meta_desc":"...","excerpt":"...","enhanced_body":"...","tiktok_script":"...","twitter_thread":["...","...","...","...","..."],"whatsapp_message":"...","facebook_post":"..."}`
 
-  const message = await claude.messages.create({
-    model:      'claude-sonnet-4-6',
+  const completion = await openai.chat.completions.create({
+    model:      MODEL_QUALITY,
     max_tokens: type === 'quick' ? 4000 : 2000,
     messages:   [{ role: 'user', content: prompt }],
   })
 
-  const text = message.content[0].type === 'text' ? message.content[0].text : '{}'
+  const text = completionText(completion) || '{}'
   try {
     const clean  = text.replace(/```json|```/g, '').trim()
     const parsed = JSON.parse(clean)

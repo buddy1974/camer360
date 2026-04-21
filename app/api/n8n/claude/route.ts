@@ -1,9 +1,7 @@
 export const maxDuration = 60
 
 import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+import { openai, MODEL_QUALITY, completionText } from '@/lib/ai/client';
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,16 +24,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing system or user field', received: Object.keys(body) }, { status: 400 });
     }
 
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6',
+    const message = await openai.chat.completions.create({
+      model: MODEL_QUALITY,
       max_tokens: 2000,
-      system,
-      messages: [{ role: 'user', content: user }]
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user', content: user },
+      ]
     });
 
-    let text = message.content[0].type === 'text' ? message.content[0].text : '';
+    let text = completionText(message);
     text = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
-    console.log('RAW CLAUDE RESPONSE:', text.substring(0, 500));
+    console.log('RAW OPENAI RESPONSE:', text.substring(0, 500));
 
     // Validate JSON before returning
     try {

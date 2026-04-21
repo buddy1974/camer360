@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
-
-const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
+import { openai, MODEL_FAST, completionText } from '@/lib/ai/client'
 
 export async function POST(req: NextRequest) {
   const { title, excerpt, body } = await req.json() as {
@@ -25,12 +23,12 @@ Return ONLY valid JSON. No markdown fences.
 {"fanView":"...","criticView":"...","insiderView":"..."}`
 
   try {
-    const message = await claude.messages.create({
-      model:      'claude-sonnet-4-6',
+    const completion = await openai.chat.completions.create({
+      model:      MODEL_FAST,
       max_tokens: 600,
       messages:   [{ role: 'user', content: prompt }],
     })
-    const text  = message.content[0].type === 'text' ? message.content[0].text : '{}'
+    const text  = completionText(completion) || '{}'
     const clean = text.replace(/```json|```/g, '').trim()
     const parsed = JSON.parse(clean) as { fanView: string; criticView: string; insiderView: string }
     return NextResponse.json(parsed)

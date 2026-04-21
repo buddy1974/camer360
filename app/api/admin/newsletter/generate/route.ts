@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { openai, MODEL_FAST, completionText } from '@/lib/ai/client';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';
-
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function POST(req: NextRequest) {
   const cookieStore = await cookies();
@@ -23,13 +21,13 @@ Generate for a ${template} newsletter:
 
 Reply ONLY with JSON: {"subject":"...","preview":"...","intro":"..."}`;
 
-  const msg = await anthropic.messages.create({
-    model: 'claude-haiku-4-5-20251001',
+  const completion = await openai.chat.completions.create({
+    model: MODEL_FAST,
     max_tokens: 300,
     messages: [{ role: 'user', content: prompt }]
   });
 
-  const text = msg.content[0].type === 'text' ? msg.content[0].text : '{}';
+  const text = completionText(completion) || '{}';
   const result = JSON.parse(text.replace(/```json\n?/gi, '').replace(/```\n?/gi, '').trim());
   return NextResponse.json(result);
 }
