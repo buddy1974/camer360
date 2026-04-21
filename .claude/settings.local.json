@@ -42,7 +42,15 @@
       "Bash(vercel --prod --yes)",
       "Bash(vercel env *)",
       "Bash(xargs cat *)",
-      "Bash(vercel ls *)"
+      "Bash(vercel ls *)",
+      "Bash(xmllint --format -)",
+      "Bash(grep -A 8 \"const { system, user }\" app/api/n8n/claude/route.ts)",
+      "Bash(python3 *)",
+      "Bash(python *)",
+      "Bash(timeout 5 bash -c \"cat < /dev/tcp/31.97.198.50/3306\")",
+      "Bash(sed -i \"s/#DC2626/#D4AF37/g; s/#EF4444/#F7DC6F/g; s/#C8102E/#D4AF37/g\" /c/Users/loneb/Documents/ai-software-dev/projects/camer360.com/app/'\\(public\\)'/'[category]'/'[slug]'/page.tsx)",
+      "Bash(sed -i \"s/#C8102E/#D4AF37/g\" /c/Users/loneb/Documents/ai-software-dev/projects/camer360.com/app/'\\(public\\)'/'[category]'/page.tsx)",
+      "Bash(npx next *)"
     ]
   }
 }

@@ -13,6 +13,10 @@ import { ArticleImage }     from '@/components/article/ArticleImage'
 import { HitTracker }       from '@/components/article/HitTracker'
 import { ReadingProgress }  from '@/components/article/ReadingProgress'
 import { ReactionBar }      from '@/components/article/ReactionBar'
+import { AudioReader }      from '@/components/article/AudioReader'
+import { ProgressiveBody }  from '@/components/article/ProgressiveBody'
+import { PerspectiveEngine } from '@/components/article/PerspectiveEngine'
+import { ReadingStreak }    from '@/components/user/ReadingStreak'
 import {
   getArticleBySlug,
   getRelatedArticles,
@@ -144,6 +148,7 @@ export default async function ArticlePage({ params }: Props) {
                   {formatHitCount(article.hits)}
                 </span>
               )}
+              <ReadingStreak />
             </div>
           </div>
         </div>
@@ -174,40 +179,23 @@ export default async function ArticlePage({ params }: Props) {
               </div>
             )}
 
+            {/* Audio reader */}
+            <AudioReader title={article.title} body={article.body ?? ''} />
+
             {/* Article body */}
-            <div className="prose" id="article-content" style={{ background: 'white', padding: '40px', borderRadius: '16px', boxShadow: 'var(--shadow-card)', border: '1px solid var(--border-light)' }}>
-              {article.body ? (() => {
-                const parts = article.body.split('</p>')
-                if (parts.length <= 3) {
-                  return <div dangerouslySetInnerHTML={{ __html: article.body }} />
-                }
-                const first  = parts.slice(0, 3).join('</p>') + '</p>'
-                const middle = parts.slice(3, 6).join('</p>') + (parts.length > 6 ? '</p>' : '')
-                const last   = parts.length > 6 ? parts.slice(6).join('</p>') : ''
-                return (
-                  <>
-                    <div dangerouslySetInnerHTML={{ __html: first }} />
-                    <div style={{ margin: '32px -40px', padding: '0 40px' }}>
-                      <AdUnit slot="5471720771" format="auto" />
-                    </div>
-                    <div dangerouslySetInnerHTML={{ __html: middle }} />
-                    {last && (
-                      <>
-                        <div style={{ margin: '32px -40px', padding: '0 40px' }}>
-                          <AdUnit slot="5520370976" format="rectangle" />
-                        </div>
-                        <div dangerouslySetInnerHTML={{ __html: last }} />
-                      </>
-                    )}
-                  </>
-                )
-              })() : (
-                <p style={{ color: '#9CA3AF' }}>Content unavailable.</p>
-              )}
+            <div className="prose" id="article-content" style={{ background: 'white', padding: '40px', borderRadius: '16px', boxShadow: 'var(--shadow-card)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
+              <ProgressiveBody body={article.body ?? ''} />
             </div>
 
             {/* Reaction bar */}
             <ReactionBar articleId={article.id} />
+
+            {/* Perspective Engine — entertainment categories only */}
+            <PerspectiveEngine
+              articleId={article.id}
+              title={article.title}
+              excerpt={article.excerpt ?? undefined}
+            />
 
             {/* Share bar */}
             <div style={{ background: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '0 24px', margin: '32px 0', boxShadow: 'var(--shadow-card)' }}>
