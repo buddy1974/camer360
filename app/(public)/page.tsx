@@ -11,6 +11,7 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import {
   getFeaturedArticles, getLatestArticles,
   getMostRead, getArticlesByCategory, getAllCategories,
+  getBreakingNews,
 } from '@/lib/db/queries'
 import { db } from '@/lib/db/client'
 import { musicDrops } from '@/lib/db/schema'
@@ -18,6 +19,7 @@ import { buildSiteMetadata } from '@/lib/seo/metadata'
 import { buildOrganizationSchema } from '@/lib/seo/schema'
 import { desc } from 'drizzle-orm'
 import { BirthdayCountdown } from '@/components/widgets/BirthdayCountdown'
+import { ContinueReading }   from '@/components/user/ReadingHistory'
 import type { ArticleWithRelations, Category } from '@/lib/types'
 
 export const metadata: Metadata = buildSiteMetadata()
@@ -27,15 +29,17 @@ export default async function HomePage() {
   let latest:         ArticleWithRelations[] = []
   let mostRead:       ArticleWithRelations[] = []
   let allCats:        Category[]             = []
+  let breaking:       ArticleWithRelations[] = []
   type MusicDrop = typeof musicDrops.$inferSelect
   let drops:          MusicDrop[]            = []
 
   try {
-    ;[featured, latest, mostRead, allCats] = await Promise.all([
+    ;[featured, latest, mostRead, allCats, breaking] = await Promise.all([
       getFeaturedArticles(7),
       getLatestArticles(18),
       getMostRead(6),
       getAllCategories(),
+      getBreakingNews(3),
     ])
   } catch (err) {
     console.error('Homepage DB error:', err)
@@ -72,6 +76,27 @@ export default async function HomePage() {
         flexDirection: 'column',
         gap: '40px'
       }}>
+
+        {/* ── BREAKING NEWS BANNER ── */}
+        {breaking.length > 0 && (
+          <div style={{ background: '#0D0000', border: '1px solid #3A0000', borderRadius: '10px', padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+            <Link href="/breaking-news" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', flexShrink: 0 }}>
+              <span style={{ background: '#C8102E', color: 'white', fontSize: '0.58rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', padding: '3px 8px', borderRadius: '4px' }}>
+                ● Breaking
+              </span>
+            </Link>
+            <div style={{ flex: 1, overflow: 'hidden', display: 'flex', gap: '20px', flexWrap: 'nowrap' }}>
+              {breaking.slice(0, 2).map((b, i) => (
+                <Link key={b.id} href={`/${b.category.slug}/${b.slug}`} style={{ textDecoration: 'none', fontSize: '0.82rem', fontWeight: i === 0 ? 700 : 500, color: i === 0 ? '#EEE' : '#666', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flexShrink: i === 0 ? 0 : 1 }}>
+                  {b.title}
+                </Link>
+              ))}
+            </div>
+            <Link href="/breaking-news" style={{ fontSize: '0.65rem', color: '#C8102E', fontWeight: 700, textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em', flexShrink: 0 }}>
+              More →
+            </Link>
+          </div>
+        )}
 
         {/* ── HERO SECTION ── */}
         {featured[0] && (
@@ -161,6 +186,7 @@ export default async function HomePage() {
               ))}
             </div>
             <BirthdayCountdown />
+            <ContinueReading />
           </aside>
 
         </div>

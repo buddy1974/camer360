@@ -16,6 +16,8 @@ import { ReadingStreak }    from '@/components/user/ReadingStreak'
 import { buildNewsArticleSchema, buildBreadcrumbSchema } from '@/lib/seo/schema'
 import { linkCelebrities }  from '@/lib/celebrity-linker'
 import { injectVideoEmbeds } from '@/lib/video-embeds'
+import { QuoteShare }        from '@/components/article/QuoteShare'
+import { RecordHistory }     from '@/components/user/ReadingHistory'
 import { formatDate, readingTime, formatHitCount, depthScore } from '@/lib/utils'
 import { SITE_URL } from '@/lib/constants'
 import type { ArticleWithRelations } from '@/lib/types'
@@ -45,6 +47,14 @@ export async function ArticlePageContent({ article, related }: Props) {
       <JsonLd data={breadcrumb} />
       <HitTracker articleId={article.id} />
       <ReadingProgress />
+      <RecordHistory
+        id={article.id}
+        title={article.title}
+        slug={article.slug}
+        categorySlug={catSlug}
+        categoryName={article.category.name}
+      />
+      <QuoteShare articleTitle={article.title} categorySlug={catSlug} slug={slug} />
 
       <div style={{ background: 'var(--luxury-bg)', minHeight: '100vh' }}>
 
