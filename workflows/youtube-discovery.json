@@ -1,0 +1,166 @@
+{
+  "name": "Camer360 YouTube Discovery",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{"field": "hours", "hoursInterval": 6}] }
+      },
+      "id": "schedule-yt",
+      "name": "Every 6 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 400]
+    },
+
+    {
+      "parameters": {
+        "jsCode": "// Define the discovery rounds for this execution.\n// Each round fetches a different genre/region combination.\nreturn [\n  { json: { action: 'genre', genre: 'afrobeats',      region: 'NG', limit: 3, label: 'Afrobeats Nigeria' } },\n  { json: { action: 'genre', genre: 'makossa',         region: 'CM', limit: 2, label: 'Makossa Cameroon' } },\n  { json: { action: 'genre', genre: 'african_hiphop',  region: 'ZA', limit: 2, label: 'African Hip-Hop' } },\n  { json: { action: 'genre', genre: 'african_rb',      region: 'NG', limit: 2, label: 'African R&B' } },\n  { json: { action: 'genre', genre: 'global_collabs',  region: 'US', limit: 2, label: 'Global Collabs' } },\n  { json: { action: 'trending', genre: 'afropop',      region: 'GH', limit: 2, label: 'Trending Ghana' } }\n];"
+      },
+      "id": "define-rounds",
+      "name": "Define Discovery Rounds",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 400]
+    },
+
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://www.camer360.com/api/n8n/youtube?action={{ $json.action }}&genre={{ $json.genre }}&region={{ $json.region }}&limit={{ $json.limit }}",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" }
+          ]
+        },
+        "options": { "timeout": 15000 }
+      },
+      "id": "fetch-videos",
+      "name": "Fetch YouTube Videos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [600, 400]
+    },
+
+    {
+      "parameters": {
+        "jsCode": "// Flatten all video arrays from discovery rounds into individual items.\n// Each item becomes one article draft.\nconst result = $input.first().json;\nif (!result.videos || result.videos.length === 0) return [];\nconst label = $('Define Discovery Rounds').item.json.label || 'African Music';\nreturn result.videos.map(v => ({\n  json: {\n    videoId:      v.id,\n    title:        v.title,\n    channel:      v.channelTitle,\n    description:  v.description,\n    thumbnail:    v.thumbnail,\n    watchUrl:     v.watchUrl,\n    embedUrl:     v.embedUrl,\n    viewCount:    v.viewCount,\n    duration:     v.duration,\n    publishedAt:  v.publishedAt,\n    genre_label:  label,\n    isLive:       v.isLive,\n  }\n}));"
+      },
+      "id": "split-videos",
+      "name": "Split Video Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 400]
+    },
+
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 3,
+        "unit": "seconds"
+      },
+      "id": "rate-limit",
+      "name": "Rate Limit (3s)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1000, 400]
+    },
+
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.camer360.com/api/n8n/claude",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key",    "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ model: 'quality', system: 'You are a sharp African entertainment editor for Camer360 magazine. Write bold, punchy, plugged-in copy. Name names. Keep it factual. Celebrate African excellence.\\n\\nRespond ONLY with valid JSON (no markdown):\\n{\\\"title\\\":\\\"scroll-stopping headline under 12 words\\\",\\\"excerpt\\\":\\\"2-sentence hook under 160 chars\\\",\\\"body\\\":\\\"article HTML using <p><h2><strong> tags, 300-500 words. Include the YouTube embed at a natural break: <div style=\\\\\\\"position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;margin:24px 0\\\\\\\"><iframe src=\\\\\\\"+embedUrl+\\\"?rel=0\\\\\\\" style=\\\\\\\"position:absolute;top:0;left:0;width:100%;height:100%;border:0;border-radius:12px\\\\\\\" allow=\\\\\\\"accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture\\\\\\\" allowfullscreen loading=\\\\\\\"lazy\\\\\\\"></iframe></div>\\\",\\\"category_slug\\\":\\\"music\\\",\\\"meta_title\\\":\\\"SEO title under 60 chars\\\",\\\"meta_desc\\\":\\\"SEO desc under 160 chars\\\"}', user: 'Video title: ' + $json.title + '\\nChannel: ' + $json.channel + '\\nGenre: ' + $json.genre_label + '\\nViews: ' + ($json.viewCount || 'N/A') + '\\nDescription: ' + ($json.description || '').slice(0, 400) + '\\nEmbed URL: ' + $json.embedUrl + '\\nPublished: ' + $json.publishedAt }) }}"
+      },
+      "id": "ai-write",
+      "name": "AI Write Article",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1200, 400]
+    },
+
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first();\nconst video = $('Split Video Items').item.json;\ntry {\n  const ai = JSON.parse(item.json.text || '{}');\n  if (!ai.title || !ai.body) throw new Error('Missing title or body');\n  // Inject video ID for dedup tracking\n  const body = ai.body.replace('</p>\\n', '</p>\\n<!-- yt:' + video.videoId + ' -->\\n', 1) || ai.body;\n  return [{ json: {\n    valid:         true,\n    title:         ai.title,\n    excerpt:       ai.excerpt || '',\n    body:          ai.body,\n    category_slug: ai.category_slug || 'music',\n    meta_title:    ai.meta_title   || ai.title.slice(0,60),\n    meta_desc:     ai.meta_desc    || ai.excerpt?.slice(0,160) || '',\n    featured_image: video.thumbnail,\n    source_url:    video.watchUrl,\n    language:      'en',\n  }}];\n} catch(e) {\n  return [{ json: { valid: false, error: e.message, video_id: video.videoId } }];\n}"
+      },
+      "id": "parse-article",
+      "name": "Parse Article JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1400, 400]
+    },
+
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "valid-check",
+              "leftValue":  "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "filter-valid",
+      "name": "Filter Valid Articles",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [1600, 400]
+    },
+
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.camer360.com/api/n8n/articles",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key",    "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ title: $json.title, excerpt: $json.excerpt, body: $json.body, category_slug: $json.category_slug, meta_title: $json.meta_title, meta_desc: $json.meta_desc, featured_image: $json.featured_image, source_url: $json.source_url, language: $json.language }) }}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "create-article",
+      "name": "Create Draft Article",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1800, 300]
+    }
+  ],
+
+  "connections": {
+    "Every 6 Hours":         {"main": [[{"node": "Define Discovery Rounds", "type": "main", "index": 0}]]},
+    "Define Discovery Rounds": {"main": [[{"node": "Fetch YouTube Videos",  "type": "main", "index": 0}]]},
+    "Fetch YouTube Videos":  {"main": [[{"node": "Split Video Items",       "type": "main", "index": 0}]]},
+    "Split Video Items":     {"main": [[{"node": "Rate Limit (3s)",         "type": "main", "index": 0}]]},
+    "Rate Limit (3s)":       {"main": [[{"node": "AI Write Article",        "type": "main", "index": 0}]]},
+    "AI Write Article":      {"main": [[{"node": "Parse Article JSON",      "type": "main", "index": 0}]]},
+    "Parse Article JSON":    {"main": [[{"node": "Filter Valid Articles",   "type": "main", "index": 0}]]},
+    "Filter Valid Articles": {
+      "main": [[{"node": "Create Draft Article", "type": "main", "index": 0}], []]
+    }
+  },
+  "settings": { "executionOrder": "v1", "saveManualExecutions": true, "callerPolicy": "workflowsFromSameOwner" }
+}
