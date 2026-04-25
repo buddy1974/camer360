@@ -61,7 +61,7 @@
           "parameters": [
             { "name": "message",      "value": "={{ $json.fb_message }}" },
             { "name": "link",         "value": "={{ $json.fb_link }}" },
-            { "name": "access_token", "value": "REPLACE_WITH_FULL_PAGE_ACCESS_TOKEN" }
+            { "name": "access_token", "value": "EAAXZAZCWlIzY8BRTSCjQ7rv9ZCOjmNSZCCtqNQq6ezRG0MVPZCkNGuyIb5rZCCtDrKXIXoKNNXJiXHmDPd1UnsInZBjw3OxKG92VyOlZAfq0uDWIK0ovjOBZBt4PQjFCM16ptmKfDEqicsGK7yaZC3tu4eas3wxIr5jjplbDRDFp1ndmEaf4HSLWZBeXO0shcKNkaCX6PYB" }
           ]
         },
         "options": { "timeout": 15000 }
