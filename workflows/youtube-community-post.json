@@ -1,0 +1,122 @@
+{
+  "name": "Camer360 YouTube Community Post",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{"field": "minutes", "minutesInterval": 30}] }
+      },
+      "id": "schedule-yt-post",
+      "name": "Every 30 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://www.camer360.com/api/n8n/social/youtube?limit=3",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" }
+          ]
+        },
+        "options": { "timeout": 10000 }
+      },
+      "id": "fetch-unposted",
+      "name": "Fetch Unposted Articles",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.first().json;\nif (!Array.isArray(rows) || rows.length === 0) return [];\nreturn rows.map(row => ({ json: row }));"
+      },
+      "id": "split-articles",
+      "name": "Split Articles",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build YouTube Community Post text\n// Mirrors the Facebook post builder but adds YouTube-specific formatting\nconst a = $json;\nconst url = `https://www.camer360.com/${a.categorySlug}/${a.slug}`;\nconst excerpt = (a.excerpt || '').trim();\nconst text = `${a.title}\\n\\n${excerpt ? excerpt + '\\n\\n' : ''}📖 Read the full story: ${url}\\n\\n#Camer360 #AfricanEntertainment #${a.categorySlug?.replace(/-/g,'') ?? 'Entertainment'} #Afrobeats #Cameroon #Africa`;\nreturn [{ json: { ...a, yt_text: text, yt_url: url } }];"
+      },
+      "id": "build-post",
+      "name": "Build Community Post Text",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.camer360.com/api/admin/youtube/community-post",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key",    "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ text: $json.yt_text, image_url: $json.featuredImage }) }}",
+        "options": { "timeout": 20000 }
+      },
+      "id": "post-community",
+      "name": "Post to YouTube Channel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1000, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const result = $input.first().json;\nconst article = $('Build Community Post Text').item.json;\nconst success = !!(result.id || result.ok);\nreturn [{ json: {\n  article_id:       article.id,\n  status:           success ? 'sent' : 'failed',\n  platform_post_id: result.id ?? null,\n  error:            success ? null : (result.error || JSON.stringify(result)),\n}}];"
+      },
+      "id": "parse-result",
+      "name": "Parse Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://www.camer360.com/api/n8n/social/youtube",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key",    "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ article_id: $json.article_id, status: $json.status, platform_post_id: $json.platform_post_id, error: $json.error }) }}",
+        "options": { "timeout": 10000 }
+      },
+      "id": "record-result",
+      "name": "Record Result",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, 300]
+    }
+  ],
+  "connections": {
+    "Every 30 Minutes":         {"main": [[{"node": "Fetch Unposted Articles",   "type": "main", "index": 0}]]},
+    "Fetch Unposted Articles":  {"main": [[{"node": "Split Articles",            "type": "main", "index": 0}]]},
+    "Split Articles":           {"main": [[{"node": "Build Community Post Text", "type": "main", "index": 0}]]},
+    "Build Community Post Text":{"main": [[{"node": "Post to YouTube Channel",   "type": "main", "index": 0}]]},
+    "Post to YouTube Channel":  {"main": [[{"node": "Parse Result",              "type": "main", "index": 0}]]},
+    "Parse Result":             {"main": [[{"node": "Record Result",             "type": "main", "index": 0}]]}
+  },
+  "settings": { "executionOrder": "v1", "saveManualExecutions": true }
+}

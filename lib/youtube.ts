@@ -14,7 +14,11 @@ const BASE = 'https://www.googleapis.com/youtube/v3'
 
 function apiKey(): string {
   const k = process.env['YOUTUBE_API_KEY']
-  if (!k) throw new Error('YOUTUBE_API_KEY not configured')
+  // Validate it's a proper API key (AIzaSy...), not an OAuth Client ID
+  if (!k) throw new Error('YOUTUBE_API_KEY not set — get it from console.cloud.google.com → Credentials → API Keys')
+  if (k.includes('.apps.googleusercontent.com')) {
+    throw new Error('YOUTUBE_API_KEY is set to an OAuth Client ID — set it to a simple API key (AIzaSy...) instead')
+  }
   return k
 }
 

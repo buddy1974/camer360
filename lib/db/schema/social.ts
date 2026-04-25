@@ -6,7 +6,7 @@ import {
 export const socialQueue = mysqlTable('social_queue', {
   id:             int('id', { unsigned: true }).autoincrement().primaryKey(),
   articleId:      int('article_id', { unsigned: true }).notNull(),
-  platform:       mysqlEnum('platform', ['twitter','facebook','whatsapp','instagram','telegram']),
+  platform:       mysqlEnum('platform', ['twitter','facebook','whatsapp','instagram','telegram','youtube']),
   content:        text('content'),
   status:         mysqlEnum('status', ['pending','sent','failed']).default('pending'),
   scheduledAt:    datetime('scheduled_at'),
