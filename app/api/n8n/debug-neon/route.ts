@@ -10,8 +10,10 @@ export async function GET(req: NextRequest) {
   const url = process.env.QUEUE_NEON_URL ?? process.env.NEON_DATABASE_URL
   const urlPreview = url !== undefined ? (url.length > 0 ? url.slice(0, 60) + '...' : 'EMPTY_STRING') : 'UNDEFINED'
 
-  const allKeys = Object.keys(process.env)
-  const dbKeys = allKeys.filter(k => /neon|database|postgres|pg|db_/i.test(k))
+  const allKeys = Object.keys(process.env).sort()
+  const dbKeys = allKeys.filter(k => /neon|database|postgres|pg|db_|queue/i.test(k))
+  // All non-system keys (project-specific)
+  const projectKeys = allKeys.filter(k => !/^(node_|next_|path|home|tmpdir|vercel_git|hostname|pwd|shell|term|user$|lang$)/i.test(k))
 
   // Check if other sensitive vars are visible
   const sensitiveCheck = {
@@ -45,6 +47,7 @@ export async function GET(req: NextRequest) {
       code: e.code,
       db_env_keys: dbKeys,
       total_env_count: allKeys.length,
+      project_keys: projectKeys,
       sensitive_check: sensitiveCheck,
       hardcoded_test: hardcodedTest,
     })
