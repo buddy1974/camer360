@@ -1,3 +1,5 @@
+'use client'
+
 interface Platform {
   key:   string
   label: string
