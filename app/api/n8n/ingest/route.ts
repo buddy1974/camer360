@@ -28,7 +28,9 @@ function contentHash(title: string, url: string): string {
 export async function POST(req: NextRequest) {
   if (!authCheck(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const pool = getPool()
+  let pool
+  try { pool = getPool() }
+  catch (e: any) { return NextResponse.json({ error: 'DB_CONFIG: ' + e.message, neon_url_set: !!(process.env['NEON_DATABASE_URL'] || process.env['QUEUE_NEON_URL']) }, { status: 503 }) }
 
   const body = await req.json()
   const items: Array<{

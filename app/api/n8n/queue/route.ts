@@ -23,7 +23,9 @@ export async function GET(req: NextRequest) {
   if (!authCheck(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const limit = Math.min(Number(req.nextUrl.searchParams.get('limit') ?? 5), 20)
-  const pool = getPool()
+  let pool
+  try { pool = getPool() }
+  catch (e: any) { return NextResponse.json({ error: 'DB_CONFIG: ' + e.message, neon_url_set: !!(process.env['NEON_DATABASE_URL'] || process.env['QUEUE_NEON_URL']) }, { status: 503 }) }
 
   try {
     const { rows } = await pool.query(`
