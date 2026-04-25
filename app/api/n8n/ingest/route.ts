@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Pool } from 'pg'
 import { createHash } from 'crypto'
 
-const pool = new Pool({
-  connectionString: process.env.QUEUE_NEON_URL ?? process.env.NEON_DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-})
+// Pool created inside handler to avoid Next.js static env var inlining at build time
+function getPool() {
+  const url = process.env['QUEUE_NEON_URL'] ?? process.env['NEON_DATABASE_URL']
+  return new Pool({ connectionString: url, ssl: { rejectUnauthorized: false } })
+}
 
 function authCheck(req: NextRequest) {
-  return req.headers.get('x-api-key') === (process.env.AUTOMATION_API_KEY ?? process.env.NEXT_PUBLIC_AUTOMATION_API_KEY)
+  return req.headers.get('x-api-key') === (process.env['AUTOMATION_API_KEY'] ?? process.env['NEXT_PUBLIC_AUTOMATION_API_KEY'])
 }
 
 function contentHash(title: string, url: string): string {
@@ -18,6 +19,8 @@ function contentHash(title: string, url: string): string {
 // POST /api/n8n/ingest — receive RSS items from n8n, dedup + store in ingested_content queue
 export async function POST(req: NextRequest) {
   if (!authCheck(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const pool = getPool()
 
   const body = await req.json()
   const items: Array<{
@@ -35,7 +38,6 @@ export async function POST(req: NextRequest) {
 
     const hash = contentHash(title, item.source_url ?? '')
 
-    // Dedup via unique content_hash — ON CONFLICT skips silently
     const res = await pool.query(
       `INSERT INTO ingested_content
          (source_name, source_url, content_hash, raw_title, raw_body, raw_image_url, language, status, ingested_at)
@@ -56,6 +58,8 @@ export async function POST(req: NextRequest) {
       ? { skipped: true, reason: 'duplicate' }
       : { inserted: true }
   }))
+
+  await pool.end().catch(() => {})
 
   const inserted = results.filter(r => r.status === 'fulfilled' && (r.value as any)?.inserted).length
   const skipped  = results.filter(r => r.status === 'fulfilled' && (r.value as any)?.skipped).length
