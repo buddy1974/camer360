@@ -13,9 +13,9 @@ const pool = globalForDb.pool ?? mysql.createPool({
   password:           process.env.DB_PASSWORD!,
   database:           process.env.DB_NAME!,
   waitForConnections: true,
-  connectionLimit:    2,
-  queueLimit:         10,
-  connectTimeout:     10000,
+  connectionLimit:    10,   // increased for SSG parallel page builds
+  queueLimit:         0,    // 0 = unlimited queue, prevents "Queue limit reached" during build
+  connectTimeout:     15000,
   ssl:                { rejectUnauthorized: false },
 })
 
