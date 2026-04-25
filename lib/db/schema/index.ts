@@ -1,4 +1,5 @@
 export * from './categories'
+export * from './ingested_content'
 export * from './authors'
 export * from './articles'
 export * from './tags'
