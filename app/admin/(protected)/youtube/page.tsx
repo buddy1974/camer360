@@ -2,191 +2,182 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = { title: 'YouTube Integration | Camer360 Admin' }
-
 export const dynamic = 'force-dynamic'
 
-interface SetupStatus {
-  api_key_set: boolean
-  oauth_ready: boolean
-  channel: {
-    id: string; title: string; thumbnail: string
-    subscriberCount: number | null; videoCount: number | null; customUrl: string
-  } | null
-  needs: string[]
-}
-
-async function getStatus(host: string): Promise<SetupStatus | null> {
-  try {
-    const proto = host.includes('localhost') ? 'http' : 'https'
-    const r = await fetch(`${proto}://${host}/api/admin/youtube/setup?action=status`, {
-      headers: { Cookie: '' }, // server-to-server, admin check is bypassed — handled by cookies in the API
-      cache: 'no-store',
-    })
-    if (!r.ok) return null
-    return r.json()
-  } catch { return null }
-}
+const CHANNEL_ID  = 'UCVOFAEB15N3WA8FiOhJ8BKg'
+const CHANNEL_URL = 'https://www.youtube.com/channel/' + CHANNEL_ID
 
 const S: React.CSSProperties = {
   background: '#0F0F0F', border: '1px solid #1A1A1A', borderRadius: '12px', padding: '20px',
 }
-const label: React.CSSProperties = {
+const labelStyle: React.CSSProperties = {
   fontSize: '0.62rem', fontWeight: 700, color: '#555', textTransform: 'uppercase', letterSpacing: '0.12em',
 }
-const mono: React.CSSProperties = {
-  fontFamily: 'monospace', fontSize: '0.75rem', color: '#888', background: '#0A0A0A',
-  border: '1px solid #1A1A1A', borderRadius: '6px', padding: '8px 12px', display: 'block',
-  wordBreak: 'break-all', marginTop: '6px',
+
+function StatusDot({ ok, label }: { ok: boolean; label: string }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <span style={{ fontSize: '0.75rem' }}>{ok ? '✅' : '⬜'}</span>
+      <span style={{ fontSize: '0.78rem', color: ok ? '#22C55E' : '#555' }}>{label}</span>
+    </div>
+  )
 }
 
 export default async function YouTubeAdminPage() {
-  // Status fetched client-side via the interactive component below
+  const apiKeySet     = !!process.env['YOUTUBE_API_KEY'] && !process.env['YOUTUBE_API_KEY']?.includes('.apps.googleusercontent')
+  const clientSet     = !!process.env['YOUTUBE_CLIENT_ID'] && !!process.env['YOUTUBE_CLIENT_SECRET']
+  const refreshSet    = !!process.env['YOUTUBE_REFRESH_TOKEN']
+  const channelIdSet  = !!process.env['YOUTUBE_CHANNEL_ID']
+  const oauthReady    = clientSet && refreshSet && channelIdSet
+
   return (
-    <div style={{ maxWidth: '800px' }}>
-      <h1 style={{ fontSize: '1.3rem', fontWeight: 900, color: '#fff', margin: '0 0 6px' }}>
-        YouTube Integration
-      </h1>
-      <p style={{ color: '#444', fontSize: '0.78rem', margin: '0 0 28px' }}>
-        Connect your YouTube channel to auto-post Community Posts and enable music video discovery.
-      </p>
-
-      {/* Credential status grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '28px' }}>
-
-        <div style={S}>
-          <div style={label}>YouTube API Key</div>
-          <CredStatus
-            name="YOUTUBE_API_KEY"
-            description="For search, trending & video stats"
-            format="AIzaSyXXXXXXXXXXXXXXXXXXXXXXX (39 chars)"
-            howTo="console.cloud.google.com → Credentials → API Keys → Create"
-          />
-        </div>
-
-        <div style={S}>
-          <div style={label}>OAuth App (Client ID/Secret)</div>
-          <CredStatus
-            name="YOUTUBE_CLIENT_ID"
-            description="For Community Posts & channel management"
-            format="725865975118-xxx.apps.googleusercontent.com"
-            howTo="Already configured ✓"
-            isSet
-          />
-        </div>
-
-        <div style={S}>
-          <div style={label}>Channel ID</div>
-          <CredStatus
-            name="YOUTUBE_CHANNEL_ID"
-            description="Your YouTube channel identifier"
-            format="UCxxxxxxxxxxxxxxxxxxxxxxxx"
-            howTo="YouTube Studio → Settings → Channel → Advanced → Channel ID"
-          />
-        </div>
-
-        <div style={S}>
-          <div style={label}>Refresh Token</div>
-          <CredStatus
-            name="YOUTUBE_REFRESH_TOKEN"
-            description="One-time authorization for write access"
-            format="1//xxx... (long token)"
-            howTo="Click 'Connect YouTube Channel' below, then copy token shown"
-          />
+    <div style={{ maxWidth: '860px' }}>
+      <div style={{ marginBottom: '28px' }}>
+        <h1 style={{ fontSize: '1.3rem', fontWeight: 900, color: '#fff', margin: '0 0 4px' }}>
+          YouTube Channel Integration
+        </h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <a href={CHANNEL_URL} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.72rem', color: '#D4AF37', textDecoration: 'none', fontWeight: 700 }}>
+            ▶ Camer360 on YouTube →
+          </a>
+          <code style={{ fontSize: '0.65rem', color: '#444', background: '#0A0A0A', border: '1px solid #1A1A1A', borderRadius: '4px', padding: '2px 8px' }}>
+            {CHANNEL_ID}
+          </code>
         </div>
       </div>
 
-      {/* OAuth flow */}
-      <div style={{ ...S, marginBottom: '28px' }}>
-        <div style={label}>Step-by-Step Setup</div>
-        <ol style={{ color: '#777', fontSize: '0.82rem', lineHeight: 2, margin: '12px 0 0', paddingLeft: '20px' }}>
+      {/* Credential status */}
+      <div style={{ ...S, marginBottom: '20px' }}>
+        <div style={{ ...labelStyle, marginBottom: '14px' }}>Credential Status</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+          <StatusDot ok={apiKeySet}    label="YOUTUBE_API_KEY (for search/discovery)" />
+          <StatusDot ok={clientSet}    label="OAuth Client ID + Secret" />
+          <StatusDot ok={channelIdSet} label="YOUTUBE_CHANNEL_ID" />
+          <StatusDot ok={refreshSet}   label="YOUTUBE_REFRESH_TOKEN (write access)" />
+        </div>
+
+        {oauthReady ? (
+          <div style={{ marginTop: '14px', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '8px' }}>
+            <span>✅</span>
+            <span style={{ fontSize: '0.78rem', color: '#22C55E', fontWeight: 700 }}>OAuth fully configured — Community Posts and Playlist Sync are active</span>
+          </div>
+        ) : (
+          <div style={{ marginTop: '14px', padding: '10px 14px', background: 'rgba(200,16,46,0.08)', border: '1px solid rgba(200,16,46,0.2)', borderRadius: '8px' }}>
+            <p style={{ margin: '0 0 6px', fontSize: '0.75rem', color: '#C8102E', fontWeight: 700 }}>Missing credentials — complete the steps below</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              {!apiKeySet    && <span style={{ fontSize: '0.7rem', color: '#666' }}>• YOUTUBE_API_KEY — needed for music discovery (AIzaSy... format)</span>}
+              {!refreshSet   && <span style={{ fontSize: '0.7rem', color: '#666' }}>• YOUTUBE_REFRESH_TOKEN — run OAuth flow below</span>}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Setup steps */}
+      <div style={{ ...S, marginBottom: '20px' }}>
+        <div style={{ ...labelStyle, marginBottom: '16px' }}>Setup Steps</div>
+        <ol style={{ color: '#777', fontSize: '0.82rem', lineHeight: 2.2, margin: 0, paddingLeft: '20px' }}>
           <li>
-            <strong style={{ color: '#EEE' }}>Get YouTube API Key</strong> — visit{' '}
-            <code style={{ color: '#D4AF37', fontSize: '0.75rem' }}>console.cloud.google.com</code>
-            {' '}→ your project → Credentials → Create credentials → API Key. Enable &ldquo;YouTube Data API v3&rdquo;.
-            Add as <code style={{ ...mono, display: 'inline', padding: '1px 6px' }}>YOUTUBE_API_KEY</code> in Vercel.
+            <strong style={{ color: '#EEE' }}>Get YouTube API Key</strong>
+            {' '}(for trending music discovery):{' '}
+            <a href="https://console.cloud.google.com" target="_blank" rel="noopener noreferrer" style={{ color: '#D4AF37', textDecoration: 'none' }}>
+              console.cloud.google.com
+            </a>
+            {' '}→ Credentials → Create credentials → API Key.
+            Enable <em>YouTube Data API v3</em>.
+            Add to Vercel as <code style={{ color: '#D4AF37', fontSize: '0.72rem' }}>YOUTUBE_API_KEY</code>.
+            {apiKeySet && <span style={{ color: '#22C55E', marginLeft: '8px' }}>✓ Set</span>}
           </li>
           <li>
-            <strong style={{ color: '#EEE' }}>Get Channel ID</strong> — YouTube Studio → Settings → Channel → Advanced settings.
-            Add as <code style={{ ...mono, display: 'inline', padding: '1px 6px' }}>YOUTUBE_CHANNEL_ID</code> in Vercel.
+            <strong style={{ color: '#EEE' }}>Channel ID:</strong> Already confirmed →{' '}
+            <code style={{ color: '#D4AF37', fontSize: '0.72rem' }}>{CHANNEL_ID}</code>
+            {' '}(already set in env) {channelIdSet && <span style={{ color: '#22C55E' }}>✓</span>}
           </li>
           <li>
-            <strong style={{ color: '#EEE' }}>Authorize YouTube channel</strong> — click the button below. Sign in with the
-            Google account that owns your YouTube channel.
-          </li>
-          <li>
-            <strong style={{ color: '#EEE' }}>Copy refresh token</strong> — after authorization, copy the token shown
-            and add as <code style={{ ...mono, display: 'inline', padding: '1px 6px' }}>YOUTUBE_REFRESH_TOKEN</code> in Vercel dashboard.
-          </li>
-          <li>
-            <strong style={{ color: '#EEE' }}>Redeploy + import workflow</strong> — trigger a Vercel redeploy, then import
-            <code style={{ ...mono, display: 'inline', padding: '1px 6px' }}>youtube-community-post.json</code> into n8n and activate.
+            <strong style={{ color: '#EEE' }}>Authorize write access</strong>
+            {' '}(one-time OAuth flow to get refresh token):
+            <div style={{ marginTop: '8px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <a
+                href="/api/admin/youtube/setup?action=auth-url"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '6px',
+                  background: '#C8102E', color: '#fff', borderRadius: '8px',
+                  padding: '8px 16px', fontSize: '0.75rem', fontWeight: 700, textDecoration: 'none',
+                }}
+              >
+                🔗 Get OAuth Authorization URL →
+              </a>
+              <a
+                href="/api/admin/youtube/setup?action=status"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center',
+                  background: '#111', border: '1px solid #2A2A2A',
+                  color: '#888', borderRadius: '8px', padding: '8px 14px',
+                  fontSize: '0.75rem', fontWeight: 700, textDecoration: 'none',
+                }}
+              >
+                Check Status
+              </a>
+            </div>
+            <p style={{ fontSize: '0.7rem', color: '#555', margin: '8px 0 0' }}>
+              After authorizing: copy the <code style={{ color: '#D4AF37', fontSize: '0.68rem' }}>refresh_token</code> shown → add to Vercel as <code style={{ color: '#D4AF37', fontSize: '0.68rem' }}>YOUTUBE_REFRESH_TOKEN</code> → redeploy.
+            </p>
+            {refreshSet && <span style={{ color: '#22C55E', fontSize: '0.72rem', fontWeight: 700 }}>✓ Refresh token set</span>}
           </li>
         </ol>
-
-        <div style={{ marginTop: '20px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <a
-            href="/api/admin/youtube/setup?action=auth-url"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: '8px',
-              background: '#C8102E', color: '#fff', border: 'none',
-              borderRadius: '8px', padding: '10px 20px',
-              fontSize: '0.78rem', fontWeight: 700, textDecoration: 'none',
-            }}
-          >
-            Connect YouTube Channel →
-          </a>
-          <a
-            href="/api/admin/youtube/setup?action=status"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex', alignItems: 'center',
-              background: '#111', border: '1px solid #2A2A2A',
-              color: '#888', borderRadius: '8px', padding: '10px 16px',
-              fontSize: '0.78rem', fontWeight: 700, textDecoration: 'none',
-            }}
-          >
-            Check Status
-          </a>
-        </div>
       </div>
 
-      {/* Workflows section */}
-      <div style={S}>
-        <div style={label}>n8n Workflows to Import</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '12px' }}>
+      {/* Workflows */}
+      <div style={{ ...S, marginBottom: '20px' }}>
+        <div style={{ ...labelStyle, marginBottom: '14px' }}>n8n Workflows — Import in Order</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {[
-            { file: 'youtube-discovery.json',       desc: 'Discovers trending videos → auto-creates articles (every 6h). Needs YOUTUBE_API_KEY.',     needs: 'API Key' },
-            { file: 'youtube-community-post.json',  desc: 'Posts article links to YouTube Community feed (every 30 min). Needs full OAuth setup.',   needs: 'Full OAuth' },
+            { file: 'rss-ingestion-engine.json',      status: 'active',   label: 'RSS Ingestion',       desc: 'Every 2h — fetches RSS, classifies, queues articles' },
+            { file: 'article-enhancement-engine.json', status: 'active',  label: 'Article Enhancement', desc: 'Every 30m — AI rewrites queue items → draft articles' },
+            { file: 'facebook-auto-post.json',         status: 'active',   label: 'Facebook Auto-Post',  desc: 'Every 15m — posts published articles to Facebook page' },
+            { file: 'youtube-community-post.json',     status: 'active',   label: 'YouTube Community Posts', desc: 'Every 30m — posts articles to YouTube Community feed', needs: 'YOUTUBE_REFRESH_TOKEN' },
+            { file: 'youtube-discovery.json',          status: 'active',   label: 'YouTube Discovery',   desc: 'Every 6h — finds trending African music → auto-creates articles', needs: 'YOUTUBE_API_KEY' },
+            { file: 'youtube-playlist-sync.json',      status: 'active',   label: 'YouTube Playlist Sync', desc: 'Every 12h — adds trending videos to 5 genre playlists on your channel', needs: 'YOUTUBE_REFRESH_TOKEN + API_KEY' },
           ].map(w => (
-            <div key={w.file} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '12px', background: '#0A0A0A', borderRadius: '8px', border: '1px solid #1A1A1A' }}>
-              <code style={{ color: '#D4AF37', fontSize: '0.72rem', fontWeight: 700, flexShrink: 0, marginTop: '1px' }}>{w.file}</code>
-              <div>
-                <p style={{ margin: 0, fontSize: '0.75rem', color: '#999', lineHeight: 1.5 }}>{w.desc}</p>
-                <span style={{ fontSize: '0.62rem', color: '#555', marginTop: '3px', display: 'block' }}>Requires: {w.needs}</span>
+            <div key={w.file} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '12px 14px', background: '#0A0A0A', borderRadius: '8px', border: '1px solid #1A1A1A' }}>
+              <span style={{ fontSize: '0.7rem', marginTop: '2px', color: w.status === 'active' ? '#22C55E' : '#666' }}>
+                {w.status === 'active' ? '●' : '○'}
+              </span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                  <code style={{ color: '#D4AF37', fontSize: '0.7rem', fontWeight: 700 }}>{w.file}</code>
+                  <span style={{ fontSize: '0.65rem', color: '#555' }}>{w.label}</span>
+                </div>
+                <p style={{ margin: '3px 0 0', fontSize: '0.72rem', color: '#666', lineHeight: 1.4 }}>{w.desc}</p>
+                {w.needs && <p style={{ margin: '2px 0 0', fontSize: '0.62rem', color: '#444' }}>Requires: {w.needs}</p>}
               </div>
             </div>
           ))}
         </div>
       </div>
-    </div>
-  )
-}
 
-function CredStatus({ name, description, format, howTo, isSet }: {
-  name: string; description: string; format: string; howTo: string; isSet?: boolean
-}) {
-  return (
-    <div style={{ marginTop: '10px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-        <span style={{ fontSize: '1rem' }}>{isSet ? '✅' : '⬜'}</span>
-        <code style={{ fontSize: '0.72rem', color: '#D4AF37', fontWeight: 700 }}>{name}</code>
+      {/* What uploading videos needs */}
+      <div style={{ ...S }}>
+        <div style={{ ...labelStyle, marginBottom: '12px' }}>Video Uploading to YouTube Channel</div>
+        <p style={{ fontSize: '0.78rem', color: '#666', lineHeight: 1.6, margin: '0 0 12px' }}>
+          Uploading actual videos to your YouTube channel is supported via{' '}
+          <code style={{ color: '#D4AF37', fontSize: '0.72rem' }}>POST /api/admin/youtube/upload</code>.
+          Pass a <code style={{ color: '#D4AF37', fontSize: '0.72rem' }}>video_url</code> (publicly accessible .mp4), title, and description.
+          The endpoint downloads the video and uploads it to your channel.
+        </p>
+        <p style={{ fontSize: '0.75rem', color: '#555', lineHeight: 1.6, margin: '0 0 12px' }}>
+          <strong style={{ color: '#888' }}>To auto-generate videos from articles</strong> (YouTube Shorts), you need a
+          video rendering service. Options:
+        </p>
+        <ul style={{ fontSize: '0.72rem', color: '#555', lineHeight: 1.8, margin: 0, paddingLeft: '16px' }}>
+          <li><strong style={{ color: '#888' }}>Pictory.ai</strong> or <strong style={{ color: '#888' }}>InVideo.ai</strong> — turn articles into videos via API, then upload to YouTube</li>
+          <li><strong style={{ color: '#888' }}>ElevenLabs + FFmpeg worker</strong> — TTS narration + image slides on a dedicated server</li>
+          <li><strong style={{ color: '#888' }}>Record manually</strong> — upload via the admin endpoint or YouTube Studio</li>
+        </ul>
       </div>
-      <p style={{ margin: '0 0 4px', fontSize: '0.72rem', color: '#666' }}>{description}</p>
-      <p style={{ margin: '0 0 4px', fontSize: '0.65rem', color: '#444', fontFamily: 'monospace' }}>Format: {format}</p>
-      <p style={{ margin: 0, fontSize: '0.65rem', color: '#555' }}>↳ {howTo}</p>
     </div>
   )
 }

@@ -1,0 +1,105 @@
+{
+  "name": "Camer360 YouTube Playlist Sync",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{"field": "hours", "hoursInterval": 12}] }
+      },
+      "id": "schedule-pl",
+      "name": "Every 12 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 300]
+    },
+
+    {
+      "parameters": {
+        "jsCode": "// Define playlists to sync with genre queries\nreturn [\n  { json: { playlist_title: '🔥 Top Afrobeats 2026',       genre: 'afrobeats',       region: 'NG', limit: 5 } },\n  { json: { playlist_title: '🇨🇲 Cameroonian Music',         genre: 'makossa',         region: 'CM', limit: 5 } },\n  { json: { playlist_title: '🎤 African Hip-Hop & Rap',     genre: 'african_hiphop',  region: 'ZA', limit: 5 } },\n  { json: { playlist_title: '🎶 African R&B & Soul',        genre: 'african_rb',      region: 'NG', limit: 5 } },\n  { json: { playlist_title: '🌍 African × Global Collabs', genre: 'global_collabs',  region: 'US', limit: 5 } }\n];"
+      },
+      "id": "define-playlists",
+      "name": "Define Playlists",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 300]
+    },
+
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://www.camer360.com/api/n8n/youtube?action=genre&genre={{ $json.genre }}&region={{ $json.region }}&limit={{ $json.limit }}",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" }
+          ]
+        },
+        "options": { "timeout": 15000 }
+      },
+      "id": "fetch-videos",
+      "name": "Fetch Genre Videos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [600, 300]
+    },
+
+    {
+      "parameters": {
+        "jsCode": "// For each video returned, create an 'ensure playlist + add video' task\nconst resp = $input.first().json;\nconst playlist_title = $('Define Playlists').item.json.playlist_title;\nconst videos = resp.videos || [];\nif (videos.length === 0) return [];\nreturn videos.map(v => ({ json: {\n  action:      'ensure',\n  title:       playlist_title,\n  description: 'Auto-curated by Camer360 — ' + playlist_title,\n  video_id:    v.id,\n  video_title: v.title,\n}}));"
+      },
+      "id": "build-playlist-items",
+      "name": "Build Playlist Items",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 300]
+    },
+
+    {
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": 2,
+        "unit": "seconds"
+      },
+      "id": "rate-limit",
+      "name": "Rate Limit (2s)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1000, 300]
+    },
+
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.camer360.com/api/admin/youtube/playlists",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key",    "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ action: $json.action, title: $json.title, description: $json.description, video_id: $json.video_id }) }}",
+        "options": { "timeout": 15000, "response": { "response": { "neverError": true } } }
+      },
+      "id": "add-to-playlist",
+      "name": "Add to YouTube Playlist",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1200, 300]
+    }
+  ],
+
+  "connections": {
+    "Every 12 Hours":    {"main": [[{"node": "Define Playlists",      "type": "main", "index": 0}]]},
+    "Define Playlists":  {"main": [[{"node": "Fetch Genre Videos",    "type": "main", "index": 0}]]},
+    "Fetch Genre Videos":{"main": [[{"node": "Build Playlist Items",  "type": "main", "index": 0}]]},
+    "Build Playlist Items":{"main": [[{"node": "Rate Limit (2s)",     "type": "main", "index": 0}]]},
+    "Rate Limit (2s)":   {"main": [[{"node": "Add to YouTube Playlist","type": "main", "index": 0}]]}
+  },
+  "settings": { "executionOrder": "v1", "saveManualExecutions": true, "callerPolicy": "workflowsFromSameOwner" }
+}
