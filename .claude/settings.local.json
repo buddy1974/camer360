@@ -50,7 +50,17 @@
       "Bash(timeout 5 bash -c \"cat < /dev/tcp/31.97.198.50/3306\")",
       "Bash(sed -i \"s/#DC2626/#D4AF37/g; s/#EF4444/#F7DC6F/g; s/#C8102E/#D4AF37/g\" /c/Users/loneb/Documents/ai-software-dev/projects/camer360.com/app/'\\(public\\)'/'[category]'/'[slug]'/page.tsx)",
       "Bash(sed -i \"s/#C8102E/#D4AF37/g\" /c/Users/loneb/Documents/ai-software-dev/projects/camer360.com/app/'\\(public\\)'/'[category]'/page.tsx)",
-      "Bash(npx next *)"
+      "Bash(npx next *)",
+      "Bash(npm uninstall *)",
+      "Bash(vercel alias *)",
+      "Bash(vercel promote *)",
+      "Bash(vercel logs *)",
+      "Bash(cat vercel.json)",
+      "Bash(cat next.config.js)",
+      "Bash(cat next.config.ts)",
+      "Bash(cat next.config.mjs)",
+      "Bash(sed -i 's/process\\\\.env\\\\.NEON_DATABASE_URL/process.env.QUEUE_NEON_URL ?? process.env.NEON_DATABASE_URL/g' app/api/n8n/ingest/route.ts app/api/n8n/queue/route.ts)",
+      "Bash(sed -i 's/process\\\\.env\\\\.NEON_DATABASE_URL/process.env.QUEUE_NEON_URL ?? process.env.NEON_DATABASE_URL/g' app/api/n8n/debug-neon/route.ts)"
     ]
   }
 }
