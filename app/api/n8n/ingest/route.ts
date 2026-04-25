@@ -2,10 +2,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Pool } from 'pg'
 import { createHash } from 'crypto'
 
-// Pool created inside handler to avoid Next.js static env var inlining at build time
+function getNeonUrl(): string {
+  // Prefer full URL if available; fall back to building from parts
+  const full = process.env['QUEUE_NEON_URL'] ?? process.env['NEON_DATABASE_URL']
+  if (full) return full
+  const h = process.env['NEON_HOST'], u = process.env['NEON_USER'],
+        p = process.env['NEON_PASSWORD'], d = process.env['NEON_DB']
+  if (h && u && p && d) return `postgresql://${u}:${p}@${h}/${d}?sslmode=require`
+  throw new Error('Neon connection not configured')
+}
+
 function getPool() {
-  const url = process.env['QUEUE_NEON_URL'] ?? process.env['NEON_DATABASE_URL']
-  return new Pool({ connectionString: url, ssl: { rejectUnauthorized: false } })
+  return new Pool({ connectionString: getNeonUrl(), ssl: { rejectUnauthorized: false } })
 }
 
 function authCheck(req: NextRequest) {

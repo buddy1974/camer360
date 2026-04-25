@@ -7,21 +7,29 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Test dot notation (may be statically inlined to undefined by Next.js at build time)
-  const urlDot = process.env.QUEUE_NEON_URL
+  // Build Neon URL from individual parts (bracket notation avoids static inlining)
+  const neonHost = process.env['NEON_HOST']
+  const neonUser = process.env['NEON_USER']
+  const neonPass = process.env['NEON_PASSWORD']
+  const neonDb   = process.env['NEON_DB']
+  const urlFull  = process.env['QUEUE_NEON_URL'] ?? process.env['NEON_DATABASE_URL']
 
-  // Test bracket notation (avoids Next.js static inlining — read at runtime)
-  const urlBracket = process.env['QUEUE_NEON_URL']
+  const urlParts = (neonHost && neonUser && neonPass && neonDb)
+    ? `postgresql://${neonUser}:${neonPass}@${neonHost}/${neonDb}?sslmode=require`
+    : null
 
   const checks = {
-    dot_notation:     urlDot     ? 'SET(len=' + urlDot.length + ')'     : 'UNDEFINED',
-    bracket_notation: urlBracket ? 'SET(len=' + urlBracket.length + ')' : 'UNDEFINED',
+    NEON_HOST:        neonHost ? 'SET' : 'MISSING',
+    NEON_USER:        neonUser ? 'SET' : 'MISSING',
+    NEON_PASSWORD:    neonPass ? 'SET' : 'MISSING',
+    NEON_DB:          neonDb   ? 'SET' : 'MISSING',
+    QUEUE_NEON_URL:   urlFull  ? 'SET' : 'MISSING',
+    url_from_parts:   urlParts ? 'built' : 'cannot_build',
     OPENAI_API_KEY:   process.env['OPENAI_API_KEY']   ? 'SET' : 'MISSING',
     DB_HOST:          process.env['DB_HOST']           ? 'SET' : 'MISSING',
-    NEXT_PUBLIC_SITE_URL: process.env['NEXT_PUBLIC_SITE_URL'] ? 'SET' : 'MISSING',
   }
 
-  const url = urlBracket ?? urlDot
+  const url = urlFull ?? urlParts
   let neonTest = 'not_run'
   if (url) {
     try {
