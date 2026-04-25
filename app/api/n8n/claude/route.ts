@@ -1,7 +1,7 @@
 export const maxDuration = 60
 
 import { NextRequest, NextResponse } from 'next/server';
-import { openai, MODEL_QUALITY, completionText } from '@/lib/ai/client';
+import { openai, MODEL_QUALITY, MODEL_FAST, completionText } from '@/lib/ai/client';
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,14 +18,15 @@ export async function POST(req: NextRequest) {
     } catch(e: any) {
       return NextResponse.json({ error: 'Body parse failed: ' + e.message, raw: rawText.substring(0, 200) }, { status: 400 });
     }
-    const { system, user } = body;
+    const { system, user, model } = body;
 
     if (!system || !user) {
       return NextResponse.json({ error: 'Missing system or user field', received: Object.keys(body) }, { status: 400 });
     }
 
+    const selectedModel = model === 'fast' ? MODEL_FAST : MODEL_QUALITY;
     const message = await openai.chat.completions.create({
-      model: MODEL_QUALITY,
+      model: selectedModel,
       max_tokens: 2000,
       messages: [
         { role: 'system', content: system },

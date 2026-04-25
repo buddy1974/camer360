@@ -1,6 +1,6 @@
 {
   "name": "Camer360 RSS Ingestion Engine",
-  "active": false,
+  "active": true,
   "nodes": [
     {
       "parameters": {
@@ -71,9 +71,17 @@
       "position": [860, 480]
     },
     {
+      "parameters": { "maxItems": 10 },
+      "id": "limit-batch",
+      "name": "Limit Batch (10)",
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [1060, 480]
+    },
+    {
       "parameters": {
         "method": "POST",
-        "url": "https://camer360com.vercel.app/api/n8n/claude",
+        "url": "https://www.camer360.com/api/n8n/claude",
         "sendHeaders": true,
         "specifyHeaders": "keypair",
         "headerParameters": {
@@ -83,25 +91,38 @@
           ]
         },
         "sendBody": true,
-        "contentType": "json",
-        "body": "={\n  \"system\": \"You are an AI classifier for Camer360 entertainment magazine. Respond ONLY with valid JSON (no markdown): {\\\"category\\\":\\\"celebrities|music|gossip|viral|fashion-beauty|film-tv|influencers|money-moves|diaspora|sport-stars|real-talk|exposed\\\", \\\"score\\\":1-10, \\\"publish\\\":true}\",\n  \"user\": \"Title: {{ $json.title }}\\nSummary: {{ $json.description }}\"\n}",
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ model: 'fast', system: 'You are an AI classifier for Camer360 entertainment magazine. Respond ONLY with valid JSON (no markdown): {\"category\":\"celebrities|music|gossip|viral|fashion-beauty|film-tv|influencers|money-moves|diaspora|sport-stars|real-talk|exposed\", \"score\":1-10, \"publish\":true}', user: 'Title: ' + $json.title + '\\nSummary: ' + $json.description }) }}",
         "options": { "timeout": 15000 }
       },
       "id": "ai-classify",
       "name": "AI Classify Content",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1080, 480]
+      "position": [1260, 480]
     },
     {
       "parameters": {
-        "jsCode": "const item = $input.first();\ntry {\n  const ai = JSON.parse(item.json.text || '{}');\n  return [{ json: { ...item.json, ai_category: ai.category, ai_score: ai.score ?? 0, ai_publish: ai.publish ?? false } }];\n} catch {\n  return [{ json: { ...item.json, ai_score: 0, ai_publish: false } }];\n}"
+        "resume": "timeInterval",
+        "amount": 2,
+        "unit": "seconds"
+      },
+      "id": "rate-limit-delay",
+      "name": "Rate Limit Delay",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1460, 480]
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first();\nconst original = $('Limit Batch (10)').all()[$itemIndex]?.json || {};\ntry {\n  const ai = JSON.parse(item.json.text || '{}');\n  return [{ json: { ...original, ai_category: ai.category, ai_score: ai.score ?? 0, ai_publish: ai.publish ?? false } }];\n} catch {\n  return [{ json: { ...original, ai_score: 0, ai_publish: false } }];\n}"
       },
       "id": "parse-classify",
       "name": "Parse Classification",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1300, 480]
+      "position": [1660, 480]
     },
     {
       "parameters": {
@@ -128,12 +149,12 @@
       "name": "Filter High Quality (≥6)",
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2,
-      "position": [1520, 480]
+      "position": [1860, 480]
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "https://camer360com.vercel.app/api/n8n/ingest",
+        "url": "https://www.camer360.com/api/n8n/ingest",
         "sendHeaders": true,
         "specifyHeaders": "keypair",
         "headerParameters": {
@@ -143,15 +164,16 @@
           ]
         },
         "sendBody": true,
-        "contentType": "json",
-        "body": "=[{\n  \"source_name\": \"{{ $json.source }}\",\n  \"source_url\":  \"{{ $json.url }}\",\n  \"raw_title\":   \"{{ $json.title }}\",\n  \"raw_body\":    \"{{ $json.description }}\",\n  \"language\":    \"en\"\n}]",
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify([{ source_name: $json.source, source_url: $json.url, raw_title: $json.title, raw_body: $json.description, language: 'en' }]) }}",
         "options": { "timeout": 10000 }
       },
       "id": "store-content",
       "name": "Store in Queue",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1740, 480]
+      "position": [2060, 480]
     }
   ],
   "connections": {
@@ -161,7 +183,7 @@
         {"node": "BellaNaija RSS",   "type": "main", "index": 0},
         {"node": "Pulse Ghana RSS",  "type": "main", "index": 0},
         {"node": "The Net NG RSS",   "type": "main", "index": 0},
-        {"node": "NotJustOk RSS",   "type": "main", "index": 0}
+        {"node": "NotJustOk RSS",    "type": "main", "index": 0}
       ]]
     },
     "Linda Ikeji RSS":  {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 0}]]},
@@ -169,11 +191,13 @@
     "Pulse Ghana RSS":  {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 2}]]},
     "The Net NG RSS":   {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 3}]]},
     "NotJustOk RSS":    {"main": [[{"node": "Merge RSS Sources", "type": "main", "index": 4}]]},
-    "Merge RSS Sources":    {"main": [[{"node": "Dedupe RSS Items",         "type": "main", "index": 0}]]},
-    "Dedupe RSS Items":     {"main": [[{"node": "AI Classify Content",      "type": "main", "index": 0}]]},
-    "AI Classify Content":  {"main": [[{"node": "Parse Classification",     "type": "main", "index": 0}]]},
-    "Parse Classification": {"main": [[{"node": "Filter High Quality (≥6)", "type": "main", "index": 0}]]},
-    "Filter High Quality (≥6)": {"main": [[{"node": "Store in Queue",       "type": "main", "index": 0}]]}
+    "Merge RSS Sources":       {"main": [[{"node": "Dedupe RSS Items",         "type": "main", "index": 0}]]},
+    "Dedupe RSS Items":        {"main": [[{"node": "Limit Batch (10)",          "type": "main", "index": 0}]]},
+    "Limit Batch (10)":        {"main": [[{"node": "AI Classify Content",      "type": "main", "index": 0}]]},
+    "AI Classify Content":     {"main": [[{"node": "Rate Limit Delay",         "type": "main", "index": 0}]]},
+    "Rate Limit Delay":        {"main": [[{"node": "Parse Classification",     "type": "main", "index": 0}]]},
+    "Parse Classification":    {"main": [[{"node": "Filter High Quality (≥6)", "type": "main", "index": 0}]]},
+    "Filter High Quality (≥6)":{"main": [[{"node": "Store in Queue",           "type": "main", "index": 0}]]}
   },
   "settings": { "executionOrder": "v1", "saveManualExecutions": true, "callerPolicy": "workflowsFromSameOwner" }
 }

@@ -1,0 +1,119 @@
+{
+  "name": "Camer360 Facebook Auto-Post",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{"field": "minutes", "minutesInterval": 15}] }
+      },
+      "id": "schedule-fb",
+      "name": "Every 15 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://www.camer360.com/api/n8n/social/facebook?limit=5",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" }
+          ]
+        },
+        "options": { "timeout": 10000 }
+      },
+      "id": "fetch-unposted",
+      "name": "Fetch Unposted Articles",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.first().json;\nif (!Array.isArray(rows) || rows.length === 0) return [];\nreturn rows.map(row => ({ json: row }));"
+      },
+      "id": "split-articles",
+      "name": "Split Articles",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const a = $json;\nconst url = `https://www.camer360.com/${a.categorySlug}/${a.slug}`;\nconst excerpt = (a.excerpt || '').trim();\nconst message = `${a.title}\\n\\n${excerpt ? excerpt + '\\n\\n' : ''}🔗 Read more: ${url}\\n\\n#Camer360 #AfricanEntertainment #CelebrityNews #Cameroon`;\nreturn [{ json: { ...a, fb_message: message, fb_link: url } }];"
+      },
+      "id": "build-post",
+      "name": "Build FB Post",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/252443918110445/feed",
+        "sendBody": true,
+        "contentType": "form",
+        "bodyParameters": {
+          "parameters": [
+            { "name": "message",      "value": "={{ $json.fb_message }}" },
+            { "name": "link",         "value": "={{ $json.fb_link }}" },
+            { "name": "access_token", "value": "REPLACE_WITH_FULL_PAGE_ACCESS_TOKEN" }
+          ]
+        },
+        "options": { "timeout": 15000 }
+      },
+      "id": "post-to-facebook",
+      "name": "Post to Facebook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1000, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const fb = $input.first().json;\nconst original = $('Build FB Post').item.json;\nconst postId = fb.id || null;\nconst success = !!postId;\nreturn [{ json: {\n  article_id:       original.id,\n  status:           success ? 'sent' : 'failed',\n  platform_post_id: postId,\n  error:            success ? null : JSON.stringify(fb),\n}}];"
+      },
+      "id": "parse-fb-response",
+      "name": "Parse FB Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://www.camer360.com/api/n8n/social/facebook",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key",    "value": "camer360_auto_42756d753611bdfb3c08ab2714cae872" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ article_id: $json.article_id, status: $json.status, platform_post_id: $json.platform_post_id, error: $json.error }) }}",
+        "options": { "timeout": 10000 }
+      },
+      "id": "record-result",
+      "name": "Record Post Result",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, 300]
+    }
+  ],
+  "connections": {
+    "Every 15 Minutes":    {"main": [[{"node": "Fetch Unposted Articles", "type": "main", "index": 0}]]},
+    "Fetch Unposted Articles": {"main": [[{"node": "Split Articles",       "type": "main", "index": 0}]]},
+    "Split Articles":      {"main": [[{"node": "Build FB Post",            "type": "main", "index": 0}]]},
+    "Build FB Post":       {"main": [[{"node": "Post to Facebook",         "type": "main", "index": 0}]]},
+    "Post to Facebook":    {"main": [[{"node": "Parse FB Response",        "type": "main", "index": 0}]]},
+    "Parse FB Response":   {"main": [[{"node": "Record Post Result",       "type": "main", "index": 0}]]}
+  },
+  "settings": { "executionOrder": "v1", "saveManualExecutions": true, "callerPolicy": "workflowsFromSameOwner" }
+}
