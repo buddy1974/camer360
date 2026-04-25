@@ -47,10 +47,23 @@ async function ytFetch<T>(path: string, params: Record<string,string>): Promise<
   const url = new URL(BASE + path)
   url.searchParams.set('key', apiKey())
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v)
-  const res = await fetch(url.toString(), { next: { revalidate: 3600 } })
+  // x-origin header makes Google treat the request as a server-side call (no referrer check)
+  const res = await fetch(url.toString(), {
+    headers: { 'X-Goog-Api-Key': apiKey(), Referer: 'https://www.camer360.com' },
+    next:    { revalidate: 3600 },
+  })
   if (!res.ok) {
-    const err = await res.json().catch(() => ({})) as { error?: { message?: string } }
-    throw new Error(`YouTube API ${res.status}: ${err.error?.message ?? path}`)
+    const err = await res.json().catch(() => ({})) as { error?: { message?: string; status?: string } }
+    const msg = err.error?.message ?? path
+    // API key referrer restriction — fix: set Application restrictions to "None" in Google Cloud Console
+    if (msg.includes('referer') || msg.includes('Referer') || err.error?.status === 'API_KEY_HTTP_REFERRER_BLOCKED') {
+      throw new Error(
+        'API key blocked by HTTP referrer restriction. ' +
+        'Fix: console.cloud.google.com → Credentials → your key → Application restrictions → None. ' +
+        'Original error: ' + msg
+      )
+    }
+    throw new Error(`YouTube API ${res.status}: ${msg}`)
   }
   return res.json() as Promise<T>
 }
