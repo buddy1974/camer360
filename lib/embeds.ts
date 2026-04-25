@@ -123,9 +123,39 @@ function embedSpotify(url: string): string | null {
   )
 }
 
+// ─── Audiomack ─────────────────────────────────────────────────────────────
+// URL forms: audiomack.com/artist/song/SLUG  |  audiomack.com/artist/album/SLUG
+const AM_TRACK_RE  = /https?:\/\/(?:www\.)?audiomack\.com\/([\w-]+)\/(song|album|playlist)\/([\w-]+)/
+
+function embedAudiomack(url: string): string | null {
+  const m = url.match(AM_TRACK_RE)
+  if (!m) return null
+  const [, artist, type, slug] = m
+  const embedType = type === 'album' ? 'album' : type === 'playlist' ? 'playlist' : 'song'
+  return (
+    `<div style="margin:24px 0">` +
+    `<iframe src="https://audiomack.com/embed/${artist}/${embedType}/${slug}" ` +
+    `style="width:100%;height:252px;border-radius:12px;border:none" ` +
+    `allow="autoplay" loading="lazy"></iframe></div>`
+  )
+}
+
+// ─── Boomplay ──────────────────────────────────────────────────────────────
+const BOOMPLAY_RE = /https?:\/\/(?:www\.)?boomplay\.com\/songs?\/(\d+)/
+
+function embedBoomplay(url: string): string | null {
+  const m = url.match(BOOMPLAY_RE)
+  if (!m) return null
+  return (
+    `<div style="margin:24px 0">` +
+    `<iframe src="https://www.boomplay.com/embed/song/${m[1]}" ` +
+    `style="width:100%;height:200px;border-radius:12px;border:none" loading="lazy"></iframe></div>`
+  )
+}
+
 // ─── Public API ────────────────────────────────────────────────────────────
 
-export type Platform = 'youtube' | 'tiktok' | 'instagram' | 'vimeo' | 'twitter' | 'facebook' | 'twitch' | 'spotify' | null
+export type Platform = 'youtube' | 'tiktok' | 'instagram' | 'vimeo' | 'twitter' | 'facebook' | 'twitch' | 'spotify' | 'audiomack' | 'boomplay' | null
 
 export function detectPlatform(url: string): Platform {
   if (YT_RE.some(r => r.test(url))) return 'youtube'
@@ -135,7 +165,9 @@ export function detectPlatform(url: string): Platform {
   if (TW_RE.test(url))  return 'twitter'
   if (FB_VIDEO_RE.test(url) || FB_POST_RE.test(url)) return 'facebook'
   if (TWITCH_CHANNEL_RE.test(url) || TWITCH_CLIP_RE.test(url) || TWITCH_VOD_RE.test(url)) return 'twitch'
-  if (SPOTIFY_RE.test(url)) return 'spotify'
+  if (SPOTIFY_RE.test(url))   return 'spotify'
+  if (AM_TRACK_RE.test(url))  return 'audiomack'
+  if (BOOMPLAY_RE.test(url))  return 'boomplay'
   return null
 }
 
@@ -143,6 +175,7 @@ export function platformLabel(p: Platform): string {
   const map: Record<NonNullable<Platform>, string> = {
     youtube: 'YouTube', tiktok: 'TikTok', instagram: 'Instagram', vimeo: 'Vimeo',
     twitter: 'Twitter / X', facebook: 'Facebook', twitch: 'Twitch', spotify: 'Spotify',
+    audiomack: 'Audiomack', boomplay: 'Boomplay',
   }
   return p ? map[p] : 'Unknown'
 }
@@ -151,6 +184,7 @@ export function platformIcon(p: Platform): string {
   const map: Record<NonNullable<Platform>, string> = {
     youtube: '▶️', tiktok: '🎵', instagram: '📸', vimeo: '🎬',
     twitter: '🐦', facebook: '📘', twitch: '🎮', spotify: '🎧',
+    audiomack: '🎶', boomplay: '🎼',
   }
   return p ? map[p] : '📺'
 }
@@ -158,14 +192,16 @@ export function platformIcon(p: Platform): string {
 /** Generate embed HTML from a URL. Returns null if URL is not a recognised platform. */
 export function generateEmbed(url: string): string | null {
   return (
-    embedYouTube(url)   ??
-    embedTikTok(url)    ??
-    embedInstagram(url) ??
-    embedVimeo(url)     ??
-    embedTwitter(url)   ??
-    embedFacebook(url)  ??
-    embedTwitch(url)    ??
-    embedSpotify(url)   ??
+    embedYouTube(url)    ??
+    embedTikTok(url)     ??
+    embedInstagram(url)  ??
+    embedVimeo(url)      ??
+    embedTwitter(url)    ??
+    embedFacebook(url)   ??
+    embedTwitch(url)     ??
+    embedSpotify(url)    ??
+    embedAudiomack(url)  ??
+    embedBoomplay(url)   ??
     null
   )
 }

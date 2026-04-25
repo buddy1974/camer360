@@ -40,6 +40,10 @@ export function sanitizeArticleBody(html: string): string {
       'clips.twitch.tv',
       // Spotify
       'open.spotify.com',
+      // Audiomack
+      'audiomack.com',
+      // Boomplay
+      'www.boomplay.com',
     ],
     allowedScriptDomains: [
       'www.tiktok.com',
