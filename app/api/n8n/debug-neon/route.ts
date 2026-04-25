@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const url = process.env.NEON_DATABASE_URL
+  const url = process.env.QUEUE_NEON_URL ?? process.env.NEON_DATABASE_URL
   const urlPreview = url !== undefined ? (url.length > 0 ? url.slice(0, 60) + '...' : 'EMPTY_STRING') : 'UNDEFINED'
 
   const allKeys = Object.keys(process.env)

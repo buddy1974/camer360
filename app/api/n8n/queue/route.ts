@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Pool } from 'pg'
 
 const pool = new Pool({
-  connectionString: process.env.NEON_DATABASE_URL,
+  connectionString: process.env.QUEUE_NEON_URL ?? process.env.NEON_DATABASE_URL,
   ssl: { rejectUnauthorized: false },
 })
 
