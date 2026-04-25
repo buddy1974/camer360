@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Category, Article, ArticleStatus } from '@/lib/types'
 import { COUNTRIES, COUNTRY_GROUPS } from '@/components/article/CountryTag'
+import { RichEditor, decodeEmbedBlocks } from '@/components/admin/Editor/RichEditor'
 
 interface Props {
   categories: Category[]
@@ -86,6 +87,7 @@ export function ArticleEditor({ categories, article }: Props) {
   const [twitterThread,setTwitterThread]= useState<string[]>([])
   const [whatsappMsg,  setWhatsappMsg]  = useState('')
   const [fbPost,       setFbPost]       = useState('')
+  const [editorMode, setEditorMode] = useState<'visual'|'source'>('visual')
 
   // Pre-fill from Quick Publish "Review in Full Editor" flow
   useEffect(() => {
@@ -166,7 +168,11 @@ if (!body.trim())  { setMsg('Body is required'); return }
     setSaving(true)
     setMsg('')
     const payload = {
-      title, slug, body, excerpt, categoryId: (catId && catId > 0 && categories.some(c => c.id === catId)) ? catId : (article?.categoryId && categories.some(c => c.id === article.categoryId) ? article.categoryId : (categories[0]?.id || 1)),
+      title, slug,
+      // Decode TipTap EmbedBlock placeholders back to real iframe HTML before saving
+      body:          decodeEmbedBlocks(body),
+      excerpt,
+      categoryId: (catId && catId > 0 && categories.some(c => c.id === catId)) ? catId : (article?.categoryId && categories.some(c => c.id === article.categoryId) ? article.categoryId : (categories[0]?.id || 1)),
       featuredImage: imgUrl || null, status: publishStatus,
       isBreaking: breaking, isFeatured: featured,
       metaTitle: metaT || null, metaDesc: metaD || null,
@@ -341,14 +347,14 @@ if (!body.trim())  { setMsg('Body is required'); return }
               style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.6 }}
             />
           </div>
+          {/* Body editor */}
           <div>
-            <label style={labelStyle}>Body (HTML) *</label>
-            <textarea
+            <label style={{ ...labelStyle, marginBottom: '6px' }}>Body *</label>
+            <RichEditor
               value={body}
-              onChange={e => setBody(e.target.value)}
-              placeholder="<p>Article content...</p>"
-              rows={22}
-              style={{ ...inputStyle, resize: 'vertical', fontFamily: 'monospace', fontSize: '0.82rem', lineHeight: 1.7 }}
+              onChange={setBody}
+              mode={editorMode}
+              onModeChange={setEditorMode}
             />
           </div>
 
