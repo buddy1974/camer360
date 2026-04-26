@@ -23,10 +23,19 @@ export async function POST(req: NextRequest) {
   }
 
   // Resolve category
-  const [cat] = await db.select({ id: categories.id })
+  // Try exact slug first, fall back to 'celebrities' so AI category mismatches never block creation
+  let [cat] = await db.select({ id: categories.id })
     .from(categories)
     .where(eq(categories.slug, category_slug))
     .limit(1)
+
+  if (!cat) {
+    const [fallback] = await db.select({ id: categories.id })
+      .from(categories)
+      .where(eq(categories.slug, 'celebrities'))
+      .limit(1)
+    cat = fallback
+  }
 
   if (!cat) {
     return NextResponse.json({ error: `Category not found: ${category_slug}` }, { status: 400 })

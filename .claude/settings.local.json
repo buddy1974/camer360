@@ -60,7 +60,10 @@
       "Bash(cat next.config.ts)",
       "Bash(cat next.config.mjs)",
       "Bash(sed -i 's/process\\\\.env\\\\.NEON_DATABASE_URL/process.env.QUEUE_NEON_URL ?? process.env.NEON_DATABASE_URL/g' app/api/n8n/ingest/route.ts app/api/n8n/queue/route.ts)",
-      "Bash(sed -i 's/process\\\\.env\\\\.NEON_DATABASE_URL/process.env.QUEUE_NEON_URL ?? process.env.NEON_DATABASE_URL/g' app/api/n8n/debug-neon/route.ts)"
+      "Bash(sed -i 's/process\\\\.env\\\\.NEON_DATABASE_URL/process.env.QUEUE_NEON_URL ?? process.env.NEON_DATABASE_URL/g' app/api/n8n/debug-neon/route.ts)",
+      "Bash(xargs ls *)",
+      "Bash(grep -v \"^$\")",
+      "Bash(vercel inspect *)"
     ]
   }
 }
