@@ -1,44 +1,49 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Search, Mail, Menu, X } from 'lucide-react'
 import SearchModal from '@/components/search/SearchModal'
 
 const NAV_LEFT = [
-  { label: 'CELEBRITIES',  href: '/celebrities'  },
-  { label: 'MUSIC',        href: '/music'        },
-  { label: 'FILM & TV',    href: '/film-tv'      },
-  { label: 'SPORT STARS',  href: '/sport-stars'  },
+  { label: 'Celebrities',  href: '/celebrities'  },
+  { label: 'Music',        href: '/music'        },
+  { label: 'Film & TV',    href: '/film-tv'      },
+  { label: 'Sport Stars',  href: '/sport-stars'  },
 ]
 
 const NAV_RIGHT = [
-  { label: 'INFLUENCERS',  href: '/influencers'  },
-  { label: 'ENTREPRENEURS', href: '/entrepreneurs' },
-  { label: 'EVENTS',       href: '/events'       },
+  { label: 'Influencers',   href: '/influencers'  },
+  { label: 'Entrepreneurs', href: '/entrepreneurs' },
+  { label: 'Events',        href: '/events'       },
 ]
 
 const NAV_ALL = [...NAV_LEFT, ...NAV_RIGHT]
 
-const TRENDING = [
-  { label: 'CAMER360 POWER 100',         href: '/celebrities'   },
-  { label: 'AFROBEATS RISING STARS',     href: '/music'         },
-  { label: 'TOP INFLUENCERS 2026',       href: '/influencers'   },
-  { label: 'AFRICAN MOGULS 2026',        href: '/entrepreneurs' },
-  { label: 'SPORT STARS TO WATCH',       href: '/sport-stars'   },
-  { label: 'UPCOMING EVENTS',            href: '/events'        },
+const TRENDING_TOPICS = [
+  { label: 'Camer360 Power 100',   href: '/celebrities'   },
+  { label: 'Afrobeats Rising',     href: '/music'         },
+  { label: 'Top Influencers 2026', href: '/influencers'   },
+  { label: 'African Moguls 2026',  href: '/entrepreneurs' },
+  { label: 'Sport Stars to Watch', href: '/sport-stars'   },
+  { label: 'Upcoming Events',      href: '/events'        },
 ]
 
 function NavLink({ item, pathname }: { item: { label: string; href: string }; pathname: string }) {
   const active = pathname === item.href || pathname.startsWith(item.href + '/')
   return (
-    <Link
-      href={item.href}
-      style={{ whiteSpace: 'nowrap' }}
-      className={`text-xs font-black tracking-widest uppercase transition-colors px-1 ${
-        active ? 'text-[#D4AF37]' : 'text-black hover:text-[#D4AF37]'
-      }`}
-    >
+    <Link href={item.href} className="story-link" style={{
+      whiteSpace:    'nowrap',
+      fontSize:      '12px',
+      fontWeight:    700,
+      letterSpacing: '0.08em',
+      textTransform: 'uppercase',
+      textDecoration: 'none',
+      color:          active ? 'hsl(var(--gold))' : '#1A1A1A',
+      transition:    'color 0.2s',
+      paddingBottom:  active ? '2px' : undefined,
+      borderBottom:   active ? '1.5px solid hsl(var(--gold))' : undefined,
+    }}>
       {item.label}
     </Link>
   )
@@ -47,129 +52,203 @@ function NavLink({ item, pathname }: { item: { label: string; href: string }; pa
 export default function EbonyNavigation() {
   const [open,       setOpen]       = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [scrolled,   setScrolled]   = useState(false)
   const pathname = usePathname()
 
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 40)
+    fn()
+    window.addEventListener('scroll', fn, { passive: true })
+    return () => window.removeEventListener('scroll', fn)
+  }, [])
+
+  useEffect(() => { setOpen(false) }, [pathname])
+
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <header style={{
+      position:     'sticky',
+      top:           0,
+      zIndex:        50,
+      background:    scrolled ? 'rgba(254,254,253,0.96)' : '#FEFEFD',
+      backdropFilter: scrolled ? 'blur(16px)' : 'none',
+      transition:   'all 0.4s cubic-bezier(0.22,1,0.36,1)',
+      boxShadow:    scrolled
+        ? '0 1px 0 rgba(0,0,0,0.08), 0 4px 20px rgba(0,0,0,0.06)'
+        : '0 1px 0 rgba(0,0,0,0.08)',
+    }}>
 
-      {/* ── Desktop: centered logo, nav split left/right ── */}
-      <div className="hidden lg:grid container mx-auto px-6 py-4"
-        style={{ gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: '24px' }}>
+      {/* ── Desktop: three-column centred logo ── */}
+      <div className="hidden lg:block">
+        <div style={{
+          maxWidth:            '1340px',
+          margin:              '0 auto',
+          padding:             '0 32px',
+          display:             'grid',
+          gridTemplateColumns: '1fr auto 1fr',
+          alignItems:          'center',
+          gap:                 '24px',
+          height:              '80px',
+        }}>
+          {/* Left nav */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '32px' }}>
+            {NAV_LEFT.map(item => <NavLink key={item.href} item={item} pathname={pathname} />)}
+          </div>
 
-        {/* Left nav */}
-        <div className="flex items-center justify-end" style={{ gap: '28px' }}>
-          {NAV_LEFT.map(item => <NavLink key={item.href} item={item} pathname={pathname} />)}
-        </div>
+          {/* Center logo */}
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', textDecoration: 'none' }}>
+            <span style={{
+              fontFamily:  'var(--font-display), Georgia, serif',
+              fontStyle:   'italic',
+              fontSize:    '11px',
+              color:       'hsl(var(--gold))',
+              textAlign:   'right',
+              lineHeight:  1.5,
+              letterSpacing: '0.06em',
+              whiteSpace:  'nowrap',
+            }}>
+              Cameroon&rsquo;s<br />Premier
+            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="Camer360" style={{ height: '72px', width: 'auto' }} />
+            <span style={{
+              fontFamily:  'var(--font-display), Georgia, serif',
+              fontStyle:   'italic',
+              fontSize:    '11px',
+              color:       'hsl(var(--gold))',
+              textAlign:   'left',
+              lineHeight:  1.5,
+              letterSpacing: '0.06em',
+              whiteSpace:  'nowrap',
+            }}>
+              Lifestyle<br />Magazine
+            </span>
+          </Link>
 
-        {/* Center logo + taglines */}
-        <Link href="/" className="flex items-center justify-center gap-3">
-          <span style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            fontStyle: 'italic', fontSize: '11px',
-            color: '#D4AF37', textAlign: 'right',
-            lineHeight: 1.4, letterSpacing: '0.04em',
-            whiteSpace: 'nowrap',
-          }}>
-            Cameroon&rsquo;s<br />Premier
-          </span>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Camer360" className="h-20 w-auto" />
-          <span style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
-            fontStyle: 'italic', fontSize: '11px',
-            color: '#D4AF37', textAlign: 'left',
-            lineHeight: 1.4, letterSpacing: '0.04em',
-            whiteSpace: 'nowrap',
-          }}>
-            Lifestyle<br />Magazine
-          </span>
-        </Link>
-
-        {/* Right nav */}
-        <div className="flex items-center justify-start" style={{ gap: '28px' }}>
-          {NAV_RIGHT.map(item => <NavLink key={item.href} item={item} pathname={pathname} />)}
-          {/* Utility icons */}
-          <div className="flex items-center gap-4 ml-4 border-l border-gray-200 pl-4">
-            <Link href="/newsletter" aria-label="Newsletter"
-              className="text-gray-500 hover:text-[#D4AF37] transition-colors">
-              <Mail className="w-5 h-5" />
-            </Link>
-            <button onClick={() => setSearchOpen(true)} aria-label="Search"
-              className="text-gray-500 hover:text-[#D4AF37] transition-colors bg-transparent border-none cursor-pointer p-0">
-              <Search className="w-5 h-5" />
-            </button>
+          {/* Right nav + icons */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '28px' }}>
+            {NAV_RIGHT.map(item => <NavLink key={item.href} item={item} pathname={pathname} />)}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginLeft: '4px', paddingLeft: '16px', borderLeft: '1px solid #E8E8E6' }}>
+              <Link href="/newsletter" aria-label="Newsletter"
+                style={{ color: '#999', display: 'flex', transition: 'color 0.2s' }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'hsl(var(--gold))'}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#999'}
+              >
+                <Mail size={17} />
+              </Link>
+              <button onClick={() => setSearchOpen(true)} aria-label="Search"
+                style={{ color: '#999', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', padding: 0, transition: 'color 0.2s' }}
+                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'hsl(var(--gold))'}
+                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#999'}
+              >
+                <Search size={17} />
+              </button>
+              {/* Subscribe pill */}
+              <Link href="/newsletter" style={{
+                display:       'inline-flex',
+                alignItems:    'center',
+                borderRadius:  '99px',
+                background:    'hsl(var(--onyx))',
+                color:         'hsl(var(--ivory))',
+                padding:       '7px 18px',
+                fontSize:      '11px',
+                fontWeight:    700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.16em',
+                textDecoration:'none',
+                transition:    'all 0.4s cubic-bezier(0.22,1,0.36,1)',
+              }}
+                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--gradient-gold)'; el.style.color = '#1A1A1A' }}
+                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'hsl(var(--onyx))'; el.style.color = 'hsl(var(--ivory))' }}
+              >
+                Subscribe
+              </Link>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* ── Mobile: logo left, hamburger right ── */}
-      <div className="lg:hidden flex items-center justify-between px-4 py-3">
+      {/* ── Mobile bar ── */}
+      <div className="lg:hidden flex items-center justify-between" style={{ padding: '12px 20px' }}>
         <Link href="/">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Camer360" className="h-12 w-auto" />
+          <img src="/logo.png" alt="Camer360" style={{ height: '48px', width: 'auto' }} />
         </Link>
-        <div className="flex items-center gap-4">
-          <button onClick={() => setSearchOpen(true)} aria-label="Search"
-            className="text-gray-600 hover:text-[#D4AF37] transition-colors bg-transparent border-none cursor-pointer p-0">
-            <Search className="w-5 h-5" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <button onClick={() => setSearchOpen(true)} style={{ color: '#666', background: 'none', border: 'none', cursor: 'pointer', display: 'flex' }}>
+            <Search size={20} />
           </button>
-          <button
-            onClick={() => setOpen(v => !v)}
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            className="text-gray-600 hover:text-[#D4AF37] transition-colors"
-          >
-            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          <button onClick={() => setOpen(v => !v)} style={{ color: '#666', background: 'none', border: 'none', cursor: 'pointer', display: 'flex' }}>
+            {open ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
 
       {/* ── Mobile drawer ── */}
       {open && (
-        <div className="lg:hidden border-t border-gray-200 bg-white">
-          <div className="container mx-auto px-4 py-2 flex flex-col divide-y divide-gray-100">
+        <nav style={{ borderTop: '1px solid #E8E8E6', background: '#FEFEFD' }} className="animate-fade-in lg:hidden">
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             {NAV_ALL.map(item => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className={`py-4 text-sm font-black tracking-widest uppercase transition-colors ${
-                  pathname.startsWith(item.href) ? 'text-[#D4AF37]' : 'text-gray-700 hover:text-[#D4AF37]'
-                }`}
-              >
+              <Link key={item.href} href={item.href} onClick={() => setOpen(false)} style={{
+                padding:       '16px 20px',
+                fontSize:      '13px',
+                fontWeight:    700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                textDecoration:'none',
+                color:          pathname.startsWith(item.href) ? 'hsl(var(--gold))' : '#555',
+                borderBottom:  '1px solid #F0EEE8',
+                display:       'flex',
+                justifyContent:'space-between',
+                alignItems:    'center',
+              }}>
                 {item.label}
+                {pathname.startsWith(item.href) && (
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'hsl(var(--gold))' }} />
+                )}
               </Link>
             ))}
+            <div style={{ padding: '16px 20px' }}>
+              <Link href="/newsletter" style={{
+                display: 'block', textAlign: 'center',
+                background: 'var(--gradient-gold)', color: '#1A1A1A',
+                borderRadius: '99px', padding: '13px',
+                fontSize: '12px', fontWeight: 700, textTransform: 'uppercase',
+                letterSpacing: '0.16em', textDecoration: 'none',
+              }}>
+                Subscribe Free
+              </Link>
+            </div>
           </div>
-        </div>
+        </nav>
       )}
 
-      {/* ── Search modal ── */}
-      {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} />}
-
       {/* ── Gold trending bar ── */}
-      <div className="bg-[#D4AF37] py-2">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center overflow-x-auto whitespace-nowrap scrollbar-none">
-            <span className="text-white font-black text-xs tracking-widest mr-4 flex-shrink-0 uppercase">
-              Trending:
-            </span>
-            <div className="flex items-center text-xs">
-              {TRENDING.map((item, i) => (
-                <span key={item.href} className="flex items-center">
-                  {i > 0 && <span className="text-white/40 mx-3">|</span>}
-                  <Link
-                    href={item.href}
-                    className="text-white hover:text-white/80 font-semibold tracking-wide uppercase whitespace-nowrap transition-opacity"
-                  >
-                    {item.label}
-                  </Link>
-                </span>
-              ))}
-            </div>
+      <div style={{ background: 'hsl(var(--gold))', padding: '7px 0', overflow: 'hidden' }}>
+        <div style={{ maxWidth: '1340px', margin: '0 auto', padding: '0 32px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <span className="eyebrow" style={{ color: 'rgba(26,26,26,0.65)', fontSize: '10px', flexShrink: 0 }}>
+            Trending
+          </span>
+          <div style={{ display: 'flex', alignItems: 'center', overflow: 'hidden', flex: 1 }}>
+            {TRENDING_TOPICS.map((item, i) => (
+              <span key={item.href} style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+                {i > 0 && <span style={{ color: 'rgba(26,26,26,0.3)', margin: '0 12px' }}>·</span>}
+                <Link href={item.href} style={{
+                  fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em',
+                  color: 'rgba(26,26,26,0.8)', textDecoration: 'none', whiteSpace: 'nowrap',
+                  transition: 'color 0.2s',
+                }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#1A1A1A'}
+                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(26,26,26,0.8)'}
+                >
+                  {item.label}
+                </Link>
+              </span>
+            ))}
           </div>
         </div>
       </div>
 
+      {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} />}
     </header>
   )
 }

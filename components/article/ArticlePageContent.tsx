@@ -71,50 +71,94 @@ export async function ArticlePageContent({ article, related }: Props) {
           </div>
         </div>
 
-        {/* ── Article header ── */}
-        <div style={{ background: 'var(--grad-dark)', paddingTop: '64px', paddingBottom: '64px', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', inset: 0, opacity: 0.03, backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'200\' height=\'200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }} />
+        {/* ── Article header — cinematic ── */}
+        <div style={{
+          position:   'relative',
+          overflow:   'hidden',
+          background: 'var(--grad-dark)',
+          minHeight:  article.featuredImage ? '420px' : 'auto',
+          display:    'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
+        }}>
+          {/* Cinematic bg image */}
+          {article.featuredImage && (
+            <>
+              <div style={{
+                position:   'absolute',
+                inset:       0,
+                backgroundImage: `url(${article.featuredImage})`,
+                backgroundSize:  'cover',
+                backgroundPosition: 'center top',
+                transform:   'scale(1.02)',
+                filter:      'blur(0px)',
+              }} />
+              {/* Hero overlay */}
+              <div style={{ position: 'absolute', inset: 0, background: 'var(--gradient-hero-overlay)' }} />
+            </>
+          )}
 
-          <div style={{ maxWidth: '820px', margin: '0 auto', padding: '0 40px', position: 'relative' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '28px', flexWrap: 'wrap' }}>
-              <Link href={`/${catSlug}`} style={{ background: 'linear-gradient(45deg, var(--primary-gold), var(--gold-light))', color: 'var(--primary-dark)', padding: '8px 20px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 700, borderRadius: '24px', textDecoration: 'none', display: 'inline-block' }}>
+          <div style={{ maxWidth: '820px', margin: '0 auto', padding: article.featuredImage ? '140px 40px 56px' : '64px 40px', position: 'relative', width: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px', flexWrap: 'wrap' }}>
+              <Link href={`/${catSlug}`} style={{
+                background:    'var(--gradient-gold)',
+                color:         '#1A1A1A',
+                padding:       '6px 16px',
+                fontSize:      '10px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.18em',
+                fontWeight:    800,
+                borderRadius:  '99px',
+                textDecoration:'none',
+              }}>
                 {article.category.name}
               </Link>
               {article.isBreaking && (
-                <span style={{ background: '#F5A623', color: '#1A1A1A', padding: '6px 16px', fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', borderRadius: '4px' }}>
+                <span style={{ background: '#C8102E', color: 'white', padding: '5px 14px', fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.18em', borderRadius: '99px' }}>
                   Breaking
                 </span>
               )}
-              <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginLeft: 'auto', textTransform: 'uppercase', letterSpacing: '1px' }}>{depth}</span>
+              <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.35)', marginLeft: 'auto', textTransform: 'uppercase', letterSpacing: '0.12em', fontFamily: 'var(--font-mono), monospace' }}>{depth}</span>
             </div>
 
-            <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 700, lineHeight: 1.15, color: 'white', marginBottom: '20px', letterSpacing: '-0.02em' }}>
+            <h1 style={{ fontFamily: 'var(--font-display), Georgia, serif', fontSize: 'clamp(28px, 5vw, 52px)', fontWeight: 700, lineHeight: 1.1, color: 'white', marginBottom: '16px', letterSpacing: '-0.02em', textShadow: article.featuredImage ? '0 2px 20px rgba(0,0,0,0.5)' : 'none' }}>
               {article.title}
             </h1>
 
             {article.subtitle && (
-              <p style={{ fontSize: '20px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.6, marginBottom: '32px', fontWeight: 300 }}>
+              <p style={{ fontSize: '18px', color: 'rgba(255,255,255,0.65)', lineHeight: 1.6, marginBottom: '24px', fontWeight: 300 }}>
                 {article.subtitle}
               </p>
             )}
 
-            <div style={{ width: '60px', height: '2px', background: 'linear-gradient(90deg, var(--primary-gold), var(--gold-light))', marginBottom: '28px', borderRadius: '1px' }} />
+            {/* Gold rule */}
+            <div style={{ width: '48px', height: '2px', background: 'var(--gradient-gold)', marginBottom: '20px', borderRadius: '1px' }} />
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '24px', fontSize: '13px', color: 'rgba(255,255,255,0.55)' }}>
-              <span style={{ fontWeight: 600, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                {article.author?.name || 'News Team'}
-              </span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Calendar size={12} />
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '20px', fontSize: '12px', color: 'rgba(255,255,255,0.55)' }}>
+              {/* Author avatar */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {article.author?.avatarUrl ? (
+                  <img src={article.author.avatarUrl} alt={article.author.name} width={28} height={28} style={{ borderRadius: '50%', objectFit: 'cover', border: '1.5px solid hsl(var(--gold))' }} />
+                ) : (
+                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--gradient-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 900, color: '#1A1A1A', flexShrink: 0 }}>
+                    {(article.author?.name || 'N').charAt(0)}
+                  </div>
+                )}
+                <span style={{ fontWeight: 600, color: 'rgba(255,255,255,0.85)', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '11px' }}>
+                  {article.author?.name || 'News Team'}
+                </span>
+              </div>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <Calendar size={11} />
                 {formatDate(article.publishedAt!)}
               </span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Clock size={12} />
+              <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <Clock size={11} />
                 {minutes} min read
               </span>
               {article.hits > 0 && (
-                <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--primary-gold)', fontWeight: 600 }}>
-                  <Eye size={12} />
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'hsl(var(--gold))' }}>
+                  <Eye size={11} />
                   {formatHitCount(article.hits)}
                 </span>
               )}
@@ -143,7 +187,7 @@ export async function ArticlePageContent({ article, related }: Props) {
 
             <AudioReader title={article.title} body={article.body ?? ''} />
 
-            <div className="prose" id="article-content" style={{ background: 'white', padding: '40px', borderRadius: '16px', boxShadow: 'var(--shadow-card)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
+            <div className="prose prose-editorial" id="article-content" style={{ background: 'white', padding: '40px 44px', borderRadius: '16px', boxShadow: 'var(--shadow-soft-ed)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
               <ProgressiveBody body={injectVideoEmbeds(linkCelebrities(article.body ?? ''))} />
             </div>
 
@@ -182,9 +226,9 @@ export async function ArticlePageContent({ article, related }: Props) {
             {related.length > 0 && (
               <section style={{ marginBottom: '40px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '28px' }}>
-                  <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '22px', fontWeight: 700, color: 'var(--primary-dark)' }}>Related Stories</h3>
-                  <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, var(--border-light), transparent)' }} />
-                  <Link href={`/${catSlug}`} style={{ fontSize: '12px', color: 'var(--primary-gold)', textDecoration: 'none', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', whiteSpace: 'nowrap' }}>
+                  <h3 style={{ fontFamily: 'var(--font-display), Georgia, serif', fontSize: '22px', fontWeight: 700, color: 'var(--primary-dark)', letterSpacing: '-0.02em' }}>Related Stories</h3>
+                  <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, hsl(var(--gold)), transparent)' }} />
+                  <Link href={`/${catSlug}`} className="story-link" style={{ fontSize: '12px', color: 'hsl(var(--gold))', textDecoration: 'none', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', whiteSpace: 'nowrap' }}>
                     See All →
                   </Link>
                 </div>

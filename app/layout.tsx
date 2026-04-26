@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono, Playfair_Display, Inter } from 'next/font/google'
+import { Geist, Geist_Mono, Fraunces, Inter, JetBrains_Mono } from 'next/font/google'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/react'
 import { buildSiteMetadata } from '@/lib/seo/metadata'
@@ -12,8 +12,9 @@ import './globals.css'
 
 const geistSans   = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 const geistMono   = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
-const playfair    = Playfair_Display({ variable: '--font-playfair', subsets: ['latin'], display: 'swap' })
+const fraunces    = Fraunces({ variable: '--font-fraunces', subsets: ['latin'], display: 'swap', axes: ['opsz'] })
 const inter       = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' })
+const jetbrains   = JetBrains_Mono({ variable: '--font-jetbrains', subsets: ['latin'], display: 'swap' })
 
 export const metadata: Metadata = {
   ...buildSiteMetadata(),
@@ -68,7 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           });
         `}} />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${inter.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${inter.variable} ${jetbrains.variable} antialiased`}>
         <ConsentProvider>
           <AdSenseLoader />
           {children}

@@ -15,8 +15,10 @@
   --color-text:         #1A1A1A;
   --color-text-2:       #374151;
   --color-text-3:       #64748B;
-  --font-sans:   var(--font-geist-sans), 'Inter', system-ui, sans-serif;
-  --font-serif:  var(--font-playfair), 'Playfair Display', 'Georgia', serif;
+  --font-sans:    var(--font-inter), var(--font-geist-sans), system-ui, sans-serif;
+  --font-serif:   var(--font-fraunces), Georgia, serif;
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-mono:    var(--font-jetbrains), var(--font-geist-mono), monospace;
 }
 
 /* ─── Gradient + luxury vars ─────────────────────────────────── */
@@ -41,6 +43,29 @@
   --shadow-hover:       0 16px 48px rgba(0,0,0,0.16);
   --shadow-brand:       0 8px 32px rgba(212,175,55,0.25);
   --shadow-premium:     0 32px 80px rgba(0,0,0,0.12);
+
+  /* ── 2026 Editorial Design System — HSL Semantic Tokens ─────── */
+  --gold:               41 65% 52%;
+  --gold-deep:          38 70% 38%;
+  --gold-soft:          44 80% 78%;
+  --onyx:               20 14% 8%;
+  --onyx-deep:          220 14% 4%;
+  --ivory:              40 33% 97%;
+  --crimson:            358 75% 48%;
+
+  --gradient-gold:      linear-gradient(135deg, hsl(44 80% 78%) 0%, hsl(41 65% 52%) 50%, hsl(38 70% 38%) 100%);
+  --gradient-onyx:      linear-gradient(180deg, hsl(20 14% 8%) 0%, hsl(220 14% 4%) 100%);
+  --gradient-hero-overlay: linear-gradient(180deg, hsla(20,14%,4%,0.55) 0%, hsla(20,14%,4%,0.2) 30%, hsla(20,14%,4%,0.85) 75%, hsl(20 14% 4%) 100%);
+  --gradient-card-overlay: linear-gradient(180deg, transparent 30%, hsla(20,14%,4%,0.92) 100%);
+  --gradient-shine:     linear-gradient(110deg, transparent 30%, hsla(44,80%,78%,0.35) 50%, transparent 70%);
+
+  --shadow-editorial:   0 30px 60px -20px hsla(20,14%,4%,0.25);
+  --shadow-soft-ed:     0 10px 30px -10px hsla(20,14%,4%,0.12);
+  --shadow-glow-gold:   0 0 60px -10px hsla(41,65%,52%,0.45);
+  --shadow-deep-ed:     0 40px 80px -30px hsla(20,14%,4%,0.55);
+
+  --ease-editorial:     cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-base:           500ms;
 }
 
 /* ─── Reset ──────────────────────────────────────────────────── */
@@ -1006,4 +1031,198 @@ body {
   .footer-social { justify-content: center; }
   .footer-legal { gap: 20px; flex-wrap: wrap; justify-content: center; }
   .footer-legal a { min-height: 44px; display: inline-flex; align-items: center; font-size: 12px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   2026 EDITORIAL DESIGN SYSTEM — Camer360 Premium
+   Fraunces · Inter · JetBrains Mono
+   ══════════════════════════════════════════════════════════════ */
+
+/* ─── Typography ─────────────────────────────────────────────── */
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display), Georgia, serif;
+  letter-spacing: -0.02em;
+  font-feature-settings: "ss01";
+}
+
+/* ─── Editorial utility classes ──────────────────────────────── */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-family: var(--font-sans);
+}
+
+.gold-rule {
+  display: block;
+  height: 1px;
+  width: 3rem;
+  background: linear-gradient(to right, transparent, hsl(var(--gold)), transparent);
+}
+
+.text-gold-hsl { color: hsl(var(--gold)); }
+.bg-onyx-hsl   { background-color: hsl(var(--onyx)); }
+
+.gradient-gold-text {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Story link — underline reveals on hover */
+.story-link { position: relative; display: inline-block; }
+.story-link::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: 0;
+  height: 1px; width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--ease-editorial);
+}
+.story-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Editorial card — lift + shadow on hover */
+.card-editorial {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--dur-base) var(--ease-editorial),
+              box-shadow var(--dur-base) var(--ease-editorial);
+}
+.card-editorial:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-editorial);
+}
+.card-editorial img {
+  transition: transform 900ms var(--ease-editorial), filter 900ms var(--ease-editorial);
+}
+.card-editorial:hover img { transform: scale(1.06); }
+
+/* Drop cap for first paragraph of article */
+.drop-cap::first-letter {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(4rem, 8vw, 5.5rem);
+  font-weight: 600;
+  line-height: 0.82;
+  float: left;
+  margin-right: 0.14em;
+  margin-top: 0.06em;
+  color: hsl(var(--gold));
+}
+
+/* Article prose */
+.prose-editorial {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: rgba(26,26,26,0.88);
+}
+.prose-editorial p  { margin-bottom: 1.75rem; }
+.prose-editorial h2 {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  font-weight: 600;
+  margin-top: 3.5rem;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.02em;
+}
+.prose-editorial h3 {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+.prose-editorial blockquote {
+  margin: 2.5rem 0;
+  padding-left: 1.5rem;
+  border-left: 2px solid hsl(var(--gold));
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+  font-style: italic;
+  line-height: 1.4;
+  color: #1A1A1A;
+}
+.prose-editorial a {
+  color: hsl(var(--gold-deep));
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+/* Gold shimmer on hover */
+.shimmer-on-hover {
+  background-image: var(--gradient-shine);
+  background-size: 200% 100%;
+  background-position: -200% 0;
+}
+.shimmer-on-hover:hover {
+  animation: shimmer-anim 1.4s var(--ease-editorial) forwards;
+}
+
+/* ─── Keyframe animations ────────────────────────────────────── */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee-scroll 50s linear infinite;
+  will-change: transform;
+}
+.animate-marquee:hover { animation-play-state: paused; }
+
+@keyframes shimmer-anim {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal-up { animation: reveal-up 800ms var(--ease-editorial) both; }
+
+@keyframes pulse-dot-anim {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}
+.pulse-dot-ed { animation: pulse-dot-anim 1.8s ease-in-out infinite; }
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fade-in-up 0.7s var(--ease-editorial) both; }
+
+/* ─── Auto drop-cap on first article paragraph ───────────────── */
+#article-content > p:first-of-type::first-letter,
+.prose-editorial > p:first-of-type::first-letter {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(3.8rem, 7vw, 5.2rem);
+  font-weight: 600;
+  line-height: 0.82;
+  float: left;
+  margin-right: 0.14em;
+  margin-top: 0.06em;
+  color: hsl(var(--gold));
+}
+
+/* ─── Reading progress bar (editorial gold) ──────────────────── */
+#reading-progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  z-index: 9999;
+  background: var(--gradient-gold);
+  transition: width 0.1s linear;
+  pointer-events: none;
+  border-radius: 0 2px 2px 0;
 }

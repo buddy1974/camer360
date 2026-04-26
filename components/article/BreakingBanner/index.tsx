@@ -12,12 +12,12 @@ export function BreakingBanner({ articles }: { articles: ArticleWithRelations[] 
         <Zap size={11} fill="white" className="text-white" />
         <span className="text-[0.58rem] font-black uppercase tracking-[0.18em] text-white whitespace-nowrap">Breaking</span>
       </div>
-      <div className="overflow-hidden flex-1 relative min-w-0">
-        <div className="ticker flex items-center whitespace-nowrap gap-0">
+      <div className="overflow-hidden flex-1 min-w-0">
+        <div className="animate-marquee flex items-center" style={{ width: 'max-content' }}>
           {items.map((a, i) => (
             <Link key={`${a.id}-${i}`} href={`/${a.category.slug}/${a.slug}`}
-              className="inline-flex items-center gap-2 px-6 text-[0.68rem] font-semibold text-white/90 hover:text-white transition-colors whitespace-nowrap">
-              <span className="w-1 h-1 rounded-full bg-white/40" />
+              className="inline-flex items-center gap-2 px-6 text-[0.7rem] font-semibold text-white/90 hover:text-white transition-colors whitespace-nowrap">
+              <span className="w-1 h-1 rounded-full bg-white/40 flex-shrink-0" />
               {a.title}
             </Link>
           ))}
