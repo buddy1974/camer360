@@ -1412,6 +1412,12 @@ h1, h2, h3, h4, h5 {
   left: -60px;
 }
 
+/* Article share rail — hover states via CSS (server component safe) */
+.article-share-icon:hover {
+  border-color: hsl(var(--gold)) !important;
+  color: hsl(var(--gold)) !important;
+}
+
 /* Gold shimmer on hover */
 .shimmer-on-hover {
   background-image: var(--gradient-shine);

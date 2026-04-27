@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { Mail } from 'lucide-react'
 import { SITE_NAME, SITE_FB, SITE_TWITTER } from '@/lib/constants'
-import { FooterNewsletter } from '@/components/newsletter/FooterNewsletter'
 
 const SECTIONS = [
   { href: '/celebrities',   label: 'Celebrities'   },
@@ -62,15 +61,6 @@ export function Footer() {
               Editorial storytelling at the intersection of African entertainment, culture and ambition.
               From Yaoundé to Lagos, Brussels to D.C.
             </p>
-
-            {/* Newsletter mini-form */}
-            <div className="mb-8">
-              <p className="eyebrow text-ivory/40 mb-2" style={{ fontSize: '10px' }}>Newsletter</p>
-              <p className="text-xs text-ivory/35 mb-3 leading-relaxed">
-                Cameroon stories, Central &amp; West African culture — delivered weekly.
-              </p>
-              <FooterNewsletter />
-            </div>
 
             {/* Social icons */}
             <div className="flex items-center gap-2">
