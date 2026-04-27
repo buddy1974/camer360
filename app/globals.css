@@ -1417,6 +1417,20 @@ h1, h2, h3, h4, h5 {
 /* Keep gold accents untouched via h2Style and link styles */
 .static-page a            { color: hsl(var(--gold))  ; }
 
+/* Music hub section cards */
+.music-section-card {
+  background: white;
+  border: 1px solid hsl(30 12% 88%);
+  border-top: 3px solid hsl(var(--gold));
+  border-radius: 8px;
+  padding: 24px 20px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.music-section-card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
 /* Share bar — aligned to left of article column */
 .share-wrapper {
   position: relative;
