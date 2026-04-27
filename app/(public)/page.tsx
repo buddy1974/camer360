@@ -140,13 +140,13 @@ export default async function HomePage() {
           <AdUnit slot="9844142257" format="horizontal" />
         </div>
 
-        {/* ── TRENDING MUSIC STRIP ── */}
-        {chartDrops.length > 0 && (
-          <section style={{ background: '#0A0A0A', borderRadius: '16px', padding: '20px 24px', border: '1px solid #1E1E1E' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-              <span style={{ fontSize: '0.6rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#D4AF37' }}>🔥 Trending This Week</span>
-              <Link href="/music/afrobeats" style={{ fontSize: '0.6rem', fontWeight: 700, color: '#D4AF37', textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Full chart →</Link>
-            </div>
+        {/* ── TRENDING MUSIC STRIP ── always render; shows fallback when DB is empty */}
+        <section style={{ background: '#0A0A0A', borderRadius: '16px', padding: '20px 24px', border: '1px solid #1E1E1E' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <span style={{ fontSize: '0.6rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#D4AF37' }}>🔥 Trending This Week</span>
+            <Link href="/music/afrobeats" style={{ fontSize: '0.6rem', fontWeight: 700, color: '#D4AF37', textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Full chart →</Link>
+          </div>
+          {chartDrops.length > 0 ? (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px' }}>
               {chartDrops.slice(0, 4).map((drop, i) => (
                 <Link key={drop.id} href="/music/afrobeats" style={{ textDecoration: 'none', display: 'block' }}>
@@ -169,8 +169,20 @@ export default async function HomePage() {
                 </Link>
               ))}
             </div>
-          </section>
-        )}
+          ) : (
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              {[1, 2, 3, 4].map(n => (
+                <div key={n} style={{ flex: 1, minWidth: '120px', background: '#111', border: '1px solid #1E1E1E', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span style={{ fontWeight: 900, fontSize: '1.4rem', color: '#D4AF37', opacity: 0.3 }}>{String(n).padStart(2, '0')}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ height: '10px', background: '#2A2A2A', borderRadius: '4px', marginBottom: '6px' }} />
+                    <div style={{ height: '8px', background: '#1E1E1E', borderRadius: '4px', width: '70%' }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
 
         {/* ── LATEST NEWS + SIDEBAR ── */}
         <div style={{
