@@ -3,16 +3,14 @@ import { Eye, Clock, Calendar } from 'lucide-react'
 import { ArticleCard }      from '@/components/article/ArticleCard'
 import AdUnit               from '@/components/ads/AdUnit'
 import { JsonLd }           from '@/components/seo/JsonLd'
-import CommentsSection      from '@/components/article/CommentSection'
 import ShareButtons         from '@/components/article/ShareButtons'
 import { ArticleImage }     from '@/components/article/ArticleImage'
 import { HitTracker }       from '@/components/article/HitTracker'
 import { ReadingProgress }  from '@/components/article/ReadingProgress'
-import { ReactionBar }      from '@/components/article/ReactionBar'
 import { AudioReader }      from '@/components/article/AudioReader'
 import { ProgressiveBody }  from '@/components/article/ProgressiveBody'
-import { PerspectiveEngine } from '@/components/article/PerspectiveEngine'
 import { ReadingStreak }    from '@/components/user/ReadingStreak'
+import { NewsletterSection } from '@/components/home/NewsletterSection'
 import { buildNewsArticleSchema, buildBreadcrumbSchema } from '@/lib/seo/schema'
 import { linkCelebrities }  from '@/lib/celebrity-linker'
 import { injectVideoEmbeds } from '@/lib/embeds'
@@ -193,13 +191,6 @@ export async function ArticlePageContent({ article, related }: Props) {
 
           <div style={{ flex: '1 1 0', minWidth: 0, maxWidth: '720px' }}>
 
-            {article.excerpt && (
-              <div style={{ background: 'white', border: '1px solid var(--border-light)', borderLeft: '4px solid var(--primary-gold)', borderRadius: '0 12px 12px 0', padding: '24px 28px', marginBottom: '36px', boxShadow: 'var(--shadow-card)' }}>
-                <p style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: 'var(--primary-gold)', marginBottom: '10px' }}>Summary</p>
-                <p style={{ fontSize: '15px', color: '#4B5563', lineHeight: 1.75 }}>{article.excerpt}</p>
-              </div>
-            )}
-
             {article.featuredImage && (
               <div style={{ marginBottom: '36px', borderRadius: '16px', overflow: 'hidden', boxShadow: 'var(--shadow-hover)' }}>
                 <ArticleImage src={article.featuredImage} alt={article.imageAlt || article.title} caption={article.imageCaption} priority={true} />
@@ -211,10 +202,6 @@ export async function ArticlePageContent({ article, related }: Props) {
             <div className="prose prose-editorial" id="article-content" style={{ background: 'white', padding: '40px 44px', borderRadius: '16px', boxShadow: 'var(--shadow-soft-ed)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
               <ProgressiveBody body={injectVideoEmbeds(linkCelebrities(article.body ?? ''))} />
             </div>
-
-            <ReactionBar articleId={article.id} />
-
-            <PerspectiveEngine articleId={article.id} title={article.title} excerpt={article.excerpt ?? undefined} />
 
             {/* Share bar — hidden on desktop (replaced by left rail), shown on mobile */}
             <div className="lg:hidden share-wrapper" style={{ background: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '0 24px', margin: '32px 0', boxShadow: 'var(--shadow-card)' }}>
@@ -278,10 +265,6 @@ export async function ArticlePageContent({ article, related }: Props) {
               </section>
             )}
 
-            <div style={{ background: 'white', border: '1px solid var(--border-light)', borderRadius: '16px', padding: '32px', boxShadow: 'var(--shadow-card)' }}>
-              <CommentsSection articleId={article.id} />
-            </div>
-
           </div>
 
           <aside className="hidden lg:block" style={{ width: '280px', flexShrink: 0 }}>
@@ -329,6 +312,10 @@ export async function ArticlePageContent({ article, related }: Props) {
           </aside>
 
         </div>
+
+        {/* ── Camer360 Brief CTA — matches Lovable article page bottom ── */}
+        <NewsletterSection />
+
       </div>
     </>
   )
