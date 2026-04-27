@@ -17,7 +17,7 @@ import { db } from '@/lib/db/client'
 import { musicDrops } from '@/lib/db/schema'
 import { buildSiteMetadata } from '@/lib/seo/metadata'
 import { buildOrganizationSchema } from '@/lib/seo/schema'
-import { desc } from 'drizzle-orm'
+import { desc, asc } from 'drizzle-orm'
 import { BirthdayCountdown } from '@/components/widgets/BirthdayCountdown'
 import { ContinueReading }   from '@/components/user/ReadingHistory'
 import type { ArticleWithRelations, Category } from '@/lib/types'
@@ -32,12 +32,13 @@ export default async function HomePage() {
   let breaking:       ArticleWithRelations[] = []
   type MusicDrop = typeof musicDrops.$inferSelect
   let drops:          MusicDrop[]            = []
+  let chartDrops:     MusicDrop[]            = []
 
   try {
     ;[featured, latest, mostRead, allCats, breaking] = await Promise.all([
       getFeaturedArticles(7),
       getLatestArticles(18),
-      getMostRead(6),
+      getMostRead(5),
       getAllCategories(),
       getBreakingNews(3),
     ])
@@ -47,6 +48,10 @@ export default async function HomePage() {
 
   try {
     drops = await db.select().from(musicDrops).orderBy(desc(musicDrops.releaseDate)).limit(5)
+  } catch { /* table may not exist yet */ }
+
+  try {
+    chartDrops = await db.select().from(musicDrops).orderBy(asc(musicDrops.chartPosition)).limit(5)
   } catch { /* table may not exist yet */ }
 
   const targetSlugs = ['celebrities', 'music', 'film-tv', 'sport-stars', 'influencers', 'entrepreneurs', 'events']
@@ -135,6 +140,38 @@ export default async function HomePage() {
           <AdUnit slot="9844142257" format="horizontal" />
         </div>
 
+        {/* ── TRENDING MUSIC STRIP ── */}
+        {chartDrops.length > 0 && (
+          <section style={{ background: '#0A0A0A', borderRadius: '16px', padding: '20px 24px', border: '1px solid #1E1E1E' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <span style={{ fontSize: '0.6rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#D4AF37' }}>🔥 Trending This Week</span>
+              <Link href="/music/afrobeats" style={{ fontSize: '0.6rem', fontWeight: 700, color: '#D4AF37', textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Full chart →</Link>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px' }}>
+              {chartDrops.slice(0, 4).map((drop, i) => (
+                <Link key={drop.id} href="/music/afrobeats" style={{ textDecoration: 'none', display: 'block' }}>
+                  <div style={{ background: '#111', border: '1px solid #1E1E1E', borderRadius: '12px', overflow: 'hidden', position: 'relative', transition: 'border-color 0.2s' }}>
+                    <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 1, background: '#D4AF37', color: '#0A0A0A', fontSize: '0.6rem', fontWeight: 900, width: '22px', height: '22px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {drop.chartPosition ?? i + 1}
+                    </div>
+                    {drop.coverUrl ? (
+                      <div style={{ aspectRatio: '1', overflow: 'hidden' }}>
+                        <img src={drop.coverUrl} alt={`${drop.artist} – ${drop.title}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                      </div>
+                    ) : (
+                      <div style={{ aspectRatio: '1', background: 'linear-gradient(135deg, #1A1A1A, #2A2A2A)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem' }}>🎵</div>
+                    )}
+                    <div style={{ padding: '10px 12px 12px' }}>
+                      <p style={{ margin: 0, fontWeight: 800, color: '#EEE', fontSize: '0.8rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{drop.title}</p>
+                      <p style={{ margin: '2px 0 0', fontSize: '0.7rem', color: '#888', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{drop.artist}</p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* ── LATEST NEWS + SIDEBAR ── */}
         <div style={{
           display: 'grid',
@@ -185,8 +222,65 @@ export default async function HomePage() {
                 <ArticleCard key={a.id} article={a} variant="list" index={i} />
               ))}
             </div>
+            {/* MODULE A — Spotify embed */}
+            <div className="bg-[#101010] border border-[#1E1E1E] rounded-xl p-4">
+              <div style={{ fontSize: '0.58rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#D4AF37', marginBottom: '10px' }}>Listen Now</div>
+              <iframe
+                style={{ borderRadius: '8px' }}
+                src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0XUsuxWHRQd?utm_source=generator&theme=0"
+                width="100%"
+                height="152"
+                allowFullScreen
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+              />
+              <a href="https://open.spotify.com/playlist/37i9dQZF1DX0XUsuxWHRQd" target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: '8px', fontSize: '0.62rem', color: '#1DB954', fontWeight: 700, textDecoration: 'none' }}>
+                Full playlist on Spotify →
+              </a>
+            </div>
+
+            {/* MODULE B — Latest Drop */}
+            {drops[0] && (
+              <div className="bg-[#101010] border border-[#1E1E1E] rounded-xl p-4">
+                <div style={{ fontSize: '0.58rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#D4AF37', marginBottom: '10px' }}>Latest Drop</div>
+                {drops[0].coverUrl ? (
+                  <img src={drops[0].coverUrl} alt={drops[0].title} style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: '8px', marginBottom: '10px' }} loading="lazy" />
+                ) : (
+                  <div style={{ aspectRatio: '1', background: 'linear-gradient(135deg, #1A1A1A, #2A2A2A)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', marginBottom: '10px' }}>🎵</div>
+                )}
+                <p style={{ margin: '0 0 2px', fontWeight: 800, color: '#EEE', fontSize: '0.82rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{drops[0].title}</p>
+                <p style={{ margin: '0 0 8px', fontSize: '0.72rem', color: '#888' }}>{drops[0].artist}</p>
+                <Link href="/music/videos" style={{ fontSize: '0.62rem', fontWeight: 700, color: '#D4AF37', textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Watch Now →</Link>
+              </div>
+            )}
+
+            {/* MODULE C — Chart Snapshot */}
+            {chartDrops.length > 0 && (
+              <div className="bg-[#101010] border border-[#1E1E1E] rounded-xl p-4">
+                <div style={{ fontSize: '0.58rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#D4AF37', marginBottom: '10px' }}>Afrobeats Chart</div>
+                <ol style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                  {chartDrops.slice(0, 5).map((drop, i) => (
+                    <li key={drop.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '7px 0', borderBottom: i < chartDrops.slice(0, 5).length - 1 ? '1px solid #1E1E1E' : 'none' }}>
+                      <span style={{ fontWeight: 900, fontSize: '1rem', color: '#D4AF37', width: '22px', flexShrink: 0, textAlign: 'center' }}>{drop.chartPosition ?? i + 1}</span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ margin: 0, fontWeight: 700, color: '#EEE', fontSize: '0.78rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{drop.title}</p>
+                        <p style={{ margin: 0, fontSize: '0.68rem', color: '#888' }}>{drop.artist}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+                <Link href="/music/afrobeats" style={{ display: 'block', marginTop: '10px', fontSize: '0.62rem', fontWeight: 700, color: '#D4AF37', textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>See full chart →</Link>
+              </div>
+            )}
+
             <BirthdayCountdown />
             <ContinueReading />
+
+            {/* MODULE D — Newsletter capture */}
+            <div className="bg-[#0A0A0A] border border-[#1E1E1E] rounded-xl p-4">
+              <p style={{ margin: '0 0 10px', fontWeight: 700, color: '#EEE', fontSize: '0.85rem' }}>Get the weekly drop</p>
+              <SubscribeForm source="sidebar-bottom" />
+            </div>
           </aside>
 
         </div>

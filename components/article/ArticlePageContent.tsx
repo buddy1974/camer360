@@ -1,5 +1,8 @@
 import Link from 'next/link'
 import { Eye, Clock, Calendar } from 'lucide-react'
+import { db } from '@/lib/db/client'
+import { musicDrops } from '@/lib/db/schema'
+import { desc } from 'drizzle-orm'
 import { ArticleCard }      from '@/components/article/ArticleCard'
 import AdUnit               from '@/components/ads/AdUnit'
 import { JsonLd }           from '@/components/seo/JsonLd'
@@ -26,6 +29,13 @@ interface Props {
 }
 
 export async function ArticlePageContent({ article, related }: Props) {
+  type MusicDrop = typeof musicDrops.$inferSelect
+  let latestDrop: MusicDrop | null = null
+  try {
+    const rows = await db.select().from(musicDrops).orderBy(desc(musicDrops.createdAt)).limit(1)
+    latestDrop = rows[0] ?? null
+  } catch { /* table may not exist yet */ }
+
   const catSlug    = article.category.slug
   const slug       = article.slug
   const minutes    = readingTime(article.body)
@@ -302,6 +312,38 @@ export async function ArticlePageContent({ article, related }: Props) {
                       </li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+              {/* MODULE A — Spotify embed */}
+              <div className="bg-onyx text-ivory" style={{ borderRadius: '12px', padding: '16px' }}>
+                <div className="eyebrow text-gold mb-3" style={{ fontSize: '0.58rem' }}>Listen Now</div>
+                <iframe
+                  style={{ borderRadius: '8px' }}
+                  src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0XUsuxWHRQd?utm_source=generator&theme=0"
+                  width="100%"
+                  height="152"
+                  allowFullScreen
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                />
+                <a href="https://open.spotify.com/playlist/37i9dQZF1DX0XUsuxWHRQd" target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: '8px', fontSize: '0.62rem', color: '#1DB954', fontWeight: 700, textDecoration: 'none' }}>
+                  Full playlist on Spotify →
+                </a>
+              </div>
+
+              {/* MODULE B — Latest Drop */}
+              {latestDrop && (
+                <div style={{ background: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '16px', boxShadow: 'var(--shadow-card)' }}>
+                  <div className="eyebrow text-gold-deep mb-3" style={{ fontSize: '0.58rem' }}>Latest Drop</div>
+                  {latestDrop.coverUrl ? (
+                    <img src={latestDrop.coverUrl} alt={latestDrop.title} style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: '8px', marginBottom: '10px' }} loading="lazy" />
+                  ) : (
+                    <div style={{ aspectRatio: '1', background: 'linear-gradient(135deg, #1A1A1A, #2A2A2A)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', marginBottom: '10px' }}>🎵</div>
+                  )}
+                  <p style={{ margin: '0 0 2px', fontWeight: 800, color: 'var(--primary-dark)', fontSize: '0.82rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{latestDrop.title}</p>
+                  <p style={{ margin: '0 0 8px', fontSize: '0.72rem', color: '#6B7280' }}>{latestDrop.artist}</p>
+                  <Link href="/music/videos" className="text-gold" style={{ fontSize: '0.62rem', fontWeight: 700, textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Watch Now →</Link>
                 </div>
               )}
 
