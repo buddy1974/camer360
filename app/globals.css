@@ -1329,15 +1329,15 @@ h1, h2, h3, h4, h5 {
 }
 .card-editorial:hover img { transform: scale(1.06); }
 
-/* Drop cap — exact Lovable source values */
+/* Drop cap */
 .drop-cap::first-letter {
   font-family: var(--font-display), Georgia, serif;
   font-size: clamp(4.5rem, 9vw, 6rem);
   font-weight: 600;
   line-height: 0.85;
   float: left;
-  margin-right: 0.75rem;
-  margin-top: 0.25rem;
+  margin-right: 0.6rem;
+  margin-top: 0.2rem;
   color: hsl(var(--gold));
 }
 
@@ -1367,15 +1367,19 @@ h1, h2, h3, h4, h5 {
   letter-spacing: -0.02em;
 }
 .prose-editorial blockquote {
-  margin: 2.5rem 0;
+  margin: 3rem 0;
   padding-left: 1.5rem;
-  border-left: 2px solid hsl(var(--gold));
+  border-left: 3px solid hsl(var(--gold));
   font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(1.5rem, 2.5vw, 1.875rem);
+  font-size: clamp(1.6rem, 2.5vw, 2rem);
   font-style: italic;
   line-height: 1.3;
   color: hsl(var(--foreground));
+  max-width: 800px;
 }
+.prose-editorial blockquote p { margin: 0; }
+.prose-editorial p + blockquote { margin-top: 2.5rem; }
+.prose-editorial blockquote + p { margin-top: 2rem; }
 .prose-editorial a {
   color: hsl(var(--gold-deep));
   text-decoration: underline;
@@ -1450,8 +1454,8 @@ h1, h2, h3, h4, h5 {
   font-weight: 600;
   line-height: 0.85;
   float: left;
-  margin-right: 0.75rem;
-  margin-top: 0.25rem;
+  margin-right: 0.6rem;
+  margin-top: 0.2rem;
   color: hsl(var(--gold));
 }
 
