@@ -20,30 +20,39 @@ import {
   getMostRead, getArticlesByCategory, getAllCategories,
   getBreakingNews,
 } from '@/lib/db/queries'
+import { db } from '@/lib/db/client'
+import { musicDrops } from '@/lib/db/schema'
 import { buildSiteMetadata } from '@/lib/seo/metadata'
 import { buildOrganizationSchema } from '@/lib/seo/schema'
+import { asc } from 'drizzle-orm'
 import type { ArticleWithRelations, Category } from '@/lib/types'
 
 export const metadata: Metadata = buildSiteMetadata()
 
 export default async function HomePage() {
-  let featured:  ArticleWithRelations[] = []
-  let latest:    ArticleWithRelations[] = []
-  let mostRead:  ArticleWithRelations[] = []
-  let allCats:   Category[]             = []
-  let breaking:  Awaited<ReturnType<typeof getBreakingNews>> = []
+  type MusicDrop = typeof musicDrops.$inferSelect
+  let featured:    ArticleWithRelations[] = []
+  let latest:      ArticleWithRelations[] = []
+  let mostRead:    ArticleWithRelations[] = []
+  let allCats:     Category[]             = []
+  let breaking:    Awaited<ReturnType<typeof getBreakingNews>> = []
+  let chartDrops:  MusicDrop[]            = []
 
   try {
     ;[featured, latest, mostRead, allCats, breaking] = await Promise.all([
       getFeaturedArticles(7),
       getLatestArticles(18),
-      getMostRead(16),
+      getMostRead(5),
       getAllCategories(),
       getBreakingNews(5),
     ])
   } catch (err) {
     console.error('Homepage DB error:', err)
   }
+
+  try {
+    chartDrops = await db.select().from(musicDrops).orderBy(asc(musicDrops.chartPosition)).limit(4)
+  } catch { /* table may not exist yet */ }
 
   const targetSlugs = ['celebrities', 'music', 'film-tv', 'sport-stars', 'influencers', 'entrepreneurs', 'events']
   const availableSlugs = targetSlugs.filter(s => allCats.some(c => c.slug === s))
@@ -104,10 +113,80 @@ export default async function HomePage() {
                   <ArticleCard key={a.id} article={a} variant="editorial" index={i} />
                 ))}
               </div>
-              {/* Trending sidebar — sticky below header */}
+              {/* Trending sidebar + music modules — sticky */}
               <div className="hidden lg:block">
-                <div style={{ position: 'sticky', top: '100px' }}>
+                <div style={{ position: 'sticky', top: '100px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                   <TrendingSidebar articles={mostRead} />
+
+                  {/* MODULE 1 — Spotify Afrobeats embed */}
+                  <div style={{ border: '1px solid hsl(30 12% 88%)', background: '#ffffff', padding: '20px', boxShadow: '0 10px 30px -10px hsla(20,14%,4%,0.1)' }}>
+                    <div className="eyebrow text-gold-deep mb-3" style={{ fontSize: '9px' }}>Listen Now</div>
+                    <iframe
+                      style={{ borderRadius: '8px' }}
+                      src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0XUsuxWHRQd?utm_source=generator&theme=0"
+                      width="100%"
+                      height="352"
+                      allowFullScreen
+                      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                      loading="lazy"
+                    />
+                    <a
+                      href="https://open.spotify.com/playlist/37i9dQZF1DX0XUsuxWHRQd"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ display: 'block', marginTop: '10px', fontSize: '12px', fontWeight: 600, color: '#1DB954', textDecoration: 'none' }}
+                    >
+                      Open full playlist →
+                    </a>
+                  </div>
+
+                  {/* MODULE 2 — Afrobeats Chart top 4 */}
+                  {chartDrops.length > 0 && (
+                    <div style={{ border: '1px solid hsl(30 12% 88%)', background: '#ffffff', padding: '20px', boxShadow: '0 10px 30px -10px hsla(20,14%,4%,0.1)' }}>
+                      <div className="eyebrow text-gold-deep mb-4" style={{ fontSize: '9px' }}>Afrobeats Chart</div>
+                      <ol style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                        {chartDrops.map((drop, i) => (
+                          <li key={drop.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 0', borderBottom: i < chartDrops.length - 1 ? '1px solid hsl(30 12% 88%)' : 'none' }}>
+                            <span className="font-display" style={{ fontSize: '22px', fontWeight: 700, color: 'hsl(var(--gold) / 0.7)', width: '30px', flexShrink: 0, lineHeight: 1 }}>
+                              {(drop.chartPosition ?? i + 1).toString().padStart(2, '0')}
+                            </span>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <p style={{ margin: 0, fontWeight: 600, fontSize: '13px', color: 'hsl(20 14% 8%)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{drop.title}</p>
+                              <p style={{ margin: 0, fontSize: '11px', color: '#9CA3AF', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{drop.artist}</p>
+                            </div>
+                          </li>
+                        ))}
+                      </ol>
+                      <Link href="/music/afrobeats" style={{ display: 'block', marginTop: '12px', fontSize: '11px', fontWeight: 700, color: 'hsl(var(--gold-deep))', textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                        Full chart →
+                      </Link>
+                    </div>
+                  )}
+
+                  {/* MODULE 3 — Latest Videos (music articles) */}
+                  {categoryRows.find(r => r.slug === 'music')?.articles.slice(0, 3).length ? (
+                    <div style={{ border: '1px solid hsl(30 12% 88%)', background: '#ffffff', padding: '20px', boxShadow: '0 10px 30px -10px hsla(20,14%,4%,0.1)' }}>
+                      <div className="eyebrow text-gold-deep mb-4" style={{ fontSize: '9px' }}>Latest Videos</div>
+                      <ol style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+                        {categoryRows.find(r => r.slug === 'music')!.articles.slice(0, 3).map((a, i) => (
+                          <li key={a.id} style={{ display: 'flex', gap: '10px', padding: '8px 0', borderBottom: i < 2 ? '1px solid hsl(30 12% 88%)' : 'none', alignItems: 'flex-start' }}>
+                            {a.featuredImage ? (
+                              <img src={a.featuredImage} alt={a.title} style={{ width: '52px', height: '52px', objectFit: 'cover', borderRadius: '6px', flexShrink: 0 }} loading="lazy" />
+                            ) : (
+                              <div style={{ width: '52px', height: '52px', borderRadius: '6px', background: 'linear-gradient(135deg, #1A1A1A, #2A2A2A)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', flexShrink: 0 }}>🎵</div>
+                            )}
+                            <Link href={`/${a.category.slug}/${a.slug}`} style={{ flex: 1, textDecoration: 'none', fontSize: '13px', fontWeight: 500, color: 'hsl(20 14% 8%)', lineHeight: 1.4 }} className="group-hover:text-gold-deep">
+                              {a.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ol>
+                      <Link href="/music/videos" style={{ display: 'block', marginTop: '12px', fontSize: '11px', fontWeight: 700, color: 'hsl(var(--gold-deep))', textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                        All videos →
+                      </Link>
+                    </div>
+                  ) : null}
+
                 </div>
               </div>
             </div>

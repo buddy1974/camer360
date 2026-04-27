@@ -30,10 +30,9 @@ interface Props {
 
 export async function ArticlePageContent({ article, related }: Props) {
   type MusicDrop = typeof musicDrops.$inferSelect
-  let latestDrop: MusicDrop | null = null
+  let latestDrops: MusicDrop[] = []
   try {
-    const rows = await db.select().from(musicDrops).orderBy(desc(musicDrops.createdAt)).limit(1)
-    latestDrop = rows[0] ?? null
+    latestDrops = await db.select().from(musicDrops).orderBy(desc(musicDrops.createdAt)).limit(4)
   } catch { /* table may not exist yet */ }
 
   const catSlug    = article.category.slug
@@ -299,7 +298,7 @@ export async function ArticlePageContent({ article, related }: Props) {
                 <div>
                   <div className="eyebrow text-gold-deep mb-4">Keep reading</div>
                   <ul className="space-y-5">
-                    {related.slice(0, 3).map((a, i) => (
+                    {related.slice(0, 8).map((a, i) => (
                       <li key={a.id}>
                         <Link href={`/${a.category.slug}/${a.slug}`} className="group flex gap-3">
                           <span className="font-display text-2xl font-bold leading-none text-gold/60 group-hover:text-gold transition-colors w-7 shrink-0">
@@ -322,7 +321,7 @@ export async function ArticlePageContent({ article, related }: Props) {
                   style={{ borderRadius: '8px' }}
                   src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0XUsuxWHRQd?utm_source=generator&theme=0"
                   width="100%"
-                  height="152"
+                  height="352"
                   allowFullScreen
                   allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                   loading="lazy"
@@ -332,18 +331,26 @@ export async function ArticlePageContent({ article, related }: Props) {
                 </a>
               </div>
 
-              {/* MODULE B — Latest Drop */}
-              {latestDrop && (
+              {/* MODULE B — Latest Drops (4 songs) */}
+              {latestDrops.length > 0 && (
                 <div style={{ background: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '16px', boxShadow: 'var(--shadow-card)' }}>
                   <div className="eyebrow text-gold-deep mb-3" style={{ fontSize: '0.58rem' }}>Latest Drop</div>
-                  {latestDrop.coverUrl ? (
-                    <img src={latestDrop.coverUrl} alt={latestDrop.title} style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: '8px', marginBottom: '10px' }} loading="lazy" />
-                  ) : (
-                    <div style={{ aspectRatio: '1', background: 'linear-gradient(135deg, #1A1A1A, #2A2A2A)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', marginBottom: '10px' }}>🎵</div>
-                  )}
-                  <p style={{ margin: '0 0 2px', fontWeight: 800, color: 'var(--primary-dark)', fontSize: '0.82rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{latestDrop.title}</p>
-                  <p style={{ margin: '0 0 8px', fontSize: '0.72rem', color: '#6B7280' }}>{latestDrop.artist}</p>
-                  <Link href="/music/videos" className="text-gold" style={{ fontSize: '0.62rem', fontWeight: 700, textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Watch Now →</Link>
+                  <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {latestDrops.map((drop, i) => (
+                      <li key={drop.id} style={{ display: 'flex', gap: '10px', alignItems: 'center', paddingBottom: i < latestDrops.length - 1 ? '12px' : 0, borderBottom: i < latestDrops.length - 1 ? '1px solid var(--border-light)' : 'none' }}>
+                        {drop.coverUrl ? (
+                          <img src={drop.coverUrl} alt={drop.title} style={{ width: '44px', height: '44px', objectFit: 'cover', borderRadius: '6px', flexShrink: 0 }} loading="lazy" />
+                        ) : (
+                          <div style={{ width: '44px', height: '44px', borderRadius: '6px', background: 'linear-gradient(135deg, #1A1A1A, #2A2A2A)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', flexShrink: 0 }}>🎵</div>
+                        )}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ margin: '0 0 1px', fontWeight: 700, color: 'var(--primary-dark)', fontSize: '0.78rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{drop.title}</p>
+                          <p style={{ margin: '0 0 4px', fontSize: '0.68rem', color: '#6B7280' }}>{drop.artist}</p>
+                          <Link href="/music/videos" className="text-gold" style={{ fontSize: '0.6rem', fontWeight: 700, textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Watch Now →</Link>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
 
@@ -357,7 +364,9 @@ export async function ArticlePageContent({ article, related }: Props) {
         </div>
 
         {/* ── Camer360 Brief CTA — matches Lovable article page bottom ── */}
-        <NewsletterSection />
+        <div style={{ marginTop: '80px' }}>
+          <NewsletterSection />
+        </div>
 
       </div>
     </>

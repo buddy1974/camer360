@@ -20,7 +20,7 @@ export default async function ArticlePage({ params }: Props) {
   const article = await getArticleBySlug(catSlug, slug)
   if (!article) notFound()
 
-  const related = await getRelatedArticles(article.id, article.categoryId, 4)
+  const related = await getRelatedArticles(article.id, article.categoryId, 8)
 
   return <ArticlePageContent article={article} related={related} />
 }
