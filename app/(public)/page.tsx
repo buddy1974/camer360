@@ -223,7 +223,7 @@ export default async function HomePage() {
               ))}
             </div>
             {/* MODULE A — Spotify embed */}
-            <div className="bg-[#101010] border border-[#1E1E1E] rounded-xl p-4">
+            <div className="bg-[#101010] border border-[#1E1E1E] rounded-xl p-4" style={{ marginTop: '16px' }}>
               <div style={{ fontSize: '0.58rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#D4AF37', marginBottom: '10px' }}>Listen Now</div>
               <iframe
                 style={{ borderRadius: '8px' }}
@@ -241,7 +241,7 @@ export default async function HomePage() {
 
             {/* MODULE B — Latest Drop */}
             {drops[0] && (
-              <div className="bg-[#101010] border border-[#1E1E1E] rounded-xl p-4">
+              <div className="bg-[#101010] border border-[#1E1E1E] rounded-xl p-4" style={{ marginTop: '16px' }}>
                 <div style={{ fontSize: '0.58rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#D4AF37', marginBottom: '10px' }}>Latest Drop</div>
                 {drops[0].coverUrl ? (
                   <img src={drops[0].coverUrl} alt={drops[0].title} style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: '8px', marginBottom: '10px' }} loading="lazy" />
@@ -256,7 +256,7 @@ export default async function HomePage() {
 
             {/* MODULE C — Chart Snapshot */}
             {chartDrops.length > 0 && (
-              <div className="bg-[#101010] border border-[#1E1E1E] rounded-xl p-4">
+              <div className="bg-[#101010] border border-[#1E1E1E] rounded-xl p-4" style={{ marginTop: '16px' }}>
                 <div style={{ fontSize: '0.58rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#D4AF37', marginBottom: '10px' }}>Afrobeats Chart</div>
                 <ol style={{ listStyle: 'none', margin: 0, padding: 0 }}>
                   {chartDrops.slice(0, 5).map((drop, i) => (
@@ -277,7 +277,7 @@ export default async function HomePage() {
             <ContinueReading />
 
             {/* MODULE D — Newsletter capture */}
-            <div className="bg-[#0A0A0A] border border-[#1E1E1E] rounded-xl p-4">
+            <div className="bg-[#0A0A0A] border border-[#1E1E1E] rounded-xl p-4" style={{ marginTop: '16px' }}>
               <p style={{ margin: '0 0 10px', fontWeight: 700, color: '#EEE', fontSize: '0.85rem' }}>Get the weekly drop</p>
               <SubscribeForm source="sidebar-bottom" />
             </div>
