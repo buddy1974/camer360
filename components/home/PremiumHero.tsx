@@ -8,122 +8,208 @@ interface Props { featured: ArticleWithRelations[] }
 
 export function PremiumHero({ featured }: Props) {
   if (!featured.length) return null
-  const cover = featured[0]
-  const sideStories = featured.slice(1, 4)
-  const minutes = readingTime(cover.body ?? '')
+  const cover      = featured[0]
+  const sideItems  = featured.slice(1, 6)   // up to 5 sidebar items
+  const minutes    = readingTime(cover.body ?? '')
 
   return (
-    <section className="relative bg-onyx-deep text-ivory overflow-hidden">
-      {/* Subtle grid texture — absolutely contained */}
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          opacity: 0.04,
-          backgroundImage: 'linear-gradient(hsl(var(--gold)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--gold)) 1px, transparent 1px)',
-          backgroundSize: '80px 80px',
-        }}
-      />
-
-      {/* Constrained inner using .hero-grid */}
-      <div className="page-container relative py-10 lg:py-14">
+    <section
+      className="overflow-hidden"
+      style={{ background: 'hsl(20 14% 8%)', color: '#F5F5F0' }}
+    >
+      <div className="page-container py-8 lg:py-10">
         <div className="hero-grid">
 
-          {/* ── Featured cover ── */}
-          <article className="reveal-up min-w-0">
-            <Link href={`/${cover.category.slug}/${cover.slug}`} className="group block">
-              <div className="relative w-full overflow-hidden bg-onyx" style={{ aspectRatio: '16/9' }}>
-                {cover.featuredImage && (
-                  <img
-                    src={cover.featuredImage}
-                    alt={cover.title}
-                    className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
-                  />
-                )}
-                <div className="absolute inset-0 bg-gradient-hero-overlay" />
+          {/* ══════════════════════════════════
+              LEFT — featured cover with overlay
+          ══════════════════════════════════ */}
+          <article className="min-w-0">
+            <Link href={`/${cover.category.slug}/${cover.slug}`} className="group block relative overflow-hidden" style={{ aspectRatio: '16/10' }}>
 
-                <div className="absolute left-6 top-6">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-gold">
-                    Cover Story · Vol IV
-                  </div>
+              {/* Background image */}
+              {cover.featuredImage ? (
+                <img
+                  src={cover.featuredImage}
+                  alt={cover.title}
+                  className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
+                />
+              ) : (
+                <div className="absolute inset-0" style={{ background: 'hsl(220 14% 4%)' }} />
+              )}
+
+              {/* Gradient overlay — text readable on any image */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.52) 45%, rgba(0,0,0,0.12) 100%)',
+                }}
+              />
+
+              {/* Issue label — top left */}
+              <div className="absolute left-5 top-5">
+                <span className="font-mono text-[10px] uppercase tracking-[0.3em]" style={{ color: 'hsl(var(--gold))' }}>
+                  Cover Story · Vol IV
+                </span>
+              </div>
+
+              {/* Text content — bottom left, padded away from CTA */}
+              <div
+                className="absolute bottom-0 left-0"
+                style={{ padding: '32px 160px 32px 32px' }}
+              >
+                {/* Category eyebrow */}
+                <div className="eyebrow mb-3 flex items-center gap-2" style={{ color: 'hsl(var(--gold))' }}>
+                  <span className="h-1 w-1 rounded-full inline-block" style={{ background: 'hsl(var(--gold))' }} />
+                  {cover.category.name}
                 </div>
 
-                <div className="absolute inset-x-0 bottom-0 p-6 md:p-10 lg:p-12">
-                  <div className="eyebrow text-gold mb-4 flex items-center gap-2">
-                    <span className="h-1 w-1 rounded-full bg-gold inline-block" />
-                    {cover.category.name}
-                  </div>
-                  <h1 className="font-display text-3xl md:text-5xl lg:text-[56px] leading-[1] font-semibold text-ivory" style={{ maxWidth: '36rem' }}>
-                    {cover.title}
-                  </h1>
-                  {cover.excerpt && (
-                    <p className="mt-4 text-base md:text-lg leading-relaxed text-ivory/75 line-clamp-2" style={{ maxWidth: '32rem' }}>
-                      {cover.excerpt}
-                    </p>
+                {/* Headline */}
+                <h1
+                  className="font-display font-semibold leading-[1.02]"
+                  style={{
+                    fontSize: 'clamp(1.75rem, 3.5vw, 3rem)',
+                    color: '#ffffff',
+                    maxWidth: '28rem',
+                    textShadow: '0 2px 12px rgba(0,0,0,0.4)',
+                  }}
+                >
+                  {cover.title}
+                </h1>
+
+                {/* Excerpt */}
+                {cover.excerpt && (
+                  <p
+                    className="mt-3 leading-relaxed line-clamp-2"
+                    style={{ fontSize: '14px', color: 'rgba(255,255,255,0.72)', maxWidth: '26rem' }}
+                  >
+                    {cover.excerpt}
+                  </p>
+                )}
+
+                {/* Meta line */}
+                <div
+                  className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2"
+                  style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.14em', color: 'rgba(255,255,255,0.5)' }}
+                >
+                  {cover.author && (
+                    <span style={{ color: 'rgba(255,255,255,0.85)' }}>By {cover.author.name}</span>
                   )}
-                  <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3 text-[11px] uppercase tracking-[0.16em] text-ivory/55">
-                    {cover.author && (
-                      <span className="text-ivory/85">By {cover.author.name}</span>
-                    )}
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="h-3 w-3 shrink-0" /> {minutes} min read
+                  </span>
+                  {cover.hits > 0 && (
                     <span className="flex items-center gap-1.5">
-                      <Clock className="h-3 w-3 shrink-0" /> {minutes} min read
+                      <Eye className="h-3 w-3 shrink-0" /> {formatHitCount(cover.hits)}
                     </span>
-                    {cover.hits > 0 && (
-                      <span className="flex items-center gap-1.5">
-                        <Eye className="h-3 w-3 shrink-0" /> {formatHitCount(cover.hits)}
-                      </span>
-                    )}
-                    <span className="inline-flex items-center gap-2 rounded-full bg-gold px-4 py-2 text-[11px] font-bold tracking-[0.18em] text-onyx transition-all duration-500 group-hover:gap-3 shrink-0">
-                      Read the Story <ArrowUpRight className="h-3.5 w-3.5" />
-                    </span>
-                  </div>
+                  )}
                 </div>
               </div>
+
+              {/* CTA — absolute bottom-right */}
+              <div className="absolute" style={{ right: '24px', bottom: '32px' }}>
+                <span
+                  className="inline-flex items-center gap-2 font-bold uppercase tracking-[0.16em] transition-all duration-500 group-hover:gap-3"
+                  style={{
+                    background:   'hsl(var(--gold))',
+                    color:        'hsl(20 14% 8%)',
+                    padding:      '12px 22px',
+                    borderRadius: '999px',
+                    fontSize:     '11px',
+                    fontWeight:   700,
+                  }}
+                >
+                  Read the Story <ArrowUpRight className="h-3.5 w-3.5" />
+                </span>
+              </div>
+
             </Link>
           </article>
 
-          {/* ── Side stack ── */}
-          {sideStories.length > 0 && (
-            <aside className="min-w-0 flex flex-col divide-y divide-white/10 border-t border-white/10 lg:border-t-0">
-              <div className="hidden lg:flex items-center justify-between pb-4">
-                <div className="eyebrow text-gold">In This Issue</div>
-                <div className="font-mono text-[10px] text-ivory/40">04 / 2026</div>
-              </div>
-              {sideStories.map((a, i) => (
+          {/* ══════════════════════════════════
+              RIGHT — "In This Issue" sidebar
+          ══════════════════════════════════ */}
+          <aside
+            className="min-w-0 flex flex-col"
+            style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}
+          >
+            {/* Sidebar header */}
+            <div
+              className="flex items-center justify-between pb-3"
+              style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}
+            >
+              <span className="eyebrow" style={{ color: 'hsl(var(--gold))' }}>In This Issue</span>
+              <span className="font-mono" style={{ fontSize: '10px', color: 'rgba(255,255,255,0.35)' }}>04 / 2026</span>
+            </div>
+
+            {/* 5 story items */}
+            <div className="flex flex-col" style={{ gap: '0' }}>
+              {(sideItems.length > 0 ? sideItems : featured.slice(1, 6)).map((a, i) => (
                 <Link
                   key={a.id}
                   href={`/${a.category.slug}/${a.slug}`}
-                  className="group flex gap-4 py-5 first:pt-0 lg:first:pt-5 min-w-0"
+                  className="group"
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '64px 1fr',
+                    gap: '12px',
+                    padding: '14px 0',
+                    borderBottom: '1px solid rgba(255,255,255,0.07)',
+                    alignItems: 'start',
+                  }}
                 >
-                  <div className="relative h-24 w-24 shrink-0 overflow-hidden bg-onyx">
-                    {a.featuredImage && (
+                  {/* Thumbnail with numbered badge */}
+                  <div className="relative overflow-hidden shrink-0" style={{ width: '64px', height: '64px' }}>
+                    {a.featuredImage ? (
                       <img
                         src={a.featuredImage}
                         alt={a.title}
                         loading="lazy"
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
+                    ) : (
+                      <div className="absolute inset-0" style={{ background: 'hsl(220 14% 4%)' }} />
                     )}
-                    <div className="absolute left-0 top-0 bg-gold px-1.5 py-0.5 font-mono text-[10px] font-bold text-onyx">
+                    {/* Number badge */}
+                    <div
+                      className="absolute left-0 top-0 font-mono font-bold"
+                      style={{
+                        background:  'hsl(var(--gold))',
+                        color:       'hsl(20 14% 8%)',
+                        fontSize:    '9px',
+                        padding:     '2px 5px',
+                        lineHeight:  1.4,
+                      }}
+                    >
                       {String(i + 1).padStart(2, '0')}
                     </div>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="eyebrow text-gold/80 mb-1.5 text-[10px]">{a.category.name}</div>
-                    <h3 className="font-display text-sm md:text-base leading-snug font-semibold text-ivory group-hover:text-gold transition-colors line-clamp-3">
+
+                  {/* Text */}
+                  <div className="min-w-0">
+                    <div
+                      className="eyebrow mb-1"
+                      style={{ fontSize: '9px', color: 'rgba(255,255,255,0.5)' }}
+                    >
+                      {a.category.name}
+                    </div>
+                    <h3
+                      className="font-display font-semibold leading-snug line-clamp-2 transition-colors group-hover:text-gold"
+                      style={{ fontSize: '13px', color: '#F5F5F0' }}
+                    >
                       {a.title}
                     </h3>
-                    <div className="mt-2 flex items-center gap-3 text-[11px] uppercase tracking-[0.14em] text-ivory/40">
+                    <div
+                      className="mt-1 flex items-center gap-2"
+                      style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.35)' }}
+                    >
                       <span>{readingTime(a.body ?? '')} min</span>
-                      {a.hits > 0 && (
-                        <><span>·</span><span>{formatHitCount(a.hits)}</span></>
-                      )}
+                      {a.hits > 0 && <><span>·</span><span>{formatHitCount(a.hits)}</span></>}
                     </div>
                   </div>
                 </Link>
               ))}
-            </aside>
-          )}
+            </div>
+          </aside>
 
         </div>
       </div>

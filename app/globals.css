@@ -126,7 +126,7 @@ html { scroll-behavior: smooth; }
 body > div { max-width: 100%; }
 
 body {
-  background: var(--luxury-bg);
+  background: #ffffff;
   color: var(--color-text);
   font-family: var(--font-sans);
   font-feature-settings: "ss01", "cv11";
@@ -136,27 +136,27 @@ body {
 
 /* ─── Page container — single source of truth for centered layout ── */
 .page-container {
-  width: min(100% - 2.5rem, 1440px);
+  width: min(100% - 32px, 1400px);
   margin-inline: auto;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .page-container {
-    width: min(100% - 1.25rem, 100%);
+    width: min(100% - 20px, 100%);
   }
 }
 
-/* Hero inner grid */
+/* Hero grid: left=70% featured, right=30% sidebar */
 .hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 0;
+  gap: 16px;
   width: 100%;
 }
 @media (min-width: 1024px) {
   .hero-grid {
     grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr);
-    gap: 2.5rem;
+    gap: 24px;
   }
 }
 
