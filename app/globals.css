@@ -202,6 +202,88 @@ body {
   }
 }
 
+/* ── Camer360 Brief newsletter section — 2-column grid ── */
+.camer-brief {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .camer-brief {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: 48px;
+  }
+}
+
+.camer-brief-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.camer-brief-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.subscribe-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: #0b0b0b;
+  border: 1px solid hsla(41, 65%, 52%, 0.2);
+  padding: 28px;
+  border-radius: 12px;
+}
+
+.subscribe-button {
+  background: linear-gradient(135deg, hsl(44 80% 78%) 0%, hsl(41 65% 52%) 50%, hsl(38 70% 38%) 100%);
+  color: hsl(20 14% 8%);
+  font-weight: 700;
+  padding: 14px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 12px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.subscribe-button:hover { opacity: 0.9; }
+
+/* 2-column feature bullets */
+.features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+  margin-top: 4px;
+  list-style: none;
+  padding: 0;
+}
+@media (max-width: 480px) {
+  .features { grid-template-columns: 1fr; }
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+/* ── Trending sidebar — internal scroll with clean scrollbar ── */
+.trending-scrollable {
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  padding-right: 6px;
+}
+.trending-scrollable::-webkit-scrollbar { width: 4px; }
+.trending-scrollable::-webkit-scrollbar-thumb {
+  background: hsla(41, 65%, 52%, 0.4);
+  border-radius: 4px;
+}
+.trending-scrollable::-webkit-scrollbar-track { background: transparent; }
+
 /* Card grid: 1 col → 2 col → 3 col */
 .cards-grid-3 {
   display: grid;

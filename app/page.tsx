@@ -37,7 +37,7 @@ export default async function HomePage() {
     ;[featured, latest, mostRead, allCats, breaking] = await Promise.all([
       getFeaturedArticles(7),
       getLatestArticles(18),
-      getMostRead(8),
+      getMostRead(16),
       getAllCategories(),
       getBreakingNews(5),
     ])
