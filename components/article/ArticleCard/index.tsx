@@ -1,13 +1,13 @@
 'use client'
 import Link from 'next/link'
-import { Clock, Eye } from 'lucide-react'
+import { ArrowUpRight, Clock, Eye } from 'lucide-react'
 import type { ArticleWithRelations } from '@/lib/types'
 import { formatRelative, readingTime, formatHitCount, truncate } from '@/lib/utils'
 import { CountryTag } from '@/components/article/CountryTag'
 
 interface Props {
   article: ArticleWithRelations
-  variant?: 'default' | 'hero' | 'featured' | 'compact' | 'horizontal' | 'list'
+  variant?: 'default' | 'hero' | 'featured' | 'compact' | 'horizontal' | 'list' | 'editorial'
   priority?: boolean
   index?: number
 }
@@ -28,6 +28,54 @@ export function ArticleCard({ article, variant = 'default', priority = false, in
   const href = `/${article.category.slug}/${article.slug}`
   const mins = readingTime(article.body)
   const src  = cleanSrc(article.featuredImage)
+
+  /* ── EDITORIAL (premium card with overlay content) ── */
+  if (variant === 'editorial') {
+    return (
+      <Link
+        href={href}
+        className="card-editorial group block"
+        style={{ animationDelay: index ? `${index * 60}ms` : undefined }}
+      >
+        <div className="relative aspect-[4/5] overflow-hidden bg-onyx">
+          {src ? (
+            <img src={src} alt={article.title} loading="lazy"
+              className="h-full w-full object-cover" />
+          ) : (
+            <div className="h-full w-full bg-gradient-onyx flex items-center justify-center">
+              <span style={{ color: 'rgba(212,175,55,0.15)', fontSize: '3rem', fontWeight: 900 }}>
+                {article.category.name.charAt(0)}
+              </span>
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-card-overlay" />
+          {/* Category chip */}
+          <div className="absolute left-4 top-4 inline-flex items-center bg-ivory/95 backdrop-blur-sm px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-onyx">
+            {article.category.name}
+          </div>
+          {/* Read time */}
+          <div className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-onyx/70 backdrop-blur-sm px-3 py-1.5 text-[10px] font-medium text-ivory">
+            <Clock className="h-3 w-3" /> {mins} min
+          </div>
+          {/* Bottom content */}
+          <div className="absolute inset-x-0 bottom-0 p-5 md:p-6 text-ivory">
+            <h3 className="font-display text-xl md:text-2xl leading-tight font-semibold line-clamp-3">
+              {article.title}
+            </h3>
+            {article.excerpt && (
+              <p className="mt-2 text-sm text-ivory/70 line-clamp-2">{article.excerpt}</p>
+            )}
+            <div className="mt-4 flex items-center justify-between text-[11px] uppercase tracking-[0.16em] text-ivory/60">
+              <span>{article.author?.name || 'News Team'}</span>
+              <span className="inline-flex items-center gap-1.5 text-gold opacity-0 -translate-x-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-x-0">
+                Read <ArrowUpRight className="h-3 w-3" />
+              </span>
+            </div>
+          </div>
+        </div>
+      </Link>
+    )
+  }
 
   /* ── HERO ── */
   if (variant === 'hero') {

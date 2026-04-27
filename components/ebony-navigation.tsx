@@ -1,254 +1,126 @@
 'use client'
+
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Search, Mail, Menu, X } from 'lucide-react'
-import SearchModal from '@/components/search/SearchModal'
-
-const NAV_LEFT = [
-  { label: 'Celebrities',  href: '/celebrities'  },
-  { label: 'Music',        href: '/music'        },
-  { label: 'Film & TV',    href: '/film-tv'      },
-  { label: 'Sport Stars',  href: '/sport-stars'  },
-]
-
-const NAV_RIGHT = [
-  { label: 'Influencers',   href: '/influencers'  },
-  { label: 'Entrepreneurs', href: '/entrepreneurs' },
-  { label: 'Events',        href: '/events'       },
-]
-
-const NAV_ALL = [...NAV_LEFT, ...NAV_RIGHT]
-
-const TRENDING_TOPICS = [
-  { label: 'Camer360 Power 100',   href: '/celebrities'   },
-  { label: 'Afrobeats Rising',     href: '/music'         },
-  { label: 'Top Influencers 2026', href: '/influencers'   },
-  { label: 'African Moguls 2026',  href: '/entrepreneurs' },
-  { label: 'Sport Stars to Watch', href: '/sport-stars'   },
-  { label: 'Upcoming Events',      href: '/events'        },
-]
-
-function NavLink({ item, pathname }: { item: { label: string; href: string }; pathname: string }) {
-  const active = pathname === item.href || pathname.startsWith(item.href + '/')
-  return (
-    <Link href={item.href} className="story-link" style={{
-      whiteSpace:    'nowrap',
-      fontSize:      '12px',
-      fontWeight:    700,
-      letterSpacing: '0.08em',
-      textTransform: 'uppercase',
-      textDecoration: 'none',
-      color:          active ? 'hsl(var(--gold))' : '#1A1A1A',
-      transition:    'color 0.2s',
-      paddingBottom:  active ? '2px' : undefined,
-      borderBottom:   active ? '1.5px solid hsl(var(--gold))' : undefined,
-    }}>
-      {item.label}
-    </Link>
-  )
-}
+import { Menu, X } from 'lucide-react'
+import { NAV_CATEGORIES, SITE_FB, SITE_TWITTER } from '@/lib/constants'
 
 export default function EbonyNavigation() {
-  const [open,       setOpen]       = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [scrolled,   setScrolled]   = useState(false)
-  const pathname = usePathname()
+  const [open, setOpen]         = useState(false)
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 40)
-    fn()
-    window.addEventListener('scroll', fn, { passive: true })
-    return () => window.removeEventListener('scroll', fn)
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => { setOpen(false) }, [pathname])
-
   return (
-    <header style={{
-      position:     'sticky',
-      top:           0,
-      zIndex:        50,
-      background:    scrolled ? 'rgba(254,254,253,0.96)' : '#FEFEFD',
-      backdropFilter: scrolled ? 'blur(16px)' : 'none',
-      transition:   'all 0.4s cubic-bezier(0.22,1,0.36,1)',
-      boxShadow:    scrolled
-        ? '0 1px 0 rgba(0,0,0,0.08), 0 4px 20px rgba(0,0,0,0.06)'
-        : '0 1px 0 rgba(0,0,0,0.08)',
-    }}>
+    <header
+      className="sticky top-0 z-50 w-full transition-all duration-500"
+      style={{
+        background:    scrolled ? 'hsla(220,14%,4%,0.92)' : 'hsl(20,14%,8%)',
+        backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
+        borderBottom:  scrolled ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(255,255,255,0.04)',
+        boxShadow:     scrolled ? '0 4px 24px rgba(0,0,0,0.4)' : 'none',
+      }}
+    >
+      <div className="max-w-[1440px] mx-auto px-5 lg:px-8 flex items-center justify-between gap-6 py-4 lg:py-5">
 
-      {/* ── Desktop: three-column centred logo ── */}
-      <div className="hidden lg:block">
-        <div style={{
-          maxWidth:            '1340px',
-          margin:              '0 auto',
-          padding:             '0 32px',
-          display:             'grid',
-          gridTemplateColumns: '1fr auto 1fr',
-          alignItems:          'center',
-          gap:                 '24px',
-          height:              '80px',
-        }}>
-          {/* Left nav */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '32px' }}>
-            {NAV_LEFT.map(item => <NavLink key={item.href} item={item} pathname={pathname} />)}
-          </div>
-
-          {/* Center logo */}
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', textDecoration: 'none' }}>
-            <span style={{
-              fontFamily:  'var(--font-display), Georgia, serif',
-              fontStyle:   'italic',
-              fontSize:    '11px',
-              color:       'hsl(var(--gold))',
-              textAlign:   'right',
-              lineHeight:  1.5,
-              letterSpacing: '0.06em',
-              whiteSpace:  'nowrap',
-            }}>
-              Cameroon&rsquo;s<br />Premier
-            </span>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="Camer360" style={{ height: '72px', width: 'auto' }} />
-            <span style={{
-              fontFamily:  'var(--font-display), Georgia, serif',
-              fontStyle:   'italic',
-              fontSize:    '11px',
-              color:       'hsl(var(--gold))',
-              textAlign:   'left',
-              lineHeight:  1.5,
-              letterSpacing: '0.06em',
-              whiteSpace:  'nowrap',
-            }}>
-              Lifestyle<br />Magazine
-            </span>
-          </Link>
-
-          {/* Right nav + icons */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '28px' }}>
-            {NAV_RIGHT.map(item => <NavLink key={item.href} item={item} pathname={pathname} />)}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginLeft: '4px', paddingLeft: '16px', borderLeft: '1px solid #E8E8E6' }}>
-              <Link href="/newsletter" aria-label="Newsletter"
-                style={{ color: '#999', display: 'flex', transition: 'color 0.2s' }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'hsl(var(--gold))'}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#999'}
-              >
-                <Mail size={17} />
-              </Link>
-              <button onClick={() => setSearchOpen(true)} aria-label="Search"
-                style={{ color: '#999', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', padding: 0, transition: 'color 0.2s' }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = 'hsl(var(--gold))'}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#999'}
-              >
-                <Search size={17} />
-              </button>
-              {/* Subscribe pill */}
-              <Link href="/newsletter" style={{
-                display:       'inline-flex',
-                alignItems:    'center',
-                borderRadius:  '99px',
-                background:    'hsl(var(--onyx))',
-                color:         'hsl(var(--ivory))',
-                padding:       '7px 18px',
-                fontSize:      '11px',
-                fontWeight:    700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.16em',
-                textDecoration:'none',
-                transition:    'all 0.4s cubic-bezier(0.22,1,0.36,1)',
-              }}
-                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'var(--gradient-gold)'; el.style.color = '#1A1A1A' }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'hsl(var(--onyx))'; el.style.color = 'hsl(var(--ivory))' }}
-              >
-                Subscribe
-              </Link>
+        {/* ── Logo ── */}
+        <Link href="/" className="flex items-center gap-3 group" aria-label="Camer360 home">
+          <div className="relative">
+            <div className="absolute inset-0 rounded-full bg-gradient-gold blur-md opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
+            <div className="relative flex h-11 w-11 items-center justify-center rounded-full bg-onyx-deep ring-2 ring-gold/30">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.png" alt="" style={{ height: '22px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+              <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-gold pulse-dot" />
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* ── Mobile bar ── */}
-      <div className="lg:hidden flex items-center justify-between" style={{ padding: '12px 20px' }}>
-        <Link href="/">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Camer360" style={{ height: '48px', width: 'auto' }} />
+          <div className="leading-none">
+            <div className="font-display text-2xl font-bold tracking-tight text-ivory">
+              Camer<span className="text-gold">360</span>
+            </div>
+            <div className="eyebrow text-ivory/35 mt-1" style={{ fontSize: '9px' }}>
+              Premier Lifestyle · Est. 2024
+            </div>
+          </div>
         </Link>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <button onClick={() => setSearchOpen(true)} style={{ color: '#666', background: 'none', border: 'none', cursor: 'pointer', display: 'flex' }}>
-            <Search size={20} />
-          </button>
-          <button onClick={() => setOpen(v => !v)} style={{ color: '#666', background: 'none', border: 'none', cursor: 'pointer', display: 'flex' }}>
-            {open ? <X size={22} /> : <Menu size={22} />}
+
+        {/* ── Desktop nav ── */}
+        <nav className="hidden lg:flex items-center gap-7" aria-label="Main navigation">
+          {NAV_CATEGORIES.map(c => (
+            <Link
+              key={c.slug}
+              href={`/${c.slug}`}
+              className="story-link text-[13px] font-medium uppercase tracking-[0.14em] text-ivory/65 hover:text-gold transition-colors duration-300"
+            >
+              {c.name}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-3">
+          {/* Subscribe CTA */}
+          <Link
+            href="/newsletter"
+            className="hidden md:inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[12px] font-semibold uppercase tracking-[0.18em] text-onyx transition-all duration-500 hover:shadow-glow"
+            style={{ background: 'var(--gradient-gold)' }}
+          >
+            Subscribe
+          </Link>
+
+          {/* Mobile hamburger */}
+          <button
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            onClick={() => setOpen(!open)}
+            className="lg:hidden flex h-10 w-10 items-center justify-center rounded-full border border-ivory/20 text-ivory/70 hover:border-gold hover:text-gold transition-colors"
+          >
+            {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
       </div>
 
       {/* ── Mobile drawer ── */}
       {open && (
-        <nav style={{ borderTop: '1px solid #E8E8E6', background: '#FEFEFD' }} className="animate-fade-in lg:hidden">
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {NAV_ALL.map(item => (
-              <Link key={item.href} href={item.href} onClick={() => setOpen(false)} style={{
-                padding:       '16px 20px',
-                fontSize:      '13px',
-                fontWeight:    700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                textDecoration:'none',
-                color:          pathname.startsWith(item.href) ? 'hsl(var(--gold))' : '#555',
-                borderBottom:  '1px solid #F0EEE8',
-                display:       'flex',
-                justifyContent:'space-between',
-                alignItems:    'center',
-              }}>
-                {item.label}
-                {pathname.startsWith(item.href) && (
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'hsl(var(--gold))' }} />
-                )}
+        <div className="lg:hidden border-t border-ivory/10 bg-onyx-deep/95 backdrop-blur-xl animate-fade-in">
+          <nav className="max-w-[1440px] mx-auto px-5 flex flex-col py-4">
+            {NAV_CATEGORIES.map(c => (
+              <Link
+                key={c.slug}
+                href={`/${c.slug}`}
+                onClick={() => setOpen(false)}
+                className="border-b border-ivory/10 py-3.5 text-sm font-medium uppercase tracking-[0.14em] text-ivory/70 hover:text-gold transition-colors"
+              >
+                {c.name}
               </Link>
             ))}
-            <div style={{ padding: '16px 20px' }}>
-              <Link href="/newsletter" style={{
-                display: 'block', textAlign: 'center',
-                background: 'var(--gradient-gold)', color: '#1A1A1A',
-                borderRadius: '99px', padding: '13px',
-                fontSize: '12px', fontWeight: 700, textTransform: 'uppercase',
-                letterSpacing: '0.16em', textDecoration: 'none',
-              }}>
-                Subscribe Free
-              </Link>
+            <Link
+              href="/newsletter"
+              onClick={() => setOpen(false)}
+              className="mt-4 rounded-full py-3 text-center text-[12px] font-semibold uppercase tracking-[0.18em] text-onyx"
+              style={{ background: 'var(--gradient-gold)' }}
+            >
+              Subscribe Free
+            </Link>
+
+            {/* Social row */}
+            <div className="mt-5 mb-2 flex items-center gap-3">
+              {[
+                { href: SITE_FB, label: 'Facebook', d: 'M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z' },
+                { href: `https://twitter.com/${(SITE_TWITTER ?? '').replace('@', '')}`, label: 'X', d: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z' },
+                { href: 'https://instagram.com/camer360', label: 'Instagram', d: 'M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.975.975 1.246 2.242 1.308 3.608.058 1.265.069 1.645.069 4.849s-.012 3.584-.07 4.849c-.062 1.366-.334 2.633-1.308 3.608-.975.975-2.242 1.246-3.608 1.308-1.265.058-1.645.069-4.849.069s-3.584-.012-4.849-.07c-1.366-.062-2.633-.334-3.608-1.308-.975-.975-1.246-2.242-1.308-3.608C2.175 15.584 2.163 15.204 2.163 12s.012-3.584.07-4.849c.062-1.366.334-2.633 1.308-3.608C4.516 2.568 5.783 2.296 7.149 2.234 8.415 2.175 8.796 2.163 12 2.163zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z' },
+              ].map(({ href, label, d }) => (
+                <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-ivory/15 text-ivory/50 hover:border-gold hover:text-gold transition-colors">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d={d}/></svg>
+                </a>
+              ))}
             </div>
-          </div>
-        </nav>
-      )}
-
-      {/* ── Gold trending bar ── */}
-      <div style={{ background: 'hsl(var(--gold))', padding: '7px 0', overflow: 'hidden' }}>
-        <div style={{ maxWidth: '1340px', margin: '0 auto', padding: '0 32px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <span className="eyebrow" style={{ color: 'rgba(26,26,26,0.65)', fontSize: '10px', flexShrink: 0 }}>
-            Trending
-          </span>
-          <div style={{ display: 'flex', alignItems: 'center', overflow: 'hidden', flex: 1 }}>
-            {TRENDING_TOPICS.map((item, i) => (
-              <span key={item.href} style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-                {i > 0 && <span style={{ color: 'rgba(26,26,26,0.3)', margin: '0 12px' }}>·</span>}
-                <Link href={item.href} style={{
-                  fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em',
-                  color: 'rgba(26,26,26,0.8)', textDecoration: 'none', whiteSpace: 'nowrap',
-                  transition: 'color 0.2s',
-                }}
-                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#1A1A1A'}
-                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = 'rgba(26,26,26,0.8)'}
-                >
-                  {item.label}
-                </Link>
-              </span>
-            ))}
-          </div>
+          </nav>
         </div>
-      </div>
-
-      {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} />}
+      )}
     </header>
   )
 }

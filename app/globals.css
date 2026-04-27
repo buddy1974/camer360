@@ -19,6 +19,34 @@
   --font-serif:   var(--font-fraunces), Georgia, serif;
   --font-display: var(--font-fraunces), Georgia, serif;
   --font-mono:    var(--font-jetbrains), var(--font-geist-mono), monospace;
+
+  /* ── Editorial color system ── */
+  --color-gold-deep:        hsl(38 70% 38%);
+  --color-gold-soft:        hsl(44 80% 78%);
+  --color-onyx:             hsl(20 14% 8%);
+  --color-onyx-deep:        hsl(220 14% 4%);
+  --color-ivory:            hsl(40 33% 97%);
+  --color-crimson:          hsl(358 75% 48%);
+  --color-foreground:       hsl(20 14% 8%);
+  --color-background:       hsl(40 33% 97%);
+  --color-muted-foreground: hsl(20 10% 40%);
+  --color-secondary:        hsl(40 15% 92%);
+
+  /* ── Background images ── */
+  --background-image-gradient-gold:
+    linear-gradient(135deg, hsl(44 80% 78%) 0%, hsl(41 65% 52%) 50%, hsl(38 70% 38%) 100%);
+  --background-image-gradient-onyx:
+    linear-gradient(180deg, hsl(20 14% 8%) 0%, hsl(220 14% 4%) 100%);
+  --background-image-gradient-hero-overlay:
+    linear-gradient(180deg, hsla(20,14%,4%,0.55) 0%, hsla(20,14%,4%,0.2) 30%, hsla(20,14%,4%,0.85) 75%, hsl(20 14% 4%) 100%);
+  --background-image-gradient-card-overlay:
+    linear-gradient(180deg, transparent 30%, hsla(20,14%,4%,0.92) 100%);
+
+  /* ── Shadows ── */
+  --shadow-editorial: 0 30px 60px -20px hsla(20,14%,4%,0.25);
+  --shadow-soft:      0 10px 30px -10px hsla(20,14%,4%,0.12);
+  --shadow-glow:      0 0 60px -10px hsla(41,65%,52%,0.45);
+  --shadow-deep:      0 40px 80px -30px hsla(20,14%,4%,0.55);
 }
 
 /* ─── Gradient + luxury vars ─────────────────────────────────── */
@@ -1195,6 +1223,7 @@ h1, h2, h3, h4, h5 {
   50%       { opacity: 0.5; transform: scale(0.8); }
 }
 .pulse-dot-ed { animation: pulse-dot-anim 1.8s ease-in-out infinite; }
+.pulse-dot    { animation: pulse-dot-anim 1.8s ease-in-out infinite; }
 
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(12px); }

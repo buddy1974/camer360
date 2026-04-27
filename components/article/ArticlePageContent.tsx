@@ -223,17 +223,35 @@ export async function ArticlePageContent({ article, related }: Props) {
               </div>
             )}
 
+            {/* ── Inline subscribe CTA ── */}
+            <div className="bg-secondary border-y border-border my-8" style={{ margin: '32px -44px', padding: '40px 44px' }}>
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div>
+                  <div className="eyebrow text-gold-deep mb-2">Enjoyed this story?</div>
+                  <h3 className="font-display text-2xl md:text-3xl font-semibold">
+                    Don&apos;t miss the next one. Join 84,000 readers.
+                  </h3>
+                </div>
+                <Link href="/newsletter"
+                  className="inline-flex items-center gap-2 bg-onyx text-ivory px-6 py-3 text-[12px] font-semibold uppercase tracking-[0.2em] whitespace-nowrap hover:opacity-90 transition-opacity shrink-0">
+                  Subscribe to Camer360 →
+                </Link>
+              </div>
+            </div>
+
             {related.length > 0 && (
               <section style={{ marginBottom: '40px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '28px' }}>
-                  <h3 style={{ fontFamily: 'var(--font-display), Georgia, serif', fontSize: '22px', fontWeight: 700, color: 'var(--primary-dark)', letterSpacing: '-0.02em' }}>Related Stories</h3>
+                <div className="flex items-center gap-4 mb-7">
+                  <div className="eyebrow text-gold flex items-center gap-3">
+                    <span className="gold-rule" /> More to read
+                  </div>
                   <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, hsl(var(--gold)), transparent)' }} />
-                  <Link href={`/${catSlug}`} className="story-link" style={{ fontSize: '12px', color: 'hsl(var(--gold))', textDecoration: 'none', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', whiteSpace: 'nowrap' }}>
+                  <Link href={`/${catSlug}`} className="story-link text-[12px] font-semibold uppercase tracking-[0.12em] text-gold whitespace-nowrap">
                     See All →
                   </Link>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
-                  {related.map(a => <ArticleCard key={a.id} article={a} />)}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {related.map(a => <ArticleCard key={a.id} article={a} variant="editorial" />)}
                 </div>
               </section>
             )}
@@ -244,18 +262,46 @@ export async function ArticlePageContent({ article, related }: Props) {
 
           </div>
 
-          <aside className="hidden lg:flex" style={{ width: '300px', flexShrink: 0, flexDirection: 'column' }}>
-            <div style={{ position: 'sticky', top: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              <div style={{ background: 'white', border: '1px solid var(--border-light)', borderRadius: '16px', padding: '16px', boxShadow: 'var(--shadow-card)', overflow: 'hidden' }}>
-                <AdUnit slot="5520370976" format="rectangle" />
-              </div>
-              <div style={{ background: 'var(--grad-dark)', borderRadius: '16px', padding: '28px', position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, var(--primary-gold), var(--gold-light))' }} />
-                <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2px', color: 'rgba(255,255,255,0.4)', marginBottom: '8px' }}>More from</p>
-                <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '22px', fontWeight: 700, color: 'white', marginBottom: '16px' }}>{article.category.name}</h4>
-                <Link href={`/${catSlug}`} style={{ display: 'inline-block', background: 'linear-gradient(45deg, var(--primary-gold), var(--gold-light))', color: 'var(--primary-dark)', padding: '10px 20px', borderRadius: '24px', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', textDecoration: 'none' }}>
-                  Browse All →
+          <aside className="hidden lg:block" style={{ width: '280px', flexShrink: 0 }}>
+            <div style={{ position: 'sticky', top: '128px', display: 'flex', flexDirection: 'column', gap: '28px' }}>
+              {/* Subscribe CTA */}
+              <div className="bg-onyx text-ivory p-6">
+                <div className="eyebrow text-gold mb-3">Inside Edition</div>
+                <h3 className="font-display text-xl font-semibold leading-snug text-ivory">
+                  Get tomorrow&apos;s stories tonight.
+                </h3>
+                <p className="mt-3 text-sm text-ivory/60">Subscribers get our newsroom&apos;s drafts before they&apos;re public.</p>
+                <Link href="/newsletter"
+                  className="mt-5 inline-flex w-full items-center justify-center py-3 text-[11px] font-bold uppercase tracking-[0.2em] text-onyx"
+                  style={{ background: 'var(--gradient-gold)' }}>
+                  Subscribe Free
                 </Link>
+              </div>
+
+              {/* Keep reading */}
+              {related.length > 0 && (
+                <div>
+                  <div className="eyebrow text-gold-deep mb-4">Keep reading</div>
+                  <ul className="space-y-5">
+                    {related.slice(0, 3).map((a, i) => (
+                      <li key={a.id}>
+                        <Link href={`/${a.category.slug}/${a.slug}`} className="group flex gap-3">
+                          <span className="font-display text-2xl font-bold leading-none text-gold/60 group-hover:text-gold transition-colors w-7 shrink-0">
+                            {String(i + 1).padStart(2, '0')}
+                          </span>
+                          <span className="text-sm font-medium leading-snug group-hover:text-gold-deep transition-colors">
+                            {a.title}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Ad unit */}
+              <div style={{ background: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '12px', boxShadow: 'var(--shadow-card)', overflow: 'hidden' }}>
+                <AdUnit slot="5520370976" format="rectangle" />
               </div>
             </div>
           </aside>

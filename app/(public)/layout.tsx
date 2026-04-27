@@ -8,12 +8,10 @@ export default async function PublicLayout({ children }: { children: React.React
   try { breaking = await getBreakingNews(5) } catch { /* DB unavailable at build time */ }
   return (
     <>
-      <BreakingBanner articles={breaking} />
       <EbonyNavigation />
-      <main className="min-h-screen w-full">
-        <div style={{ maxWidth: '1380px', margin: '0 auto', padding: '0 24px' }}>
-          {children}
-        </div>
+      <BreakingBanner articles={breaking} />
+      <main className="min-h-screen w-full bg-background">
+        {children}
       </main>
       <Footer />
     </>
