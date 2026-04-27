@@ -11,7 +11,7 @@ const h2Style: React.CSSProperties = {
 
 export default function PrivacyPage() {
   return (
-    <div style={{ maxWidth: '860px', margin: '0 auto', padding: '48px 24px' }}>
+    <div className="static-page" style={{ maxWidth: '760px', margin: '0 auto', padding: '56px 24px 80px' }}>
 
       <span style={{ fontSize: '0.65rem', fontWeight: 900, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#D4AF37' }}>
         Legal

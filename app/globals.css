@@ -1406,6 +1406,17 @@ h1, h2, h3, h4, h5 {
 .prose-editorial li { margin-bottom: 0.5rem; }
 .prose-editorial img { width: 100%; border-radius: var(--radius); margin: 1.5rem 0; display: block; }
 
+/* Static editorial pages — force readable dark text on light background */
+/* Add class="static-page" to outer div of privacy, terms, contact etc. */
+.static-page h1           { color: hsl(20 14% 8%)   !important; }
+.static-page h2           { color: hsl(20 14% 8%)   !important; }
+.static-page p            { color: hsl(20 14% 18%)  !important; }
+.static-page li           { color: hsl(20 14% 18%)  !important; }
+.static-page strong       { color: hsl(20 14% 8%)   !important; }
+.static-page div[style]   { color: hsl(20 14% 18%)  ; }
+/* Keep gold accents untouched via h2Style and link styles */
+.static-page a            { color: hsl(var(--gold))  ; }
+
 /* Share bar — aligned to left of article column */
 .share-wrapper {
   position: relative;

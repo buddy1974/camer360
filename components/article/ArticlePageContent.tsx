@@ -54,7 +54,7 @@ export async function ArticlePageContent({ article, related }: Props) {
       />
       <QuoteShare articleTitle={article.title} categorySlug={catSlug} slug={slug} />
 
-      <div style={{ background: 'var(--luxury-bg)', minHeight: '100vh' }}>
+      <div style={{ background: '#ffffff', minHeight: '100vh' }}>
 
         {/* ── Breadcrumb bar ── */}
         <div style={{ borderBottom: '1px solid var(--border-light)', background: 'white' }}>
@@ -199,7 +199,8 @@ export async function ArticlePageContent({ article, related }: Props) {
 
             <AudioReader title={article.title} body={article.body ?? ''} />
 
-            <div className="prose prose-editorial" id="article-content" style={{ background: 'white', padding: '40px 44px', borderRadius: '16px', boxShadow: 'var(--shadow-soft-ed)', border: '1px solid var(--border-light)', overflow: 'hidden' }}>
+            {/* Prose — no card wrapper; overflow:visible so drop cap and blockquote decoration render */}
+            <div className="prose prose-editorial" id="article-content">
               <ProgressiveBody body={injectVideoEmbeds(linkCelebrities(article.body ?? ''))} />
             </div>
 

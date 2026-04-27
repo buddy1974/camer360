@@ -59,31 +59,26 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       <div style={{ paddingTop: '32px', paddingBottom: '48px' }}>
 
         {/* Category header */}
-        <div style={{ marginBottom: '32px', paddingBottom: '24px', borderBottom: '1px solid #1E1E1E' }}>
-          <nav className="text-[0.65rem] text-[#444] mb-3 flex items-center gap-1.5">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
+        <div style={{ marginBottom: '40px', paddingBottom: '24px', borderBottom: '1px solid hsl(30 12% 88%)' }}>
+          <nav style={{ fontSize: '11px', color: '#9CA3AF', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            <Link href="/" style={{ color: '#9CA3AF', textDecoration: 'none' }} className="hover:text-gold transition-colors">Home</Link>
             <span>›</span>
-            <span className="text-[#D4AF37] font-semibold">{category.name}</span>
+            <span style={{ color: 'hsl(var(--gold))', fontWeight: 600 }}>{category.name}</span>
           </nav>
           <div className="flex items-baseline gap-4">
-            <h1 className="text-[2.5rem] md:text-[3.5rem] font-black uppercase tracking-[-0.03em] text-white leading-none">
+            <h1 className="font-display font-bold tracking-tight" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', color: 'hsl(20 14% 8%)', lineHeight: 1.05 }}>
               {category.name}
             </h1>
-            <span className="text-[#333] text-sm">{total.toLocaleString()} articles</span>
+            <span style={{ color: '#9CA3AF', fontSize: '13px' }}>{total.toLocaleString()} articles</span>
           </div>
         </div>
 
         {/* Uniform 3-column article grid */}
         {articles.length > 0 ? (
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '24px',
-            marginBottom: '40px'
-          }}>
+          <div className="cards-grid-3" style={{ marginBottom: '40px' }}>
             {articles.map((a, i) => (
               <>
-                <ArticleCard key={a.id} article={a} />
+                <ArticleCard key={a.id} article={a} variant="editorial" />
                 {i === 5 && (
                   <div key="cat-ad" className="col-span-full my-4">
                     <AdUnit slot="9844142257" format="horizontal" />
