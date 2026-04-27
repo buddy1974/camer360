@@ -37,37 +37,59 @@ export function ArticleCard({ article, variant = 'default', priority = false, in
         className="card-editorial group block"
         style={{ animationDelay: index ? `${index * 60}ms` : undefined }}
       >
-        <div className="relative aspect-[4/5] overflow-hidden bg-onyx">
+        {/* aspect-ratio: 4/5 — consistent height across all cards */}
+        <div style={{ position: 'relative', aspectRatio: '4/5', overflow: 'hidden', background: 'hsl(20 14% 8%)' }}>
+
+          {/* Image */}
           {src ? (
             <img src={src} alt={article.title} loading="lazy"
-              className="h-full w-full object-cover" />
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
           ) : (
-            <div className="h-full w-full bg-gradient-onyx flex items-center justify-center">
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, hsl(20 14% 8%), hsl(220 14% 4%))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ color: 'rgba(212,175,55,0.15)', fontSize: '3rem', fontWeight: 900 }}>
                 {article.category.name.charAt(0)}
               </span>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-card-overlay" />
-          {/* Category chip */}
-          <div className="absolute left-4 top-4 inline-flex items-center bg-ivory/95 backdrop-blur-sm px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-onyx">
+
+          {/* Category chip — top left */}
+          <div style={{ position: 'absolute', left: '14px', top: '14px', background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(4px)', padding: '4px 10px', fontFamily: 'var(--font-mono)', fontSize: '9px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: 'hsl(20 14% 8%)' }}>
             {article.category.name}
           </div>
-          {/* Read time */}
-          <div className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-onyx/70 backdrop-blur-sm px-3 py-1.5 text-[10px] font-medium text-ivory">
+
+          {/* Read time — top right */}
+          <div style={{ position: 'absolute', right: '14px', top: '14px', background: 'rgba(0,0,0,0.62)', backdropFilter: 'blur(4px)', borderRadius: '999px', padding: '4px 10px', fontSize: '10px', fontWeight: 500, color: '#F5F5F0', display: 'flex', alignItems: 'center', gap: '4px' }}>
             <Clock className="h-3 w-3" /> {mins} min
           </div>
-          {/* Bottom content */}
-          <div className="absolute inset-x-0 bottom-0 p-5 md:p-6 text-ivory">
-            <h3 className="font-display text-xl md:text-2xl leading-tight font-semibold line-clamp-3">
+
+          {/* Overlay — flex column, content pushed UP from bottom */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
+            padding: '20px',
+            paddingBottom: '28px',
+            background: 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 55%, transparent 100%)',
+          }}>
+            {/* Title */}
+            <h3 style={{ marginBottom: '6px', fontFamily: 'var(--font-display)', fontSize: 'clamp(1rem, 2vw, 1.25rem)', fontWeight: 600, lineHeight: 1.25, color: '#ffffff', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
               {article.title}
             </h3>
+
+            {/* Excerpt */}
             {article.excerpt && (
-              <p className="mt-2 text-sm text-ivory/70 line-clamp-2">{article.excerpt}</p>
+              <p style={{ marginBottom: '8px', fontSize: '12px', lineHeight: 1.5, color: 'rgba(255,255,255,0.72)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                {article.excerpt}
+              </p>
             )}
-            <div className="mt-4 flex items-center justify-between text-[11px] uppercase tracking-[0.16em] text-ivory/60">
+
+            {/* Meta line */}
+            <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.14em', color: 'rgba(255,255,255,0.5)' }}>
               <span>{article.author?.name || 'News Team'}</span>
-              <span className="inline-flex items-center gap-1.5 text-gold opacity-0 -translate-x-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-x-0">
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'hsl(var(--gold))', opacity: 0, transform: 'translateX(-6px)', transition: 'all 0.4s ease' }}
+                className="group-hover:opacity-100 group-hover:translate-x-0">
                 Read <ArrowUpRight className="h-3 w-3" />
               </span>
             </div>

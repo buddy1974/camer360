@@ -37,7 +37,7 @@ export default async function HomePage() {
     ;[featured, latest, mostRead, allCats, breaking] = await Promise.all([
       getFeaturedArticles(7),
       getLatestArticles(18),
-      getMostRead(6),
+      getMostRead(8),
       getAllCategories(),
       getBreakingNews(5),
     ])
@@ -76,7 +76,7 @@ export default async function HomePage() {
         <PremiumHero featured={featured} />
 
         {/* ── Latest Stories + Trending Sidebar ── */}
-        <section className="bg-background py-16 lg:py-24">
+        <section className="bg-background" style={{ paddingTop: '64px', paddingBottom: '64px', overflow: 'visible' }}>
           <div className="page-container">
             {/* Section header */}
             <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-10">
@@ -104,9 +104,9 @@ export default async function HomePage() {
                   <ArticleCard key={a.id} article={a} variant="editorial" index={i} />
                 ))}
               </div>
-              {/* Trending sidebar — hidden on mobile */}
+              {/* Trending sidebar — sticky below header */}
               <div className="hidden lg:block">
-                <div className="sticky" style={{ top: '7rem' }}>
+                <div style={{ position: 'sticky', top: '100px' }}>
                   <TrendingSidebar articles={mostRead} />
                 </div>
               </div>
@@ -119,7 +119,7 @@ export default async function HomePage() {
 
         {/* ── Category section rails ── */}
         {filledCategoryRows.slice(0, 3).map(row => (
-          <section key={row.slug} className="bg-background py-16 lg:py-24 border-t border-border">
+          <section key={row.slug} className="bg-background border-t border-border" style={{ paddingTop: '64px', paddingBottom: '64px', overflow: 'visible' }}>
             <div className="page-container">
               <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-10 lg:mb-14">
                 <div className="max-w-2xl">
@@ -144,12 +144,14 @@ export default async function HomePage() {
           </section>
         ))}
 
-        {/* ── Newsletter conversion ── */}
-        <NewsletterSection />
+        {/* ── Newsletter conversion (80px top + bottom breathing room) ── */}
+        <div style={{ marginTop: '80px', marginBottom: '80px' }}>
+          <NewsletterSection />
+        </div>
 
         {/* ── More category rails ── */}
         {filledCategoryRows.slice(3).map(row => (
-          <section key={row.slug} className="bg-background py-16 lg:py-24 border-t border-border">
+          <section key={row.slug} className="bg-background border-t border-border" style={{ paddingTop: '64px', paddingBottom: '64px', overflow: 'visible' }}>
             <div className="page-container">
               <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-10 lg:mb-14">
                 <div>
@@ -173,6 +175,9 @@ export default async function HomePage() {
             </div>
           </section>
         ))}
+
+        {/* Bottom buffer before footer */}
+        <div style={{ height: '32px' }} />
 
       </main>
 

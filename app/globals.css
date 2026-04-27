@@ -174,25 +174,27 @@ body {
   display: block;
 }
 
-/* Latest stories: articles + trending sidebar */
+/* Latest stories: articles left + trending sidebar right (sticky) */
 .latest-stories-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 2rem;
-  align-items: start;
+  gap: 24px;
+  align-items: start;    /* required for position:sticky to work in grid */
+  overflow: visible;     /* never clip sticky children */
 }
 @media (min-width: 1024px) {
   .latest-stories-grid {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-    gap: 3rem;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 40px;
   }
 }
 
-/* Card grid: 1 col → 2 col → 3 col */
+/* Card grid: 1 col → 2 col */
 .cards-grid-2 {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 1.5rem;
+  gap: 24px;
+  overflow: visible;
 }
 @media (min-width: 640px) {
   .cards-grid-2 {
@@ -200,10 +202,12 @@ body {
   }
 }
 
+/* Card grid: 1 col → 2 col → 3 col */
 .cards-grid-3 {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 1.5rem;
+  gap: 24px;
+  overflow: visible;
 }
 @media (min-width: 640px) {
   .cards-grid-3 {
@@ -213,7 +217,6 @@ body {
 @media (min-width: 1024px) {
   .cards-grid-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 2rem;
   }
 }
 

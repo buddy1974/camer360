@@ -5,32 +5,63 @@ import type { ArticleWithRelations } from '@/lib/types'
 interface Props { articles: ArticleWithRelations[] }
 
 export function TrendingSidebar({ articles }: Props) {
-  const items = articles.slice(0, 5)
+  const items = articles.slice(0, 8)
   if (!items.length) return null
 
   return (
-    <aside className="border border-border bg-white p-6 lg:p-8 shadow-soft">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-gold shrink-0">
-          <Flame className="h-4 w-4 text-onyx" />
+    <aside style={{ border: '1px solid hsl(30 12% 88%)', background: '#ffffff', padding: '24px', boxShadow: '0 10px 30px -10px hsla(20,14%,4%,0.1)' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', height: '36px', width: '36px', alignItems: 'center', justifyContent: 'center', borderRadius: '999px', background: 'var(--gradient-gold)', flexShrink: 0 }}>
+          <Flame style={{ height: '16px', width: '16px', color: 'hsl(20 14% 8%)' }} />
         </div>
         <div>
-          <div className="eyebrow text-gold-deep">Trending Now</div>
-          <div className="font-display text-xl font-semibold leading-none mt-1">This Week&#39;s Most Read</div>
+          <div className="eyebrow text-gold-deep" style={{ fontSize: '10px' }}>Trending Now</div>
+          <div className="font-display" style={{ fontSize: '16px', fontWeight: 700, lineHeight: 1.1, marginTop: '2px' }}>
+            This Week&rsquo;s Most Read
+          </div>
         </div>
       </div>
-      <ol className="space-y-5">
+
+      {/* 8 items */}
+      <ol style={{ listStyle: 'none', margin: 0, padding: 0 }}>
         {items.map((a, i) => (
-          <li key={a.id}>
-            <Link href={`/${a.category.slug}/${a.slug}`} className="group flex gap-4">
-              <span className="font-display text-4xl font-bold leading-none text-gold/60 group-hover:text-gold transition-colors w-10 shrink-0">
+          <li
+            key={a.id}
+            style={{
+              padding: '10px 0',
+              borderBottom: i < items.length - 1 ? '1px solid hsl(30 12% 88%)' : 'none',
+            }}
+          >
+            <Link
+              href={`/${a.category.slug}/${a.slug}`}
+              style={{ display: 'flex', gap: '14px', textDecoration: 'none', alignItems: 'flex-start' }}
+              className="group"
+            >
+              {/* Number */}
+              <span style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '28px',
+                fontWeight: 700,
+                lineHeight: 1,
+                color: 'hsl(var(--gold) / 0.55)',
+                width: '36px',
+                flexShrink: 0,
+                transition: 'color 0.2s',
+              }} className="group-hover:text-gold">
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <span className="block text-[15px] leading-snug font-medium group-hover:text-gold-deep transition-colors">
+              {/* Title */}
+              <span style={{
+                fontSize: '14px',
+                fontWeight: 500,
+                lineHeight: 1.45,
+                color: 'hsl(20 14% 8%)',
+                transition: 'color 0.2s',
+              }} className="group-hover:text-gold-deep">
                 {a.title}
               </span>
             </Link>
-            {i < items.length - 1 && <div className="mt-5 h-px bg-border" />}
           </li>
         ))}
       </ol>
