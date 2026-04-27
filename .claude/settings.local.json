@@ -63,7 +63,19 @@
       "Bash(sed -i 's/process\\\\.env\\\\.NEON_DATABASE_URL/process.env.QUEUE_NEON_URL ?? process.env.NEON_DATABASE_URL/g' app/api/n8n/debug-neon/route.ts)",
       "Bash(xargs ls *)",
       "Bash(grep -v \"^$\")",
-      "Bash(vercel inspect *)"
+      "Bash(vercel inspect *)",
+      "Bash(find \"C:\\\\\\\\Users\\\\\\\\loneb\\\\\\\\Documents\\\\\\\\ai-software-dev\" -maxdepth 3 -type d)",
+      "Bash(ls -la \"C:\\\\\\\\Users\\\\\\\\loneb\\\\\\\\Documents\\\\\\\\ai-software-dev\\\\\\\\projects\\\\\\\\\")",
+      "Bash(ls -la \"C:\\\\\\\\Users\\\\\\\\loneb\\\\\\\\.claude\\\\\\\\\")",
+      "Bash(find C:\\\\\\\\Users\\\\\\\\loneb\\\\\\\\Documents\\\\\\\\ai-software-dev *)",
+      "Bash(find C:\\\\\\\\Users\\\\\\\\loneb *)",
+      "Bash(find *)",
+      "Bash(ls -1 \"C:\\\\\\\\Users\\\\\\\\loneb\\\\\\\\Documents\\\\\\\\ai-software-dev\\\\\\\\projects\\\\\\\\\")",
+      "Bash(grep -ri \"repairs\" \"C:\\\\\\\\Users\\\\\\\\loneb\\\\\\\\Documents\\\\\\\\ai-software-dev\\\\\\\\projects\" --include=\"package.json\")",
+      "Bash(ls -1 \"C:\\\\\\\\Users\\\\\\\\loneb\\\\\\\\Documents\\\\\\\\ai-software-dev\\\\\\\\_infrastructure\\\\\\\\\")",
+      "Bash(grep -r \"repairs\" \"C:\\\\\\\\Users\\\\\\\\loneb\\\\\\\\Documents\\\\\\\\ai-software-dev\\\\\\\\projects\" --include=\"README.md\")",
+      "Bash(ls -la \"C:\\\\\\\\Users\\\\\\\\loneb\\\\\\\\Documents\\\\\\\\ai-software-dev\\\\\\\\projects\\\\\\\\handwerker\\\\\\\\\")",
+      "WebFetch(domain:id-preview--f4fa8dc5-d4c5-4040-bb4e-193fc315a155.lovable.app)"
     ]
   }
 }
