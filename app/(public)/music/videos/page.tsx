@@ -56,7 +56,8 @@ export default async function MusicVideosPage({ searchParams }: { searchParams: 
           videos = await searchVideos(preset.q, 12, preset.regions[0])
         }
       }
-    } catch {
+    } catch (err) {
+      console.error('[/music/videos] YouTube API error:', err)
       // fall through to fallback
     }
   }
