@@ -84,6 +84,45 @@ export default async function HomePage() {
         {/* ── Cinematic hero ── */}
         <PremiumHero featured={featured} />
 
+        {/* ── Trending Music Strip ── */}
+        <section className="bg-onyx border-y border-ivory/10">
+          <div className="max-w-[1440px] mx-auto px-5 lg:px-8 py-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="eyebrow text-gold flex items-center gap-2">
+                🔥 TRENDING MUSIC THIS WEEK
+              </div>
+              <Link href="/music/afrobeats"
+                className="text-xs text-gold hover:underline tracking-widest uppercase">
+                See full chart →
+              </Link>
+            </div>
+            <div className="flex gap-4 overflow-x-auto pb-2 lg:grid lg:grid-cols-4 lg:overflow-visible">
+              {chartDrops.map((drop, i) => (
+                <Link key={drop.id} href="/music/afrobeats"
+                  className="flex items-center gap-3 bg-ivory/5 hover:bg-ivory/10 transition-colors p-4 rounded-lg shrink-0 w-64 lg:w-auto">
+                  <span className="font-display text-3xl font-bold text-gold/50 w-10 shrink-0 leading-none">
+                    {String(drop.chartPosition ?? i + 1).padStart(2, '0')}
+                  </span>
+                  <div className="min-w-0">
+                    <div className="font-semibold text-ivory text-sm leading-snug truncate">
+                      {drop.title}
+                    </div>
+                    <div className="text-gold text-xs mt-0.5 truncate">
+                      {drop.artist}
+                    </div>
+                  </div>
+                  <span className="ml-auto text-ivory/20 text-lg shrink-0">🎵</span>
+                </Link>
+              ))}
+              {chartDrops.length === 0 && (
+                <p className="text-ivory/30 text-sm col-span-4">
+                  Chart loading — seed at /api/admin/db/seed-music-drops
+                </p>
+              )}
+            </div>
+          </div>
+        </section>
+
         {/* ── Latest Stories + Trending Sidebar ── */}
         <section className="bg-background" style={{ paddingTop: '64px', paddingBottom: '64px', overflow: 'visible' }}>
           <div className="page-container">
