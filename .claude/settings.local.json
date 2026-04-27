@@ -75,7 +75,8 @@
       "Bash(ls -1 \"C:\\\\\\\\Users\\\\\\\\loneb\\\\\\\\Documents\\\\\\\\ai-software-dev\\\\\\\\_infrastructure\\\\\\\\\")",
       "Bash(grep -r \"repairs\" \"C:\\\\\\\\Users\\\\\\\\loneb\\\\\\\\Documents\\\\\\\\ai-software-dev\\\\\\\\projects\" --include=\"README.md\")",
       "Bash(ls -la \"C:\\\\\\\\Users\\\\\\\\loneb\\\\\\\\Documents\\\\\\\\ai-software-dev\\\\\\\\projects\\\\\\\\handwerker\\\\\\\\\")",
-      "WebFetch(domain:id-preview--f4fa8dc5-d4c5-4040-bb4e-193fc315a155.lovable.app)"
+      "WebFetch(domain:id-preview--f4fa8dc5-d4c5-4040-bb4e-193fc315a155.lovable.app)",
+      "Bash(gh run *)"
     ]
   }
 }

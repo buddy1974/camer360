@@ -43,7 +43,7 @@ export function Footer() {
       {/* Gold top accent */}
       <div className="h-[2px] bg-gradient-gold" />
 
-      <div className="max-w-[1440px] mx-auto px-5 lg:px-8 py-16 lg:py-20">
+      <div className="page-container py-16 lg:py-20">
         <div className="grid grid-cols-2 lg:grid-cols-12 gap-10">
 
           {/* ── Brand column ── */}

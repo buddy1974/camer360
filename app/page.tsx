@@ -77,7 +77,7 @@ export default async function HomePage() {
 
         {/* ── Latest Stories + Trending Sidebar ── */}
         <section className="bg-background py-16 lg:py-24">
-          <div className="max-w-[1440px] mx-auto px-5 lg:px-8">
+          <div className="page-container">
             {/* Section header */}
             <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-10">
               <div>
@@ -97,16 +97,16 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-              {/* Cards grid */}
-              <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
+            <div className="latest-stories-grid">
+              {/* Cards: 2-col grid */}
+              <div className="cards-grid-2">
                 {latest.slice(0, 6).map((a, i) => (
                   <ArticleCard key={a.id} article={a} variant="editorial" index={i} />
                 ))}
               </div>
-              {/* Sticky sidebar */}
-              <div className="lg:col-span-4">
-                <div className="lg:sticky lg:top-28">
+              {/* Trending sidebar — hidden on mobile */}
+              <div className="hidden lg:block">
+                <div className="sticky" style={{ top: '7rem' }}>
                   <TrendingSidebar articles={mostRead} />
                 </div>
               </div>
@@ -120,7 +120,7 @@ export default async function HomePage() {
         {/* ── Category section rails ── */}
         {filledCategoryRows.slice(0, 3).map(row => (
           <section key={row.slug} className="bg-background py-16 lg:py-24 border-t border-border">
-            <div className="max-w-[1440px] mx-auto px-5 lg:px-8">
+            <div className="page-container">
               <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-10 lg:mb-14">
                 <div className="max-w-2xl">
                   <div className="eyebrow text-gold mb-3 flex items-center gap-3">
@@ -135,7 +135,7 @@ export default async function HomePage() {
                   See all stories <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              <div className="cards-grid-3">
                 {row.articles.slice(0, 3).map((a, i) => (
                   <ArticleCard key={a.id} article={a} variant="editorial" index={i} />
                 ))}
@@ -150,7 +150,7 @@ export default async function HomePage() {
         {/* ── More category rails ── */}
         {filledCategoryRows.slice(3).map(row => (
           <section key={row.slug} className="bg-background py-16 lg:py-24 border-t border-border">
-            <div className="max-w-[1440px] mx-auto px-5 lg:px-8">
+            <div className="page-container">
               <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-10 lg:mb-14">
                 <div>
                   <div className="eyebrow text-gold mb-3 flex items-center gap-3">
@@ -165,7 +165,7 @@ export default async function HomePage() {
                   See all <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              <div className="cards-grid-3">
                 {row.articles.slice(0, 3).map((a, i) => (
                   <ArticleCard key={a.id} article={a} variant="editorial" index={i} />
                 ))}

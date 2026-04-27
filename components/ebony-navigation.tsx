@@ -26,7 +26,7 @@ export default function EbonyNavigation() {
         boxShadow:     scrolled ? '0 4px 24px rgba(0,0,0,0.4)' : 'none',
       }}
     >
-      <div className="max-w-[1440px] mx-auto px-5 lg:px-8 flex items-center justify-between gap-6 py-4 lg:py-5">
+      <div className="page-container flex items-center justify-between gap-6 py-4 lg:py-5">
 
         {/* ── Logo ── */}
         <Link href="/" className="flex items-center gap-3 group" aria-label="Camer360 home">
@@ -85,7 +85,7 @@ export default function EbonyNavigation() {
       {/* ── Mobile drawer ── */}
       {open && (
         <div className="lg:hidden border-t border-ivory/10 bg-onyx-deep/95 backdrop-blur-xl animate-fade-in">
-          <nav className="max-w-[1440px] mx-auto px-5 flex flex-col py-4">
+          <nav className="page-container flex flex-col py-4">
             {NAV_CATEGORIES.map(c => (
               <Link
                 key={c.slug}

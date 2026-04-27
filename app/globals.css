@@ -109,9 +109,21 @@
   --ring:               41 65% 52%;
 }
 
-/* ─── Reset ──────────────────────────────────────────────────── */
+/* ─── Reset + overflow containment ──────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; overflow-x: hidden; }
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+html { scroll-behavior: smooth; }
+
+/* Prevent Next.js root from escaping viewport */
+#__next,
+body > div { max-width: 100%; }
 
 body {
   background: var(--luxury-bg);
@@ -119,8 +131,90 @@ body {
   font-family: var(--font-sans);
   font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
   line-height: 1.6;
+}
+
+/* ─── Page container — single source of truth for centered layout ── */
+.page-container {
+  width: min(100% - 2.5rem, 1440px);
+  margin-inline: auto;
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    width: min(100% - 1.25rem, 100%);
+  }
+}
+
+/* Hero inner grid */
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr);
+    gap: 2.5rem;
+  }
+}
+
+/* Card containment — never exceed parent width */
+.card-editorial,
+.article-card {
+  width: 100%;
+  max-width: 100%;
+}
+.card-editorial img,
+.article-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Latest stories: articles + trending sidebar */
+.latest-stories-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+@media (min-width: 1024px) {
+  .latest-stories-grid {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 3rem;
+  }
+}
+
+/* Card grid: 1 col → 2 col → 3 col */
+.cards-grid-2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+}
+@media (min-width: 640px) {
+  .cards-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.cards-grid-3 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+}
+@media (min-width: 640px) {
+  .cards-grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .cards-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
 }
 
 /* ─── Selection ──────────────────────────────────────────────── */

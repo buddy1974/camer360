@@ -1,7 +1,7 @@
 export function EditorQuote() {
   return (
     <section className="bg-secondary/60 border-y border-border">
-      <div className="max-w-[1440px] mx-auto px-5 lg:px-8 py-20 lg:py-28 text-center">
+      <div className="page-container py-20 lg:py-28 text-center">
         <div className="eyebrow text-gold mb-6 flex items-center justify-center gap-3">
           <span className="gold-rule" /> Editor&#39;s Note <span className="gold-rule" />
         </div>
