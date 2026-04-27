@@ -195,7 +195,7 @@ export async function ArticlePageContent({ article, related }: Props) {
 
             <PerspectiveEngine articleId={article.id} title={article.title} excerpt={article.excerpt ?? undefined} />
 
-            <div style={{ background: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '0 24px', margin: '32px 0', boxShadow: 'var(--shadow-card)' }}>
+            <div className="share-wrapper" style={{ background: 'white', border: '1px solid var(--border-light)', borderRadius: '12px', padding: '0 24px', margin: '32px 0', boxShadow: 'var(--shadow-card)' }}>
               <ShareButtons title={article.title} categorySlug={article.category.slug} slug={article.slug} />
             </div>
 

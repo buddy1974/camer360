@@ -1347,8 +1347,10 @@ h1, h2, h3, h4, h5 {
   font-size: 1.125rem;
   line-height: 1.8;
   color: hsl(var(--foreground) / 0.85);
+  max-width: 720px;
+  margin-inline: auto;
 }
-.prose-editorial p  { margin-bottom: 1.75rem; }
+.prose-editorial p  { margin-bottom: 1.9rem; }
 .prose-editorial h2 {
   font-family: var(--font-display), Georgia, serif;
   font-size: clamp(1.875rem, 3vw, 2.25rem);
@@ -1367,15 +1369,28 @@ h1, h2, h3, h4, h5 {
   letter-spacing: -0.02em;
 }
 .prose-editorial blockquote {
-  margin: 3rem 0;
+  position: relative;
+  margin: 4rem 0;
   padding-left: 1.5rem;
   border-left: 3px solid hsl(var(--gold));
   font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(1.6rem, 2.5vw, 2rem);
+  font-size: clamp(1.7rem, 2.5vw, 2.1rem);
   font-style: italic;
   line-height: 1.3;
   color: hsl(var(--foreground));
-  max-width: 800px;
+  max-width: 720px;
+}
+.prose-editorial blockquote::before {
+  content: "\201C";
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 3rem;
+  font-style: normal;
+  color: hsl(var(--gold));
+  position: absolute;
+  left: -4px;
+  top: -0.5rem;
+  opacity: 0.5;
+  line-height: 1;
 }
 .prose-editorial blockquote p { margin: 0; }
 .prose-editorial p + blockquote { margin-top: 2.5rem; }
@@ -1390,6 +1405,12 @@ h1, h2, h3, h4, h5 {
 .prose-editorial ul, .prose-editorial ol { padding-left: 1.5rem; margin-bottom: 1.75rem; }
 .prose-editorial li { margin-bottom: 0.5rem; }
 .prose-editorial img { width: 100%; border-radius: var(--radius); margin: 1.5rem 0; display: block; }
+
+/* Share bar — aligned to left of article column */
+.share-wrapper {
+  position: relative;
+  left: -60px;
+}
 
 /* Gold shimmer on hover */
 .shimmer-on-hover {
@@ -1454,7 +1475,8 @@ h1, h2, h3, h4, h5 {
   font-weight: 600;
   line-height: 0.85;
   float: left;
-  margin-right: 0.6rem;
+  vertical-align: top;
+  margin-right: 0.5rem;
   margin-top: 0.2rem;
   color: hsl(var(--gold));
 }
