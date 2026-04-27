@@ -147,8 +147,8 @@ export default async function HomePage() {
             <Link href="/music/afrobeats" style={{ fontSize: '0.6rem', fontWeight: 700, color: '#D4AF37', textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Full chart →</Link>
           </div>
           {chartDrops.length > 0 ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px' }}>
-              {chartDrops.slice(0, 4).map((drop, i) => (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '14px' }}>
+              {chartDrops.slice(0, 5).map((drop, i) => (
                 <Link key={drop.id} href="/music/afrobeats" style={{ textDecoration: 'none', display: 'block' }}>
                   <div style={{ background: '#111', border: '1px solid #1E1E1E', borderRadius: '12px', overflow: 'hidden', position: 'relative', transition: 'border-color 0.2s' }}>
                     <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 1, background: '#D4AF37', color: '#0A0A0A', fontSize: '0.6rem', fontWeight: 900, width: '22px', height: '22px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -171,7 +171,7 @@ export default async function HomePage() {
             </div>
           ) : (
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              {[1, 2, 3, 4].map(n => (
+              {[1, 2, 3, 4, 5].map(n => (
                 <div key={n} style={{ flex: 1, minWidth: '120px', background: '#111', border: '1px solid #1E1E1E', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <span style={{ fontWeight: 900, fontSize: '1.4rem', color: '#D4AF37', opacity: 0.3 }}>{String(n).padStart(2, '0')}</span>
                   <div style={{ flex: 1 }}>
