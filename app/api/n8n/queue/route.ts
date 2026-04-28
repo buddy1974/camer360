@@ -64,7 +64,14 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json(rows)
+  // Return items with status reflected as 'processing' (accurate post-update state).
+  // Strip internal resilience columns so the n8n workflow sees the same shape it was built against.
+  const payload = rows.map(({ retryCount: _r, lastError: _l, processingStartedAt: _p, ...rest }) => ({
+    ...rest,
+    status: 'processing' as const,
+  }))
+
+  return NextResponse.json(payload)
 }
 
 // PATCH /api/n8n/queue — mark items as processed or rejected
