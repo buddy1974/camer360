@@ -35,6 +35,17 @@ export async function POST(req: NextRequest) {
     }, { status: 400 })
   }
 
+  // Word count gate — reject short AI output before it hits the DB
+  const wordCount = (articleBody as string).trim().split(/\s+/).filter(Boolean).length
+  if (wordCount < 300) {
+    return NextResponse.json({
+      ok: false,
+      reason: 'content_too_short',
+      word_count: wordCount,
+      minimum: 300,
+    }, { status: 422 })
+  }
+
   try {
     // Resolve category — exact slug first, fall back to celebrities
     let [cat] = await db.select({ id: categories.id })

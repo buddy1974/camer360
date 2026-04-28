@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     const selectedModel = model === 'fast' ? MODEL_FAST : MODEL_QUALITY;
     const message = await openai.chat.completions.create({
       model: selectedModel,
-      max_tokens: 2000,
+      max_tokens: 4000,
       messages: [
         { role: 'system', content: system },
         { role: 'user', content: user },

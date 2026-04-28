@@ -7,10 +7,10 @@ export const metadata: Metadata = {
 }
 
 const EMAILS = [
-  { icon: '✉️', title: 'General Inquiries',  email: 'info@camer360.com',  desc: 'Questions, partnerships, general contact' },
-  { icon: '📰', title: 'News & Story Tips',   email: 'tips@camer360.com',  desc: 'Breaking news, exclusive stories, tips' },
-  { icon: '📢', title: 'Advertising',          email: 'ads@camer360.com',   desc: 'Ad placements, sponsorships, partnerships' },
-  { icon: '⚖️', title: 'Legal & Corrections',  email: 'info@camer360.com',  desc: 'Corrections, takedown requests, legal matters' },
+  { icon: '✉️', title: 'General Inquiries',  email: 'info@camer360.com',        desc: 'Questions, partnerships, general contact' },
+  { icon: '📰', title: 'Editorial',           email: 'editorial@camer360.com',   desc: 'Story tips, press releases, editorial enquiries' },
+  { icon: '📢', title: 'Advertising',          email: 'advertise@camer360.com',   desc: 'Ad placements, sponsorships, partnerships' },
+  { icon: '⚖️', title: 'Legal & Corrections',  email: 'info@camer360.com',        desc: 'Corrections, takedown requests, legal matters' },
 ]
 
 export default function ContactPage() {
