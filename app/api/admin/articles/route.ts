@@ -59,9 +59,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   // Auth: API key (n8n / automation) or JWT cookie (admin UI)
   const apiKey = req.headers.get('x-api-key')
-  if (apiKey && apiKey === process.env.NEXT_PUBLIC_AUTOMATION_API_KEY) {
-    // authenticated via API key — continue
-  } else {
+  const isAutomation = !!(apiKey && apiKey === (process.env.AUTOMATION_API_KEY ?? process.env.NEXT_PUBLIC_AUTOMATION_API_KEY))
+  if (!isAutomation) {
     const cookieStore = await cookies()
     const token = cookieStore.get('admin_token')?.value
     const admin = token ? await verifyToken(token) : null
@@ -88,6 +87,9 @@ export async function POST(req: NextRequest) {
     !!url && BLOCKED_IMAGE_HOSTS.some(h => url.includes(h))
   if (isBadImage(body.featuredImage)) body.featuredImage = undefined
 
+  // Automation (API key) must always land as draft — never auto-publish AI content
+  const effectiveStatus = isAutomation ? 'draft' : (body.status as 'draft' | 'published')
+
   const now = new Date()
   const result = await db.insert(articles).values({
     title:         body.title,
@@ -96,14 +98,14 @@ export async function POST(req: NextRequest) {
     excerpt:       body.excerpt || null,
     categoryId:    body.categoryId,
     featuredImage: body.featuredImage || null,
-    status:        body.status as 'draft' | 'published',
+    status:        effectiveStatus,
     isBreaking:    body.isBreaking || false,
     isFeatured:    body.isFeatured || false,
     metaTitle:     body.metaTitle || null,
     metaDesc:      body.metaDesc || null,
     authorId:      body.authorId || null,
     country:       body.country || null,
-    publishedAt:   body.status === 'published' ? now : null,
+    publishedAt:   effectiveStatus === 'published' ? now : null,
     createdAt:     now,
     updatedAt:     now,
   }).$returningId()
@@ -112,8 +114,8 @@ export async function POST(req: NextRequest) {
 
   revalidateTag('articles', {})
 
-  // Fire-and-forget social post for published articles
-  if (body.status === 'published') {
+  // Fire-and-forget social post for published articles (human-published only)
+  if (effectiveStatus === 'published') {
     const cat = await db.select({ slug: categories.slug, name: categories.name })
       .from(categories).where(eq(categories.id, body.categoryId)).limit(1)
     if (cat[0]) {
