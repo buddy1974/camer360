@@ -178,6 +178,42 @@ export async function GET(req: NextRequest) {
     report.articles = `ERROR: ${err.message}`
   }
 
+  // ── 5. AI-generated articles status breakdown ─────────────────────────────
+  try {
+    const aiStats = await db
+      .select({
+        status: articles.status,
+        n:      sql<number>`COUNT(*)`,
+      })
+      .from(articles)
+      .where(eq(articles.aiGenerated, true))
+      .groupBy(articles.status)
+
+    const recent = await db
+      .select({
+        id:        articles.id,
+        title:     articles.title,
+        status:    articles.status,
+        createdAt: articles.createdAt,
+      })
+      .from(articles)
+      .where(eq(articles.aiGenerated, true))
+      .orderBy(desc(articles.createdAt))
+      .limit(10)
+
+    report.aiArticles = {
+      byStatus: Object.fromEntries(aiStats.map(r => [r.status, Number(r.n)])),
+      recent:   recent.map(r => ({ id: r.id, status: r.status, createdAt: r.createdAt, title: r.title?.slice(0, 60) })),
+    }
+
+    const aiPublished = aiStats.find(r => r.status === 'published')
+    if (aiPublished && Number(aiPublished.n) > 0) {
+      issues.push(`WARNING: ${aiPublished.n} AI-generated article(s) are 'published' — expected 'draft'. Check n8n workflow for auto-publish step.`)
+    }
+  } catch (err: any) {
+    report.aiArticles = `ERROR: ${err.message}`
+  }
+
   const criticalCount = issues.filter(i => i.startsWith('CRITICAL')).length
   return NextResponse.json({
     ok: criticalCount === 0,
