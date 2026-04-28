@@ -55,6 +55,7 @@ export function buildSiteMetadata(): Metadata {
     },
     other: {
       'google-adsense-account': ADSENSE_ID,
+      'fb:app_id': '1647057299885455',
     },
   }
 }
@@ -62,7 +63,8 @@ export function buildSiteMetadata(): Metadata {
 export function buildArticleMetadata(article: ArticleWithRelations): Metadata {
   const title       = article.metaTitle  || truncate(article.title, 60)
   const description = article.metaDesc   || article.excerpt || SITE_DESCRIPTION
-  const image       = article.featuredImage || `${SITE_URL}/icons/og-default.jpg`
+  const rawImage    = article.featuredImage || `${SITE_URL}/icons/og-default.jpg`
+  const image       = rawImage.startsWith('http') ? rawImage : `${SITE_URL}${rawImage}`
   const url         = absoluteUrl(`/${article.category.slug}/${article.slug}`)
 
   return {
@@ -101,6 +103,9 @@ export function buildArticleMetadata(article: ArticleWithRelations): Metadata {
     },
     alternates: {
       canonical: url,
+    },
+    other: {
+      'fb:app_id': '1647057299885455',
     },
   }
 }
