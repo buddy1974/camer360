@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db/client'
 import { articles, categories, authors, articleHits } from '@/lib/db/schema'
-import { desc, eq, like, sql, and } from 'drizzle-orm'
+import { desc, eq, like, sql, and, inArray } from 'drizzle-orm'
 import { cookies } from 'next/headers'
 import { verifyToken } from '@/lib/auth'
 import { postArticleToSocial } from '@/server/lib/social'
@@ -87,6 +87,23 @@ export async function POST(req: NextRequest) {
     !!url && BLOCKED_IMAGE_HOSTS.some(h => url.includes(h))
   if (isBadImage(body.featuredImage)) body.featuredImage = undefined
 
+  // ── Duplicate guard for automation: reject if a draft with this exact title already exists ──
+  // This prevents the pipeline from creating 10 copies of the same story when queue items
+  // get re-picked (e.g. stuck reset loop due to missing processingStartedAt column).
+  if (isAutomation) {
+    const [existing] = await db
+      .select({ id: articles.id })
+      .from(articles)
+      .where(and(eq(articles.title, body.title), eq(articles.status, 'draft')))
+      .limit(1)
+    if (existing) {
+      return NextResponse.json(
+        { ok: false, error: 'duplicate_title', id: existing.id, message: 'Draft with this title already exists — skipped' },
+        { status: 409 }
+      )
+    }
+  }
+
   // Automation (API key) must always land as draft — never auto-publish AI content
   const effectiveStatus = isAutomation ? 'draft' : (body.status as 'draft' | 'published')
 
@@ -131,4 +148,41 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ ok: true, id: newId })
+}
+
+/**
+ * DELETE /api/admin/articles
+ * Bulk delete by IDs or by status.
+ * Body: { ids: number[] }  — delete specific articles
+ * Body: { status: 'draft' | 'archived' }  — delete all articles with that status
+ * Admin JWT cookie required.
+ */
+export async function DELETE(req: NextRequest) {
+  const cookieStore = await cookies()
+  const token = cookieStore.get('admin_token')?.value
+  const admin = token ? await verifyToken(token) : null
+  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const body = await req.json() as { ids?: number[]; status?: string }
+
+  if (body.ids && body.ids.length > 0) {
+    await db.delete(articles).where(inArray(articles.id, body.ids))
+    revalidateTag('articles', {})
+    return NextResponse.json({ ok: true, deleted: body.ids.length })
+  }
+
+  if (body.status && ['draft', 'archived'].includes(body.status)) {
+    const rows = await db
+      .select({ id: articles.id })
+      .from(articles)
+      .where(eq(articles.status, body.status as 'draft' | 'archived'))
+    const ids = rows.map(r => r.id)
+    if (ids.length > 0) {
+      await db.delete(articles).where(inArray(articles.id, ids))
+      revalidateTag('articles', {})
+    }
+    return NextResponse.json({ ok: true, deleted: ids.length })
+  }
+
+  return NextResponse.json({ error: 'Provide ids[] or status field' }, { status: 400 })
 }

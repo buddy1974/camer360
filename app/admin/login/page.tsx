@@ -38,10 +38,8 @@ export default function AdminLogin() {
         borderRadius: '16px', padding: '40px', width: '100%', maxWidth: '380px',
       }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fff' }}>
-            Cameroon<span style={{ color: '#C8102E' }}>Concord</span>
-          </div>
-          <p style={{ color: '#444', fontSize: '0.75rem', marginTop: '4px' }}>Admin Access</p>
+          <img src="/logo.png" alt="Camer360" style={{ height: '44px', objectFit: 'contain', marginBottom: '10px' }} />
+          <p style={{ color: '#444', fontSize: '0.72rem', marginTop: '0', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Admin Access</p>
         </div>
 
         <form onSubmit={handleSubmit}>

@@ -1,10 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 import { openai, MODEL_QUALITY, completionText } from '@/lib/ai/client'
+import { verifyToken } from '@/lib/auth'
 import { db } from '@/lib/db/client'
 import { authors } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 
 export async function POST(req: NextRequest) {
+  // Auth — must be logged-in admin
+  const cookieStore = await cookies()
+  const token = cookieStore.get('admin_token')?.value
+  const admin = token ? await verifyToken(token) : null
+  if (!admin) {
+    return NextResponse.json({ error: 'Session expired — please log in again' }, { status: 401 })
+  }
+
   const { title, body, type } = await req.json() as {
     title: string; body: string; type: 'meta' | 'excerpt' | 'full' | 'quick'
   }
@@ -73,16 +83,22 @@ Body: ${body}
 Return ONLY valid JSON. No markdown fences. No explanation.
 {"title":"...","meta_title":"...","meta_desc":"...","excerpt":"...","enhanced_body":"...","tiktok_script":"...","twitter_thread":["...","...","...","...","..."],"whatsapp_message":"...","facebook_post":"..."}`
 
-  const completion = await openai.chat.completions.create({
-    model:      MODEL_QUALITY,
-    max_tokens: type === 'quick' ? 4000 : 2000,
-    messages:   [{ role: 'user', content: prompt }],
-  })
-
-  const text = completionText(completion) || '{}'
   try {
+    const completion = await openai.chat.completions.create({
+      model:      MODEL_QUALITY,
+      max_tokens: type === 'quick' ? 4000 : 2000,
+      messages:   [{ role: 'user', content: prompt }],
+    })
+
+    const text = completionText(completion) || '{}'
     const clean  = text.replace(/```json|```/g, '').trim()
-    const parsed = JSON.parse(clean)
+    let parsed: Record<string, unknown>
+    try {
+      parsed = JSON.parse(clean)
+    } catch {
+      console.error('[ai/enhance] JSON parse failed. Raw:', text.slice(0, 400))
+      return NextResponse.json({ error: 'AI returned invalid JSON — try again' }, { status: 500 })
+    }
 
     if (type === 'full') {
       const authorSlugs = ['nkemdirim-tabi','ebot-ayuk','cynthia-mbah','fidelis-ngong','solange-achu','emeka-tambe','bridget-forjindam','ndong-eyong']
@@ -93,7 +109,10 @@ Return ONLY valid JSON. No markdown fences. No explanation.
     }
 
     return NextResponse.json(parsed)
-  } catch {
-    return NextResponse.json({ error: 'Parse failed', raw: text }, { status: 500 })
+  } catch (err: any) {
+    console.error('[ai/enhance] error:', err?.message ?? err)
+    const msg = err?.message ?? 'AI request failed'
+    const status = msg.includes('401') || msg.toLowerCase().includes('auth') ? 401 : 500
+    return NextResponse.json({ error: msg }, { status })
   }
 }
