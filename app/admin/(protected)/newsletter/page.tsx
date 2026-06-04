@@ -101,8 +101,8 @@ export default function NewsletterComposer() {
         <tr><td align="center" style="padding:20px">
           <table width="600" cellpadding="0" cellspacing="0">
             <tr><td style="background:#C8102E;padding:20px 24px;border-radius:8px 8px 0 0">
-              <a href="${SITE}" style="color:#fff;font-size:22px;font-weight:900;text-decoration:none">CAMEROON CONCORD</a>
-              <span style="color:rgba(255,255,255,0.7);font-size:12px;display:block;margin-top:2px">Independent Cameroon News</span>
+              <a href="${SITE}" style="color:#fff;font-size:22px;font-weight:900;text-decoration:none">CAMER360</a>
+              <span style="color:rgba(255,255,255,0.7);font-size:12px;display:block;margin-top:2px">West &amp; Central Africa&apos;s Premier Entertainment Magazine</span>
             </td></tr>
             <tr><td style="background:#1a1a1a;padding:24px;border-radius:0 0 8px 8px">
               ${intro ? `<p style="color:#ccc;font-size:15px;line-height:1.6;margin:0 0 24px;padding-bottom:24px;border-bottom:1px solid #333">${intro}</p>` : ''}

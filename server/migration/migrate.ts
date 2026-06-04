@@ -215,7 +215,7 @@ async function buildRedirects(src: mysql.Connection, dst: mysql.Connection) {
 
 async function main() {
   fs.writeFileSync(LOG_FILE, '')
-  log('═══ CONCORD MIGRATION START ═══')
+  log('═══ CAMER360 MIGRATION START ═══')
   let src: mysql.Connection | null = null
   let dst: mysql.Connection | null = null
   try {

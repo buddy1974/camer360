@@ -40,11 +40,11 @@ export default function MaintenancePage() {
     }}>
       <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
         <div style={{ fontSize: '2rem', fontWeight: 900, letterSpacing: '-0.04em', textTransform: 'uppercase' }}>
-          <span style={{ color: '#fff' }}>Cameroon</span>
-          <span style={{ color: '#C8102E' }}>Concord</span>
+          <span style={{ color: '#fff' }}>Camer</span>
+          <span style={{ color: '#C8102E' }}>360</span>
         </div>
         <p style={{ color: '#444', fontSize: '0.75rem', marginTop: '0.5rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-          Cameroon &amp; Southern Cameroons News
+          West &amp; Central Africa&apos;s Premier Entertainment Magazine
         </p>
       </div>
 

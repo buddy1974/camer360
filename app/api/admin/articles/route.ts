@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic'
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const page    = Math.max(1, parseInt(searchParams.get('page') || '1'))
-  const limit   = 20
+  const limit   = Math.min(Math.max(1, parseInt(searchParams.get('limit') || '20')), 500)
   const offset  = (page - 1) * limit
   const search  = searchParams.get('q') || ''
   const catSlug = searchParams.get('category') || ''
@@ -57,7 +57,6 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  // Auth: API key (n8n / automation) or JWT cookie (admin UI)
   const apiKey = req.headers.get('x-api-key')
   const isAutomation = !!(apiKey && apiKey === (process.env.AUTOMATION_API_KEY ?? process.env.NEXT_PUBLIC_AUTOMATION_API_KEY))
   if (!isAutomation) {
@@ -74,22 +73,14 @@ export async function POST(req: NextRequest) {
     authorId?: number | null; country?: string | null
   }
 
-  // Block low-quality or non-embeddable image sources
   const BLOCKED_IMAGE_HOSTS = [
-    'fbcdn.net',
-    'scontent.',
-    'encrypted-tbn0.gstatic.com',
-    'gstatic.com',
-    'images.euronews.com',
-    'euronews.com',
+    'fbcdn.net', 'scontent.', 'encrypted-tbn0.gstatic.com',
+    'gstatic.com', 'images.euronews.com', 'euronews.com',
   ]
   const isBadImage = (url?: string) =>
     !!url && BLOCKED_IMAGE_HOSTS.some(h => url.includes(h))
   if (isBadImage(body.featuredImage)) body.featuredImage = undefined
 
-  // ── Duplicate guard for automation: reject if a draft with this exact title already exists ──
-  // This prevents the pipeline from creating 10 copies of the same story when queue items
-  // get re-picked (e.g. stuck reset loop due to missing processingStartedAt column).
   if (isAutomation) {
     const [existing] = await db
       .select({ id: articles.id })
@@ -98,13 +89,12 @@ export async function POST(req: NextRequest) {
       .limit(1)
     if (existing) {
       return NextResponse.json(
-        { ok: false, error: 'duplicate_title', id: existing.id, message: 'Draft with this title already exists — skipped' },
+        { ok: false, error: 'duplicate_title', id: existing.id, message: 'Draft with this title already exists -- skipped' },
         { status: 409 }
       )
     }
   }
 
-  // Automation (API key) must always land as draft — never auto-publish AI content
   const effectiveStatus = isAutomation ? 'draft' : (body.status as 'draft' | 'published')
 
   const now = new Date()
@@ -131,7 +121,6 @@ export async function POST(req: NextRequest) {
 
   revalidateTag('articles', {})
 
-  // Fire-and-forget social post for published articles (human-published only)
   if (effectiveStatus === 'published') {
     const cat = await db.select({ slug: categories.slug, name: categories.name })
       .from(categories).where(eq(categories.id, body.categoryId)).limit(1)
@@ -150,13 +139,48 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ ok: true, id: newId })
 }
 
-/**
- * DELETE /api/admin/articles
- * Bulk delete by IDs or by status.
- * Body: { ids: number[] }  — delete specific articles
- * Body: { status: 'draft' | 'archived' }  — delete all articles with that status
- * Admin JWT cookie required.
- */
+type BulkStatus = 'draft' | 'published' | 'unpublished' | 'archived'
+
+function patchSet(s: BulkStatus, now: Date) {
+  return s === 'published'
+    ? ({ status: s, updatedAt: now, publishedAt: now } as const)
+    : ({ status: s, updatedAt: now } as const)
+}
+
+export async function PATCH(req: NextRequest) {
+  const cookieStore = await cookies()
+  const token = cookieStore.get('admin_token')?.value
+  const admin = token ? await verifyToken(token) : null
+  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const body = await req.json() as {
+    ids?: number[]; status?: BulkStatus
+    fromStatus?: BulkStatus; toStatus?: BulkStatus
+  }
+  const now = new Date()
+
+  if (body.ids && body.ids.length > 0 && body.status) {
+    await db.update(articles).set(patchSet(body.status, now)).where(inArray(articles.id, body.ids))
+    revalidateTag('articles', {})
+    return NextResponse.json({ ok: true, updated: body.ids.length })
+  }
+
+  if (body.fromStatus && body.toStatus) {
+    const rows = await db
+      .select({ id: articles.id })
+      .from(articles)
+      .where(eq(articles.status, body.fromStatus))
+    const ids = rows.map(r => r.id)
+    if (ids.length > 0) {
+      await db.update(articles).set(patchSet(body.toStatus, now)).where(inArray(articles.id, ids))
+      revalidateTag('articles', {})
+    }
+    return NextResponse.json({ ok: true, updated: ids.length })
+  }
+
+  return NextResponse.json({ error: 'Provide ids+status or fromStatus+toStatus' }, { status: 400 })
+}
+
 export async function DELETE(req: NextRequest) {
   const cookieStore = await cookies()
   const token = cookieStore.get('admin_token')?.value

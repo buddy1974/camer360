@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
   const { password } = await req.json() as { password: string }
-  const correct = process.env.MAINTENANCE_PASSWORD || 'concord2026'
+  const correct = process.env.MAINTENANCE_PASSWORD || 'camer360'
 
   if (password !== correct) {
     return NextResponse.json({ error: 'Wrong password' }, { status: 401 })

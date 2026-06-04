@@ -72,25 +72,20 @@ export default function ArticlesListPage() {
   async function bulkPublish() {
     if (!confirm(`Publish ${selectAllPages ? total : selectedIds.size} article(s)?`)) return
     setPublishing(true)
-    if (selectAllPages) {
-      // Fetch all draft IDs then publish
-      const res = await fetch(`/api/admin/articles?status=draft&page=1&limit=9999`, { credentials: 'include' })
-      const data = await res.json() as { articles: ArticleRow[] }
-      await Promise.all((data.articles ?? []).map(a =>
-        fetch(`/api/admin/articles/${a.id}`, {
-          method: 'PUT', credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'published' }),
-        })
-      ))
+    if (selectAllPages && statusFilter === 'draft') {
+      // Single DB call: publish every draft at once
+      await fetch('/api/admin/articles', {
+        method: 'PATCH', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fromStatus: 'draft', toStatus: 'published' }),
+      })
     } else {
-      await Promise.all([...selectedIds].map(id =>
-        fetch(`/api/admin/articles/${id}`, {
-          method: 'PUT', credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'published' }),
-        })
-      ))
+      // Bulk update selected IDs
+      await fetch('/api/admin/articles', {
+        method: 'PATCH', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: [...selectedIds], status: 'published' }),
+      })
     }
     setPublishing(false)
     setSelectedIds(new Set())
