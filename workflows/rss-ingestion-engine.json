@@ -86,7 +86,7 @@
         "specifyHeaders": "keypair",
         "headerParameters": {
           "parameters": [
-            { "name": "x-api-key",    "value": "={{ $env.AUTOMATION_API_KEY }}" },
+            { "name": "x-api-key",    "value": "={{ $env.CAMER360_AUTOMATION_API_KEY }}" },
             { "name": "Content-Type", "value": "application/json" }
           ]
         },
@@ -159,7 +159,7 @@
         "specifyHeaders": "keypair",
         "headerParameters": {
           "parameters": [
-            { "name": "x-api-key",    "value": "={{ $env.AUTOMATION_API_KEY }}" },
+            { "name": "x-api-key",    "value": "={{ $env.CAMER360_AUTOMATION_API_KEY }}" },
             { "name": "Content-Type", "value": "application/json" }
           ]
         },

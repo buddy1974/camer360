@@ -25,7 +25,7 @@ No secret values appear in this document.
 | 9 | AI Enhance changed the slug of existing articles | `ArticleEditor` | Slug only auto-derived for new articles | `article-fields.test.ts` (source assertion) |
 | 10 | **Machine-created HTML not sanitised** (rendered with `dangerouslySetInnerHTML`) | `POST /api/n8n/articles` | Same `sanitizeArticleBody()` as admin creation (embeds preserved; inline/unknown scripts, handlers, `javascript:` stripped) | `article-fields.test.ts` |
 | 11 | **Public AI endpoint = anonymous prompt proxy** (any title/body → OpenAI) | `POST /api/articles/perspectives` | Accepts only `articleId`; prompt built from the **published** article in the DB; result cached per article for 7 days (`unstable_cache`). The only caller (`PerspectiveEngine`, currently not rendered anywhere) sends `articleId`. | `routes.test.ts` |
-| 12 | Credentials in source control | `server/workers/telegram-session.txt`, Telegram `API_ID`/`API_HASH`, 6 `workflows/*.json` (old automation key ×17, Facebook page token ×1), `AUDIT-2026-05-03.md`, `scripts/full-pipeline-test.ts` (FB token), `scripts/seed-cameroon-articles.py` (key), worker/migration logs | Session + logs untracked (files stay on disk) and ignored; workflow values replaced with n8n expressions `={{ $env.AUTOMATION_API_KEY }}` / `={{ $env.FB_PAGE_TOKEN }}`; doc redacted; scripts read env; untracked `scripts/verify-key-rotation.mjs` and `scripts/check-live-bundle.mjs` (contain keys) added to `.gitignore` | `git grep` (no literal automation keys / FB tokens tracked) |
+| 12 | Credentials in source control | `server/workers/telegram-session.txt`, Telegram `API_ID`/`API_HASH`, 6 `workflows/*.json` (old automation key ×17, Facebook page token ×1), `AUDIT-2026-05-03.md`, `scripts/full-pipeline-test.ts` (FB token), `scripts/seed-cameroon-articles.py` (key), worker/migration logs | Session + logs untracked (files stay on disk) and ignored; workflow values replaced with n8n expressions `={{ $env.CAMER360_AUTOMATION_API_KEY }}` / `={{ $env.CAMER360_FB_PAGE_TOKEN }}` (Camer360-specific names: in the shared n8n instance `AUTOMATION_API_KEY` already holds the Cameroon Concord key); doc redacted; scripts read env; untracked `scripts/verify-key-rotation.mjs` and `scripts/check-live-bundle.mjs` (contain keys) added to `.gitignore` | `git grep` (no literal automation keys / FB tokens tracked) |
 
 ## 2. Route classification (after Stage 0)
 
@@ -170,9 +170,9 @@ Tests force dummy DB/JWT/key/OpenAI values, so no real database, credential or A
 ## 5. External owner actions
 
 1. **Revoke the Telegram session** (Telegram → Settings → Devices). Create new API credentials if the local worker is still needed (`TELEGRAM_API_ID`, `TELEGRAM_API_HASH` in `.env.local`).
-2. **Rotate the Facebook page token** that was committed in `workflows/facebook-auto-post.json` and `scripts/full-pipeline-test.ts`; store it as `FB_PAGE_TOKEN` in the n8n environment.
+2. **Rotate the Facebook page token** that was committed in `workflows/facebook-auto-post.json` and `scripts/full-pipeline-test.ts`; store it as `CAMER360_FB_PAGE_TOKEN` in the n8n environment (or an n8n credential).
 3. **Rotate `AUTOMATION_API_KEY`** if there is any doubt about the current value (the current key appears in the untracked `scripts/verify-key-rotation.mjs`). Keys labelled "old" in the repo must stay revoked.
-4. **n8n:** the live workflows are separate from these exports. If you re-import an export, the n8n instance must allow `$env` access (`N8N_BLOCK_ENV_ACCESS_IN_NODE=false`) and define `AUTOMATION_API_KEY` / `FB_PAGE_TOKEN` — or replace the expressions with n8n credentials.
+4. **n8n:** the live workflows are separate from these exports. If you re-import an export, the n8n instance must allow `$env` access (`N8N_BLOCK_ENV_ACCESS_IN_NODE=false`) and define `CAMER360_AUTOMATION_API_KEY` / `CAMER360_FB_PAGE_TOKEN` — or replace the expressions with n8n credentials.
 5. **Rotate `ADMIN_PASSWORD` and `JWT_SECRET`** (fallback values were public). Rotating `JWT_SECRET` logs out existing sessions.
 6. Decide on Git history clean-up (separate task).
 

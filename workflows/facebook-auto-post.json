@@ -20,7 +20,7 @@
         "specifyHeaders": "keypair",
         "headerParameters": {
           "parameters": [
-            { "name": "x-api-key", "value": "={{ $env.AUTOMATION_API_KEY }}" }
+            { "name": "x-api-key", "value": "={{ $env.CAMER360_AUTOMATION_API_KEY }}" }
           ]
         },
         "options": { "timeout": 10000 }
@@ -61,7 +61,7 @@
           "parameters": [
             { "name": "message",      "value": "={{ $json.fb_message }}" },
             { "name": "link",         "value": "={{ $json.fb_link }}" },
-            { "name": "access_token", "value": "={{ $env.FB_PAGE_TOKEN }}" }
+            { "name": "access_token", "value": "={{ $env.CAMER360_FB_PAGE_TOKEN }}" }
           ]
         },
         "options": { "timeout": 15000 }
@@ -90,7 +90,7 @@
         "specifyHeaders": "keypair",
         "headerParameters": {
           "parameters": [
-            { "name": "x-api-key",    "value": "={{ $env.AUTOMATION_API_KEY }}" },
+            { "name": "x-api-key",    "value": "={{ $env.CAMER360_AUTOMATION_API_KEY }}" },
             { "name": "Content-Type", "value": "application/json" }
           ]
         },
