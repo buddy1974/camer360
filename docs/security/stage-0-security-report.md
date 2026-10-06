@@ -181,3 +181,21 @@ Tests force dummy DB/JWT/key/OpenAI values, so no real database, credential or A
 - Owner reviews the diff first. Verified locally only; nothing deployed.
 - After deploy, smoke test: admin login; open/edit/save a **test** draft; publish then edit it and confirm the date does not change; bulk-publish list action; run `/api/n8n/health` from n8n; confirm the next scheduled runs of the six n8n workflows succeed.
 - Rollback: Vercel instant rollback; no database changes were made.
+
+## 7. Preview verification (2026-10-06)
+
+Preview was tested through the owner's browser session (Vercel Deployment Protection stays on; no bypass secret was created). **Preview shares the production database and R2 bucket**, so all article testing was draft-only and nothing was published.
+
+| Area | Result |
+|---|---|
+| Preview env var names | Required names present (ADMIN_PASSWORD, ADMIN_USERNAME, JWT_SECRET, AUTOMATION_API_KEY, DB_*, R2_*). MAINTENANCE_PASSWORD absent (maintenance mode is off). |
+| Public site | Homepage, article, category, RSS, sitemap → 200; R2 and external images load; layout unchanged. |
+| Admin | Invalid login → 401 (no cookie); owner login works; dashboard, article list, editor and admin APIs → 200. |
+| Authorization | All anonymous / junk-cookie / forged-JWT / invalid-key probes → 401 (logged server-side as 401). |
+| Draft workflow | Test draft `[STAGE-0 PREVIEW TEST — DELETE ME]` created, reopened (API + editor), edited: slug unchanged, forced system fields ignored, invalid status → 400; deleted → 404. No test record remains. |
+| Logs | No error/warning-level entries, no AI calls, no social posting, no n8n traffic other than rejected probes. |
+| Not verifiable on Preview | Valid automation key acceptance (would expose the key in a request) and n8n execution history (n8n API behind Cloudflare Access) — confirm with an n8n run at the production gate after key rotation. |
+| `published_at` | On a real published article, a rejected edit (invalid status + forged publishedAt) returned 400 and left `publishedAt` **and** `updatedAt` byte-identical. The transition rule itself is covered by unit tests (no article was published on shared data). |
+| Known pre-existing | `GET /api/admin/awards` → 500 (`awards` table missing) — identical on production `main`. Sanitiser keeps an empty `<script></script>` shell for allowlisted embeds (inline code stripped) — intended. |
+| Vercel topology | Two projects deploy this repo: `camer360` (serves www.camer360.com — tested) and `camer360.com` (only *.vercel.app; its Preview build fails because it has no Preview DB settings — environment, not code). The locally linked `.vercel` points at the duplicate. |
+| Preview URL | camer360-a5xwnn1tm-buddy1974s-projects.vercel.app (commit dcabd17) |
