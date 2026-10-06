@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { uploadVideo, youtubeOAuthConfigured } from '@/lib/youtube-oauth'
+import { checkAutomationKey } from '@/lib/auth/require-automation'
 
 export const maxDuration = 60  // Vercel max for Pro plan
 
 function authCheck(req: NextRequest) {
-  return req.headers.get('x-api-key') === (process.env['AUTOMATION_API_KEY'] ?? process.env['NEXT_PUBLIC_AUTOMATION_API_KEY'])
+  return checkAutomationKey(req.headers.get('x-api-key')) === 'ok'
 }
 
 /**

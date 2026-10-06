@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db/client'
 import { awards } from '@/lib/db/schema'
 import { desc } from 'drizzle-orm'
+import { requireAdmin } from '@/lib/auth/require-admin'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const auth = await requireAdmin(req)
+  if (!auth.ok) return auth.response
+
   try {
     const rows = await db.select().from(awards)
       .orderBy(desc(awards.year), desc(awards.ceremonyDate))
@@ -14,6 +18,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const auth = await requireAdmin(req)
+  if (!auth.ok) return auth.response
+
   try {
     const body = await req.json() as {
       awardShow: string; year: number; category: string; winner?: string

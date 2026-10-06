@@ -46,7 +46,7 @@ async function processAndUpload(file: File): Promise<{ url: string; key: string;
 export async function POST(req: NextRequest) {
   const cookieStore = await cookies()
   const token = cookieStore.get('admin_token')?.value
-  if (!token || !verifyToken(token)) {
+  if (!token || !(await verifyToken(token))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

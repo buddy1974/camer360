@@ -5,9 +5,11 @@ import { categories } from '@/lib/db/schema/categories'
 import { ingestedContent } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 import slugify from 'slugify'
+import { sanitizeArticleBody } from '@/lib/sanitize'
+import { checkAutomationKey } from '@/lib/auth/require-automation'
 
 function authCheck(req: NextRequest) {
-  return req.headers.get('x-api-key') === (process.env.AUTOMATION_API_KEY ?? process.env.NEXT_PUBLIC_AUTOMATION_API_KEY)
+  return checkAutomationKey(req.headers.get('x-api-key')) === 'ok'
 }
 
 // POST /api/n8n/articles — create a draft article from AI-enhanced content
@@ -74,7 +76,8 @@ export async function POST(req: NextRequest) {
       title:         title as string,
       slug,
       excerpt:       (excerpt as string) ?? '',
-      body:          articleBody as string,
+      // Same sanitisation rules as admin-created articles (rendered via dangerouslySetInnerHTML).
+      body:          sanitizeArticleBody(articleBody as string),
       categoryId:    cat.id,
       metaTitle:     (meta_title as string) ?? (title as string).slice(0, 160),
       metaDesc:      (meta_desc as string) ?? (excerpt as string)?.slice(0, 320) ?? '',

@@ -4,9 +4,10 @@ import { articles } from '@/lib/db/schema/articles'
 import { categories } from '@/lib/db/schema/categories'
 import { socialQueue } from '@/lib/db/schema/social'
 import { eq, and, notInArray } from 'drizzle-orm'
+import { checkAutomationKey } from '@/lib/auth/require-automation'
 
 function authCheck(req: NextRequest) {
-  return req.headers.get('x-api-key') === (process.env['AUTOMATION_API_KEY'] ?? process.env['NEXT_PUBLIC_AUTOMATION_API_KEY'])
+  return checkAutomationKey(req.headers.get('x-api-key')) === 'ok'
 }
 
 // GET /api/n8n/social/youtube?limit=5 — published articles not yet posted to YouTube

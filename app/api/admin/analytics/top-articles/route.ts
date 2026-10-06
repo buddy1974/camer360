@@ -1,9 +1,13 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import { db } from '@/lib/db/client'
 import { articles, categories, articleHits } from '@/lib/db/schema'
 import { eq, desc } from 'drizzle-orm'
+import { requireAdmin } from '@/lib/auth/require-admin'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const auth = await requireAdmin(req)
+  if (!auth.ok) return auth.response
+
   try {
     const rows = await db
       .select({

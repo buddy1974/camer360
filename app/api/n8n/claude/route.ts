@@ -2,11 +2,12 @@ export const maxDuration = 60
 
 import { NextRequest, NextResponse } from 'next/server';
 import { openai, MODEL_QUALITY, MODEL_FAST, completionText } from '@/lib/ai/client';
+import { checkAutomationKey } from '@/lib/auth/require-automation'
 
 export async function POST(req: NextRequest) {
   try {
     const apiKey = req.headers.get('x-api-key');
-    if (apiKey !== (process.env.AUTOMATION_API_KEY ?? process.env.NEXT_PUBLIC_AUTOMATION_API_KEY)) {
+    if (checkAutomationKey(apiKey) !== 'ok') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

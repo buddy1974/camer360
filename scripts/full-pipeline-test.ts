@@ -9,7 +9,7 @@ import { createPool } from 'mysql2/promise'
 
 const KEY  = process.env.AUTOMATION_API_KEY!
 const B    = 'https://www.camer360.com'
-const FB_TOKEN = 'EAAXZAZCWlIzY8BRTSCjQ7rv9ZCOjmNSZCCtqNQq6ezRG0MVPZCkNGuyIb5rZCCtDrKXIXoKNNXJiXHmDPd1UnsInZBjw3OxKG92VyOlZAfq0uDWIK0ovjOBZBt4PQjFCM16ptmKfDEqicsGK7yaZC3tu4eas3wxIr5jjplbDRDFp1ndmEaf4HSLWZBeXO0shcKNkaCX6PYB'
+const FB_TOKEN = process.env.FB_PAGE_TOKEN ?? ''
 const FB_PAGE = '252443918110445'
 
 function h(req: RequestInit = {}) { return { ...req, headers: { 'x-api-key': KEY, 'Content-Type': 'application/json', ...((req as any).headers ?? {}) } } }

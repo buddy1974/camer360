@@ -1,8 +1,12 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import { db } from '@/lib/db/client'
 import { sql } from 'drizzle-orm'
+import { requireAdmin } from '@/lib/auth/require-admin'
 
-export async function POST() {
+export async function POST(req: NextRequest) {
+  const auth = await requireAdmin(req)
+  if (!auth.ok) return auth.response
+
   try {
     // Create table with ALL columns matching the Drizzle schema
     await db.execute(sql`

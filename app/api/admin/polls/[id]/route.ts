@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db/client'
 import { polls, pollVotes } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
+import { requireAdmin } from '@/lib/auth/require-admin'
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await requireAdmin(req)
+  if (!auth.ok) return auth.response
+
   const { id } = await params
   const body   = await req.json() as { question?: string; options?: string[]; active?: boolean }
   try {
@@ -16,7 +20,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   } catch (e) { return NextResponse.json({ error: String(e) }, { status: 500 }) }
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await requireAdmin(req)
+  if (!auth.ok) return auth.response
+
   const { id } = await params
   try {
     await db.delete(pollVotes).where(eq(pollVotes.pollId, Number(id)))

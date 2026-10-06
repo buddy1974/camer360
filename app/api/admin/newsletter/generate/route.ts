@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { openai, MODEL_FAST, completionText } from '@/lib/ai/client';
-import { cookies } from 'next/headers';
-import { verifyToken } from '@/lib/auth';
+import { requireAdmin } from '@/lib/auth/require-admin';
 
 export async function POST(req: NextRequest) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('admin_token')?.value;
-  if (!token || !verifyToken(token)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const auth = await requireAdmin(req);
+  if (!auth.ok) return auth.response;
 
   const { articles, template } = await req.json();
 

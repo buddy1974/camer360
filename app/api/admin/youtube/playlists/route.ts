@@ -2,14 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getChannelPlaylists, createPlaylist, addToPlaylist, youtubeOAuthConfigured } from '@/lib/youtube-oauth'
 import { cookies } from 'next/headers'
 import { verifyToken } from '@/lib/auth'
+import { checkAutomationKey } from '@/lib/auth/require-automation'
 
 async function isAuthed(req: NextRequest): Promise<boolean> {
   // Accept admin cookie OR automation API key
   const apiKey = req.headers.get('x-api-key')
-  if (apiKey === (process.env['AUTOMATION_API_KEY'] ?? process.env['NEXT_PUBLIC_AUTOMATION_API_KEY'])) return true
+  if (checkAutomationKey(apiKey) === 'ok') return true
   const cookieStore = await cookies()
   const token = cookieStore.get('admin_token')?.value
-  return !!(token && verifyToken(token))
+  return !!(token && (await verifyToken(token)))
 }
 
 /**

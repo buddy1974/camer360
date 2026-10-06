@@ -6,9 +6,10 @@ import { ingestedContent } from '@/lib/db/schema'
 import { socialQueue } from '@/lib/db/schema/social'
 import { articles } from '@/lib/db/schema/articles'
 import { eq, and, lt, notInArray, desc, sql } from 'drizzle-orm'
+import { checkAutomationKey } from '@/lib/auth/require-automation'
 
 function authCheck(req: NextRequest) {
-  return req.headers.get('x-api-key') === (process.env['AUTOMATION_API_KEY'] ?? process.env['NEXT_PUBLIC_AUTOMATION_API_KEY'])
+  return checkAutomationKey(req.headers.get('x-api-key')) === 'ok'
 }
 
 /**
@@ -26,12 +27,12 @@ export async function GET(req: NextRequest) {
   const report: Record<string, unknown> = { timestamp: new Date().toISOString() }
 
   // ── 1. Environment variable presence ─────────────────────────────────────
-  const effectiveKey = process.env['AUTOMATION_API_KEY'] ?? process.env['NEXT_PUBLIC_AUTOMATION_API_KEY'] ?? ''
+  // Only the server-side AUTOMATION_API_KEY authenticates; the NEXT_PUBLIC_ fallback was removed (Stage 0).
+  const effectiveKey = process.env['AUTOMATION_API_KEY'] ?? ''
   report.env = {
     AUTOMATION_API_KEY:              !!process.env['AUTOMATION_API_KEY'],
     NEXT_PUBLIC_AUTOMATION_API_KEY:  !!process.env['NEXT_PUBLIC_AUTOMATION_API_KEY'],
     authKeyLength:                   effectiveKey.length,
-    usingPublicFallback:             !process.env['AUTOMATION_API_KEY'] && !!process.env['NEXT_PUBLIC_AUTOMATION_API_KEY'],
     OPENAI_API_KEY:                  !!process.env['OPENAI_API_KEY'],
     ANTHROPIC_API_KEY:               !!process.env['ANTHROPIC_API_KEY'],
     DB_HOST:                         !!process.env['DB_HOST'],
@@ -48,8 +49,8 @@ export async function GET(req: NextRequest) {
   } else if (effectiveKey.length < 16) {
     issues.push(`WARNING: Auth key is only ${effectiveKey.length} chars — verify it matches the key stored in n8n credentials`)
   }
-  if (!process.env['AUTOMATION_API_KEY'] && process.env['NEXT_PUBLIC_AUTOMATION_API_KEY']) {
-    issues.push('WARNING: Using NEXT_PUBLIC_AUTOMATION_API_KEY as fallback — this key is exposed in client bundle; set AUTOMATION_API_KEY instead')
+  if (process.env['NEXT_PUBLIC_AUTOMATION_API_KEY']) {
+    issues.push('WARNING: NEXT_PUBLIC_AUTOMATION_API_KEY is set but no longer honoured — remove it (NEXT_PUBLIC_ values ship in the client bundle)')
   }
   if (!process.env['OPENAI_API_KEY']) {
     issues.push('CRITICAL: OPENAI_API_KEY not set — /api/n8n/claude will return 500')

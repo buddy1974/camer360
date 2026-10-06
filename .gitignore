@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# one-shot DB purge backups (large, content-only — keep local)
+scripts/backup-ai-drafts-*.json
+
 # vercel
 .vercel
 
@@ -41,3 +44,12 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# Stage 0 security: credentials and runtime artifacts must never be committed
+server/workers/telegram-session*.txt
+*.session
+server/**/*.log
+
+# Local operational scripts that embed credentials (keep out of git)
+scripts/verify-key-rotation.mjs
+scripts/check-live-bundle.mjs

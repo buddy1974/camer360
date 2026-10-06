@@ -5,8 +5,8 @@ import json, http.client, sys, os
 
 BASE_HOST = "localhost"
 BASE_PORT = 3000
-API_KEY   = "camer360_auto_42756d753611bdfb3c08ab2714cae872"
 import os
+API_KEY   = os.environ.get("AUTOMATION_API_KEY", "")
 _token_paths = [
     r"C:\Users\loneb\AppData\Local\Temp\admin_token.txt",
     "/tmp/camer360_admin_token.txt",

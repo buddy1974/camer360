@@ -12,7 +12,7 @@ function redirectUri(req: NextRequest): string {
 async function isAdmin(req: NextRequest): Promise<boolean> {
   const cookieStore = await cookies()
   const token = cookieStore.get('admin_token')?.value
-  return !!(token && verifyToken(token))
+  return !!(token && (await verifyToken(token)))
 }
 
 /**

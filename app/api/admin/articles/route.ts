@@ -1,16 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db/client'
 import { articles, categories, authors, articleHits } from '@/lib/db/schema'
-import { desc, eq, like, sql, and, inArray } from 'drizzle-orm'
+import { desc, eq, like, sql, and, inArray, ne } from 'drizzle-orm'
 import { cookies } from 'next/headers'
 import { verifyToken } from '@/lib/auth'
 import { postArticleToSocial } from '@/server/lib/social'
 import { sanitizeArticleBody } from '@/lib/sanitize'
 import { revalidateTag } from 'next/cache'
+import { requireAdmin } from '@/lib/auth/require-admin'
+import { checkAutomationKey } from '@/lib/auth/require-automation'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
+  const auth = await requireAdmin(req)
+  if (!auth.ok) return auth.response
+
   const { searchParams } = new URL(req.url)
   const page    = Math.max(1, parseInt(searchParams.get('page') || '1'))
   const limit   = Math.min(Math.max(1, parseInt(searchParams.get('limit') || '20')), 500)
@@ -58,7 +63,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const apiKey = req.headers.get('x-api-key')
-  const isAutomation = !!(apiKey && apiKey === (process.env.AUTOMATION_API_KEY ?? process.env.NEXT_PUBLIC_AUTOMATION_API_KEY))
+  const isAutomation = !!(apiKey && checkAutomationKey(apiKey) === 'ok')
   if (!isAutomation) {
     const cookieStore = await cookies()
     const token = cookieStore.get('admin_token')?.value
@@ -147,6 +152,14 @@ function patchSet(s: BulkStatus, now: Date) {
     : ({ status: s, updatedAt: now } as const)
 }
 
+// Bulk publish must not re-date articles that are already published:
+// publishedAt is only stamped on rows transitioning into 'published'.
+function bulkWhere(ids: number[], s: BulkStatus) {
+  return s === 'published'
+    ? and(inArray(articles.id, ids), ne(articles.status, 'published'))
+    : inArray(articles.id, ids)
+}
+
 export async function PATCH(req: NextRequest) {
   const cookieStore = await cookies()
   const token = cookieStore.get('admin_token')?.value
@@ -160,7 +173,7 @@ export async function PATCH(req: NextRequest) {
   const now = new Date()
 
   if (body.ids && body.ids.length > 0 && body.status) {
-    await db.update(articles).set(patchSet(body.status, now)).where(inArray(articles.id, body.ids))
+    await db.update(articles).set(patchSet(body.status, now)).where(bulkWhere(body.ids, body.status))
     revalidateTag('articles', {})
     return NextResponse.json({ ok: true, updated: body.ids.length })
   }
@@ -172,7 +185,7 @@ export async function PATCH(req: NextRequest) {
       .where(eq(articles.status, body.fromStatus))
     const ids = rows.map(r => r.id)
     if (ids.length > 0) {
-      await db.update(articles).set(patchSet(body.toStatus, now)).where(inArray(articles.id, ids))
+      await db.update(articles).set(patchSet(body.toStatus, now)).where(bulkWhere(ids, body.toStatus))
       revalidateTag('articles', {})
     }
     return NextResponse.json({ ok: true, updated: ids.length })

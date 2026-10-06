@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db/client'
 import { ingestedContent } from '@/lib/db/schema'
 import { eq, and, lt, inArray, asc, sql } from 'drizzle-orm'
+import { checkAutomationKey } from '@/lib/auth/require-automation'
 
 function authCheck(req: NextRequest) {
-  return req.headers.get('x-api-key') === (process.env['AUTOMATION_API_KEY'] ?? process.env['NEXT_PUBLIC_AUTOMATION_API_KEY'])
+  return checkAutomationKey(req.headers.get('x-api-key')) === 'ok'
 }
 
 // GET /api/n8n/queue?limit=3 — fetch pending items for AI enhancement

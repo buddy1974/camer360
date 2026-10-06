@@ -1,21 +1,25 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import { db } from '@/lib/db/client'
 import { categories } from '@/lib/db/schema'
 import { cookies } from 'next/headers'
 import { verifyToken } from '@/lib/auth'
 import { runCategoryMigration } from '@/lib/db/migrations/category-migration'
+import { requireAdmin } from '@/lib/auth/require-admin'
 
 export const dynamic = 'force-dynamic'
 
-// Public GET — idempotent, safe to run multiple times
-export async function GET() {
+// GET is idempotent but writes to the DB, so it requires an admin session (Stage 0)
+export async function GET(req: NextRequest) {
+  const auth = await requireAdmin(req)
+  if (!auth.ok) return auth.response
+
   return runMigrationResponse()
 }
 
 export async function POST() {
   const jar   = await cookies()
   const token = jar.get('admin_token')?.value
-  if (!token || !verifyToken(token)) {
+  if (!token || !(await verifyToken(token))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
   return runMigrationResponse()

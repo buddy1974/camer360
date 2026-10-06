@@ -5,14 +5,18 @@ import { socialQueue } from '@/lib/db/schema/social'
 import { eq } from 'drizzle-orm'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { postArticleToSocial } from '@/server/lib/social'
-import { sanitizeArticleBody } from '@/lib/sanitize'
+import { pickArticleUpdate, publishedAtForTransition } from '@/lib/articles/update-fields'
+import { requireAdmin } from '@/lib/auth/require-admin'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(
-  _: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const auth = await requireAdmin(req)
+  if (!auth.ok) return auth.response
+
   const { id } = await params
   const rows = await db.select().from(articles).where(eq(articles.id, parseInt(id))).limit(1)
   if (!rows.length) return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -23,20 +27,23 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const auth = await requireAdmin(req)
+  if (!auth.ok) return auth.response
+
   const { id }  = await params
   const articleId = parseInt(id)
-  const body = await req.json() as Partial<typeof articles.$inferInsert>
+  if (!Number.isFinite(articleId)) return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+
+  // Only allowlisted editorial fields may be written (body is sanitised there).
+  const picked = pickArticleUpdate(await req.json().catch(() => null))
+  if (!picked.ok) return NextResponse.json({ error: picked.error }, { status: 400 })
+  const body = picked.update
   const validCats = await db.select({ id: categories.id }).from(categories);
   const validCatIds = validCats.map(c => c.id);
   if (body.categoryId && !validCatIds.includes(Number(body.categoryId))) {
     body.categoryId = validCatIds[0] || 7;
   }
 
-  const updateData = { ...body, updatedAt: new Date() };
-  if (updateData.body) updateData.body = sanitizeArticleBody(updateData.body)
-  if (body.status === 'published') {
-    updateData.publishedAt = updateData.publishedAt || new Date();
-  }
   // Read full article before update so we have all fields regardless of partial body
   const [existing] = await db
     .select({
@@ -51,6 +58,12 @@ export async function PUT(
     .where(eq(articles.id, articleId))
     .limit(1)
   const wasAlreadyPublished = existing?.status === 'published'
+
+  // publishedAt is only established on the transition into 'published';
+  // editing an already-published article preserves its original date.
+  const updateData: typeof body & { updatedAt: Date; publishedAt?: Date } = { ...body, updatedAt: new Date() }
+  const firstPublishedAt = publishedAtForTransition(existing?.status, body.status, updateData.updatedAt)
+  if (firstPublishedAt) updateData.publishedAt = firstPublishedAt
 
   await db.update(articles)
     .set(updateData)
@@ -118,9 +131,12 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const auth = await requireAdmin(req)
+  if (!auth.ok) return auth.response
+
   const { id } = await params
   await db.delete(articles).where(eq(articles.id, parseInt(id)))
   return NextResponse.json({ ok: true })

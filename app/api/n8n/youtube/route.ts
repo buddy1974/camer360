@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db/client'
 import { articles } from '@/lib/db/schema'
 import { like, or } from 'drizzle-orm'
+import { checkAutomationKey } from '@/lib/auth/require-automation'
 import {
   getTrendingMusic, searchVideos, getPlaylistVideos,
   GENRE_QUERIES, type Genre, type YTVideo,
 } from '@/lib/youtube'
 
 function authCheck(req: NextRequest) {
-  return req.headers.get('x-api-key') === (process.env['AUTOMATION_API_KEY'] ?? process.env['NEXT_PUBLIC_AUTOMATION_API_KEY'])
+  return checkAutomationKey(req.headers.get('x-api-key')) === 'ok'
 }
 
 /**

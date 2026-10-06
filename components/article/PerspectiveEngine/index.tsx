@@ -9,9 +9,11 @@ const TABS = [
   { key: 'insiderView', icon: '🤫', label: 'Industry Insider' },
 ] as const
 
+// title/excerpt stay in the props for compatibility; the server now reads the
+// article itself, so only articleId is sent.
 export function PerspectiveEngine({
-  articleId, title, excerpt,
-}: { articleId: number; title: string; excerpt?: string }) {
+  articleId,
+}: { articleId: number; title?: string; excerpt?: string }) {
   const cacheKey = `perspectives_${articleId}`
   const [data,     setData]     = useState<Perspectives | null>(null)
   const [loading,  setLoading]  = useState(false)
@@ -25,7 +27,7 @@ export function PerspectiveEngine({
     try {
       const r = await fetch('/api/articles/perspectives', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, excerpt }),
+        body: JSON.stringify({ articleId }),
       })
       const d = await r.json() as Perspectives
       if (!d.fanView) throw new Error('Empty response')

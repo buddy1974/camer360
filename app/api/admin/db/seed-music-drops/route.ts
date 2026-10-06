@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db/client'
 import { musicDrops } from '@/lib/db/schema'
 import { sql } from 'drizzle-orm'
+import { checkAutomationKey } from '@/lib/auth/require-automation'
 
 function authCheck(req: NextRequest) {
-  return req.headers.get('x-api-key') === (process.env.AUTOMATION_API_KEY ?? process.env.NEXT_PUBLIC_AUTOMATION_API_KEY)
+  return checkAutomationKey(req.headers.get('x-api-key')) === 'ok'
 }
 
 function d(s: string) { return new Date(s) }

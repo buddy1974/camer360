@@ -1,8 +1,9 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import { db } from '@/lib/db/client'
 import { sql } from 'drizzle-orm'
 import { cookies } from 'next/headers'
 import { verifyToken } from '@/lib/auth'
+import { requireAdmin } from '@/lib/auth/require-admin'
 
 async function runMigration() {
   try {
@@ -25,7 +26,10 @@ async function runMigration() {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const auth = await requireAdmin(req)
+  if (!auth.ok) return auth.response
+
   return runMigration()
 }
 
